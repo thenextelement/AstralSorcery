@@ -154,4 +154,4 @@
 
 // Grindstone: addRecipe(input, output) - input may be an item or ore dictionary entry; removeRecipe(output)
 // mods.astralsorcery.Grindstone.addRecipe(<minecraft:cobblestone>, <minecraft:gravel>);
-// mods.astralsorcery.Grindstone.removeRecipe(<astralsorcery:itemCraftingComponent:2>);
+// mods.astralsorcery.Grindstone.removeRecipe(<astralsorcery:ItemCraftingComponent:2>);
