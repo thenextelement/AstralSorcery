@@ -21,6 +21,7 @@ public class NEIAstralSorceryConfig implements IConfigureNEI {
         register(new AltarRecipeHandler.Discovery());
         register(new AltarRecipeHandler.Attunement());
         register(new AltarRecipeHandler.Constellation());
+        register(new AltarRecipeHandler.Trait());
         register(new SimpleRecipeHandlers.Infuser());
         register(new SimpleRecipeHandlers.Well());
         register(new SimpleRecipeHandlers.Transmutation());

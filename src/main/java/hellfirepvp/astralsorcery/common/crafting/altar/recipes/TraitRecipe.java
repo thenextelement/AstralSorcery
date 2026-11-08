@@ -9,7 +9,9 @@
 package hellfirepvp.astralsorcery.common.crafting.altar.recipes;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
@@ -32,6 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.client.ClientScheduler;
 import hellfirepvp.astralsorcery.client.effect.EffectHandler;
 import hellfirepvp.astralsorcery.client.effect.EffectHelper;
+import hellfirepvp.astralsorcery.client.effect.EntityComplexFX;
 import hellfirepvp.astralsorcery.client.effect.fx.EntityFXFacingParticle;
 import hellfirepvp.astralsorcery.client.effect.light.EffectLightbeam;
 import hellfirepvp.astralsorcery.client.util.ItemColorizationHelper;
@@ -47,6 +50,7 @@ import hellfirepvp.astralsorcery.common.tile.TileAltar;
 import hellfirepvp.astralsorcery.common.tile.TileAttunementRelay;
 import hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
 import hellfirepvp.astralsorcery.common.util.data.Vector3;
 import hellfirepvp.astralsorcery.common.util.nbt.NBTUtils;
@@ -65,6 +69,7 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
         new BlockPos(-3, 0, 0), new BlockPos(-2, 0, 2) };
 
     private List<ItemHandle> additionallyRequiredStacks = Lists.newLinkedList();
+    private Map<TraitRecipeSlot, ItemHandle> matchTraitStacks = new HashMap<>();
     private IConstellation requiredConstellation = null;
 
     protected TraitRecipe(TileAltar.AltarLevel neededLevel, IAccessibleRecipe recipe) {
@@ -81,7 +86,90 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
 
     public TraitRecipe(IAccessibleRecipe recipe) {
         super(TileAltar.AltarLevel.TRAIT_CRAFT, recipe);
-        setPassiveStarlightRequirement(8500);
+        setPassiveStarlightRequirement(7500);
+    }
+
+    // 1.12.2-1.8.5: the four inner slots of the iridescent altar grid
+    public TraitRecipe setInnerTraitItem(Item i, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new ItemStack(i), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(Block b, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new ItemStack(b), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(ItemStack stack, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new ItemHandle(stack), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(String oreDict, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new ItemHandle(oreDict), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(FluidStack fluid, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new ItemHandle(fluid), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(Fluid fluid, int mbAmount, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(new FluidStack(fluid, mbAmount), slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(Fluid fluid, TraitRecipeSlot... slots) {
+        return setInnerTraitItem(fluid, 1000, slots);
+    }
+
+    public TraitRecipe setInnerTraitItem(ItemHandle handle, TraitRecipeSlot... slots) {
+        for (TraitRecipeSlot slot : slots) {
+            matchTraitStacks.put(slot, handle);
+        }
+        return this;
+    }
+
+    @Nonnull
+    public List<ItemStack> getInnerTraitItems(TraitRecipeSlot slot) {
+        ItemHandle handle = matchTraitStacks.get(slot);
+        if (handle != null) {
+            return handle.getApplicableItems();
+        }
+        return Lists.newArrayList();
+    }
+
+    @Nullable
+    public ItemHandle getInnerTraitItemHandle(TraitRecipeSlot slot) {
+        return matchTraitStacks.get(slot);
+    }
+
+    // 1.8.5 names for the outer (relay) items
+    public TraitRecipe addOuterTraitItem(Item i) {
+        return addTraitItem(i);
+    }
+
+    public TraitRecipe addOuterTraitItem(Block b) {
+        return addTraitItem(b);
+    }
+
+    public TraitRecipe addOuterTraitItem(ItemStack stack) {
+        return addTraitItem(stack);
+    }
+
+    public TraitRecipe addOuterTraitItem(String oreDict) {
+        return addTraitItem(oreDict);
+    }
+
+    public TraitRecipe addOuterTraitItem(FluidStack fluid) {
+        return addTraitItem(fluid);
+    }
+
+    public TraitRecipe addOuterTraitItem(Fluid fluid, int mbAmount) {
+        return addTraitItem(fluid, mbAmount);
+    }
+
+    public TraitRecipe addOuterTraitItem(Fluid fluid) {
+        return addTraitItem(fluid);
+    }
+
+    public TraitRecipe addOuterTraitItem(ItemHandle handle) {
+        return addTraitItem(handle);
     }
 
     public TraitRecipe addTraitItem(Item i) {
@@ -142,18 +230,23 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
 
     @Override
     public int craftingTickTime() {
-        return 1000;
+        return 1400;
     }
 
     @Override
     public boolean tryProcess(TileAltar altar, ActiveCraftingTask runningTask, NBTTagCompound craftingData,
         int activeCraftingTick) {
+        if (!fulfillesStarlightRequirement(altar)) {
+            return false; // Duh.
+        }
+
         List<CraftingFocusStack> stacks = collectCurrentStacks(craftingData);
         if (!matchFocusStacks(altar, stacks)) {
             return false;
         }
 
         int required = additionallyRequiredStacks.size();
+        if (required <= 0) return true;
         int part = craftingTickTime() / 2;
         int offset = craftingTickTime() / 10;
         int cttPart = part / required;
@@ -187,11 +280,55 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
         IConstellation req = getRequiredConstellation();
         if (req != null) {
             IConstellation focus = altar.getFocusedConstellation();
-            if (focus != null) {
-                if (!req.equals(focus)) return false;
+            if (focus == null) return false;
+            if (!req.equals(focus)) return false;
+        }
+        for (TraitRecipeSlot slot : TraitRecipeSlot.values()) {
+            ItemStack altarItem = invHandler.getStackInSlot(slot.getSlotId());
+            ItemHandle expected = matchTraitStacks.get(slot);
+            if (expected != null) {
+                if (!expected.matchCrafting(altarItem)) {
+                    return false;
+                }
+            } else if (altarItem != null && altarItem.getItem() != null) {
+                return false;
             }
         }
         return super.matches(altar, invHandler, ignoreStarlightRequirement);
+    }
+
+    public void consumeOuterInputs(TileAltar altar, ActiveCraftingTask craftingTask) {
+        List<CraftingFocusStack> stacks = collectCurrentStacks(craftingTask.getCraftingData());
+        BlockPos pos = new BlockPos(altar.xCoord, altar.yCoord, altar.zCoord);
+        for (CraftingFocusStack stack : stacks) {
+            if (stack.stackIndex < 0 || stack.stackIndex >= additionallyRequiredStacks.size()) continue; // Duh
+
+            ItemHandle required = additionallyRequiredStacks.get(stack.stackIndex);
+            TileAttunementRelay tar = MiscUtils
+                .getTileAt(altar.getWorldObj(), pos.add(stack.offset), TileAttunementRelay.class, true);
+            if (tar == null) continue;
+            // The relay item was matched in the same tick the recipe finished, so it is the expected one.
+            ItemStack found = tar.getInventoryHandler()
+                .getStackInSlot(0);
+            if (found == null) continue;
+            if (required.getFluidTypeAndAmount() != null) {
+                ItemStack drained = ItemUtils.drainFluidFromItem(found, required.getFluidTypeAndAmount(), true);
+                if (drained != null) {
+                    tar.getInventoryHandler()
+                        .setInventorySlotContents(0, drained);
+                }
+            } else if (found.getItem()
+                .hasContainerItem(found)) {
+                    tar.getInventoryHandler()
+                        .setInventorySlotContents(
+                            0,
+                            found.getItem()
+                                .getContainerItem(found));
+                } else {
+                    ItemUtils.decrStackInInventory(tar.getInventoryHandler(), 0);
+                }
+            tar.markForUpdate();
+        }
     }
 
     @Nonnull
@@ -204,6 +341,7 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
     @SideOnly(Side.CLIENT)
     public void onCraftClientTick(TileAltar altar, ActiveCraftingTask.CraftingState state, long tick, Random rand) {
         super.onCraftClientTick(altar, state, tick, rand);
+        playActiveCraftEffects(altar, state, rand);
 
         ActiveCraftingTask act = altar.getActiveCraftingTask();
         if (act != null) {
@@ -292,6 +430,93 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    private void playActiveCraftEffects(TileAltar altar, ActiveCraftingTask.CraftingState state, Random rand) {
+        if (state != ActiveCraftingTask.CraftingState.ACTIVE) return;
+        Vector3 thisAltar = new Vector3(altar).add(0.5, 0.5, 0.5);
+        EntityFXFacingParticle p;
+        if (rand.nextInt(4) == 0) {
+            p = EffectHelper.genericFlareParticle(
+                altar.xCoord - 3 + rand.nextFloat() * 7,
+                altar.yCoord + 0.02,
+                altar.zCoord - 3 + rand.nextFloat() * 7);
+            p.gravity(0.004)
+                .enableAlphaFade(EntityComplexFX.AlphaFunction.FADE_OUT)
+                .scale(rand.nextFloat() * 0.2F + 0.15F);
+            p.setColor(Color.WHITE);
+        }
+        Vector3 r = Vector3.random()
+            .setY(0)
+            .normalize()
+            .multiply(1.3 + rand.nextFloat() * 0.5)
+            .add(
+                thisAltar.clone()
+                    .addY(2 + rand.nextFloat() * 0.4));
+        p = EffectHelper.genericFlareParticle(r.getX(), r.getY(), r.getZ());
+        p.gravity(0.004)
+            .enableAlphaFade(EntityComplexFX.AlphaFunction.FADE_OUT)
+            .scale(rand.nextFloat() * 0.2F + 0.1F);
+        p.setColor(Color.WHITE);
+        for (int i = 0; i < 2; i++) {
+            r = Vector3.random()
+                .setY(0)
+                .normalize()
+                .multiply(2 + rand.nextFloat() * 0.5)
+                .add(
+                    thisAltar.clone()
+                        .addY(1.1 + rand.nextFloat() * 0.4));
+            p = EffectHelper.genericFlareParticle(r.getX(), r.getY(), r.getZ());
+            p.gravity(0.004)
+                .enableAlphaFade(EntityComplexFX.AlphaFunction.FADE_OUT)
+                .scale(rand.nextFloat() * 0.2F + 0.1F);
+            p.setColor(Color.WHITE);
+        }
+        if (rand.nextInt(20) == 0) {
+            Vector3 from = new Vector3(
+                altar.xCoord - 3 + rand.nextFloat() * 7,
+                altar.yCoord + 0.02,
+                altar.zCoord - 3 + rand.nextFloat() * 7);
+            MiscUtils.applyRandomOffset(from, rand, 0.4F);
+            EffectLightbeam lightbeam = EffectHandler.getInstance()
+                .lightbeam(
+                    from.clone()
+                        .addY(4 + rand.nextInt(2)),
+                    from,
+                    1);
+            lightbeam.setMaxAge(64);
+            lightbeam.setColorOverlay(Color.WHITE);
+        }
+    }
+
+    /** Relays still waiting for their item show a slowly spinning ghost of the expected item. */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onCraftTESRRender(TileAltar altar, double x, double y, double z, float partialTicks) {
+        super.onCraftTESRRender(altar, x, y, z, partialTicks);
+        ActiveCraftingTask act = altar.getActiveCraftingTask();
+        if (act == null) return;
+        BlockPos pos = new BlockPos(altar.xCoord, altar.yCoord, altar.zCoord);
+        for (CraftingFocusStack stack : collectCurrentStacks(act.getCraftingData())) {
+            if (stack.stackIndex < 0 || stack.stackIndex >= additionallyRequiredStacks.size()) continue;
+            ItemHandle required = additionallyRequiredStacks.get(stack.stackIndex);
+            TileAttunementRelay tar = MiscUtils
+                .getTileAt(altar.getWorldObj(), pos.add(stack.offset), TileAttunementRelay.class, true);
+            ItemStack found = tar == null ? null
+                : tar.getInventoryHandler()
+                    .getStackInSlot(0);
+            if (found != null && found.getItem() != null && required.matchCrafting(found)) continue;
+            List<ItemStack> applicable = required.getApplicableItemsForRender();
+            if (applicable.isEmpty()) continue;
+            int idx = (int) ((ClientScheduler.getClientTick() / 60) % applicable.size());
+            hellfirepvp.astralsorcery.client.util.RenderingUtils.renderTranslucentItemGhost(
+                applicable.get(idx),
+                x + stack.offset.getX(),
+                y + stack.offset.getY(),
+                z + stack.offset.getZ(),
+                partialTicks);
+        }
+    }
+
     @Nullable
     protected BlockPos findUnusedRelay(TileAltar center, List<CraftingFocusStack> found) {
         List<BlockPos> eligableRelayOffsets = Lists.newLinkedList();
@@ -368,6 +593,25 @@ public class TraitRecipe extends ConstellationRecipe implements ICraftingProgres
         protected CraftingFocusStack(Integer stackIndex, BlockPos offset) {
             this.stackIndex = stackIndex;
             this.offset = offset;
+        }
+
+    }
+
+    public static enum TraitRecipeSlot {
+
+        UPPER_CENTER(21),
+        LEFT_CENTER(22),
+        RIGHT_CENTER(23),
+        LOWER_CENTER(24);
+
+        private final int slotId;
+
+        TraitRecipeSlot(int slotId) {
+            this.slotId = slotId;
+        }
+
+        public int getSlotId() {
+            return slotId;
         }
 
     }

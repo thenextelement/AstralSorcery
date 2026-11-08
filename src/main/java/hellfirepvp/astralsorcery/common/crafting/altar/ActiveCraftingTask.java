@@ -52,8 +52,9 @@ public class ActiveCraftingTask {
         this.state = state;
     }
 
-    public boolean shouldPersist() {
-        return recipeToCraft instanceof TraitRecipe; // Everything Tier4 or higher~
+    public boolean shouldPersist(TileAltar ta) {
+        return recipeToCraft instanceof TraitRecipe || ta.getAltarLevel()
+            .ordinal() >= TileAltar.AltarLevel.TRAIT_CRAFT.ordinal(); // Everything Tier4 or higher~
     }
 
     public UUID getPlayerCraftingUUID() {

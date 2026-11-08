@@ -40,6 +40,7 @@ public class JsonBlockModels {
     }
 
     private final Map<Block, Spec> specs = new HashMap<>();
+    private final Map<Block, Map<Integer, Spec>> metaSpecs = new HashMap<>();
     private final Map<String, IIcon> sprites = new HashMap<>();
 
     private JsonBlockModels() {}
@@ -48,7 +49,22 @@ public class JsonBlockModels {
         INSTANCE.specs.put(block, new Spec(solid, translucent));
     }
 
+    /** Overrides the block's models for one metadata value. */
+    public static void registerMeta(Block block, int meta, String solid, String translucent) {
+        INSTANCE.metaSpecs.computeIfAbsent(block, b -> new HashMap<>())
+            .put(meta, new Spec(solid, translucent));
+    }
+
     public static Spec get(Block block) {
+        return INSTANCE.specs.get(block);
+    }
+
+    public static Spec get(Block block, int meta) {
+        Map<Integer, Spec> perMeta = INSTANCE.metaSpecs.get(block);
+        if (perMeta != null) {
+            Spec s = perMeta.get(meta);
+            if (s != null) return s;
+        }
         return INSTANCE.specs.get(block);
     }
 
@@ -60,7 +76,9 @@ public class JsonBlockModels {
     public void onStitch(TextureStitchEvent.Pre event) {
         if (event.map.getTextureType() != 0) return; // blocks atlas only
         sprites.clear();
-        for (Spec spec : specs.values()) {
+        java.util.List<Spec> all = new java.util.ArrayList<>(specs.values());
+        for (Map<Integer, Spec> m : metaSpecs.values()) all.addAll(m.values());
+        for (Spec spec : all) {
             for (String name : new String[] { spec.solid, spec.translucent }) {
                 if (name == null) continue;
                 for (ResourceLocation tex : JsonModel.load(name)

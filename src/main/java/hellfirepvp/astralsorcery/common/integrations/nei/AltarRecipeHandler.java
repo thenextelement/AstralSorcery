@@ -19,6 +19,7 @@ import hellfirepvp.astralsorcery.common.crafting.altar.AbstractAltarRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.AltarRecipeRegistry;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.AttunementRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.ConstellationRecipe;
+import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TraitRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
 
@@ -37,6 +38,13 @@ public abstract class AltarRecipeHandler extends ASRecipeHandlerBase {
 
         public Attunement() {
             super(TileAltar.AltarLevel.ATTUNEMENT);
+        }
+    }
+
+    public static class Trait extends AltarRecipeHandler {
+
+        public Trait() {
+            super(TileAltar.AltarLevel.TRAIT_CRAFT);
         }
     }
 
@@ -94,6 +102,26 @@ public abstract class AltarRecipeHandler extends ASRecipeHandlerBase {
         }
     }
 
+    private static int[] traitCell(TraitRecipe.TraitRecipeSlot s) {
+        switch (s) {
+            case UPPER_CENTER:
+                return cell(2, 0);
+            case LEFT_CENTER:
+                return cell(0, 2);
+            case RIGHT_CENTER:
+                return cell(4, 2);
+            default:
+                return cell(2, 4);
+        }
+    }
+
+    /** Items the relays around the iridescent altar have to supply, in a row under the grid. */
+    private static int[] outerCell(int index) {
+        return new int[] { GX + index * SLOT, GY + 5 * SLOT + 4 };
+    }
+
+    private static final int MAX_OUTER = 8;
+
     @Override
     protected List<ASCachedRecipe> buildAll() {
         List<ASCachedRecipe> out = new ArrayList<>();
@@ -122,6 +150,18 @@ public abstract class AltarRecipeHandler extends ASRecipeHandlerBase {
                         c.addInput(((ConstellationRecipe) r).getCstItems(s), p[0], p[1]);
                     }
                 }
+                if (r instanceof TraitRecipe) {
+                    TraitRecipe tr = (TraitRecipe) r;
+                    for (TraitRecipe.TraitRecipeSlot s : TraitRecipe.TraitRecipeSlot.values()) {
+                        int[] p = traitCell(s);
+                        c.addInput(tr.getInnerTraitItems(s), p[0], p[1]);
+                    }
+                    List<List<ItemStack>> outer = tr.getTraitItems();
+                    for (int i = 0; i < outer.size() && i < MAX_OUTER; i++) {
+                        int[] p = outerCell(i);
+                        c.addInput(outer.get(i), p[0], p[1]);
+                    }
+                }
                 out.add(c);
             }
         } finally {
@@ -141,6 +181,9 @@ public abstract class AltarRecipeHandler extends ASRecipeHandlerBase {
         if (level.ordinal() >= TileAltar.AltarLevel.CONSTELLATION_CRAFT.ordinal()) {
             for (ConstellationRecipe.ConstellationAtlarSlot s : ConstellationRecipe.ConstellationAtlarSlot.values())
                 l.add(cstCell(s));
+        }
+        if (level.ordinal() >= TileAltar.AltarLevel.TRAIT_CRAFT.ordinal()) {
+            for (TraitRecipe.TraitRecipeSlot s : TraitRecipe.TraitRecipeSlot.values()) l.add(traitCell(s));
         }
         l.add(new int[] { OUT_X, OUT_Y });
         return l;

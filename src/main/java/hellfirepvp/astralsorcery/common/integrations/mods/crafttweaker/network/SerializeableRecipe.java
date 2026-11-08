@@ -45,6 +45,7 @@ public interface SerializeableRecipe {
         ALTAR_T1_ADD((v) -> new AltarRecipeDiscovery()),
         ALTAR_T2_ADD((v) -> new AltarRecipeAttunement()),
         ALTAR_T3_ADD((v) -> new AltarRecipeConstellation()),
+        ALTAR_T4_ADD((v) -> new AltarRecipeTrait()),
         GRINDSTONE_ADD((v) -> new GrindstoneRecipeAdd()),
         GRINDSTONE_REMOVE((v) -> new GrindstoneRecipeRemove());
 

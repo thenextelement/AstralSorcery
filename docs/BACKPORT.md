@@ -18,7 +18,7 @@ states, JSON models via `JsonModel`, both event buses, mixins instead of ASM, et
 - [x] Grindstone recipe registry (crystal/tool/sword sharpening, dust recipes, MineTweaker `mods.astralsorcery.Grindstone`, NEI)
 - [x] Sooty marble variants, marble slabs, 1.12 pillar model (festive/holiday textures skipped)
 - [x] Evorsio + Pelotrio (+ minor Vorux) constellations, ritual effects, 1.8.5 star map effect table (1.7 lacks mending/sweeping/luck; those entries are left out)
-- [ ] Tier 4 "Iridescent" altar, trait upgrade/recipes, journal trait pages
+- [x] Tier 4 "Iridescent" altar: T3 -> T4 upgrade recipe, 1.8.5 TraitRecipe (inner slots, relay items, focus constellation), T4 body model, NEI + MineTweaker (`addTraitAltarRecipe`), research. Altar XP leveling kept (upgrades already go through recipes); journal trait-recipe page still to do with the first trait recipes
 - [ ] Mantles (capes) + constellation mantle effects (vicio flight adapted for 1.7, no elytra)
 - [ ] Chalice, liquid interactions, liquid sparks, fountain
 - [ ] Wand rework (augments), grapple wand, knowledge share, illumination/nocturnal powder usables

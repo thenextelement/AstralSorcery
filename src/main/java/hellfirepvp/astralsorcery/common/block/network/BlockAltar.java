@@ -157,7 +157,7 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
         for (AltarType type : AltarType.values()) {
-            if (type == AltarType.ALTAR_4 || type == AltarType.ALTAR_5) continue;
+            if (type == AltarType.ALTAR_5) continue;
             ItemStack stack = new ItemStack(item, 1, type.ordinal());
             NBTTagCompound pers = NBTHelper.getPersistentData(stack);
             pers.setInteger("exp", 0);
@@ -415,7 +415,7 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
                     return FULL_BLOCK_AABB;
                 // return boxConstellation;
                 case ALTAR_4:
-                    return null;
+                    return FULL_BLOCK_AABB;
                 case ALTAR_5:
                     return null;
             }

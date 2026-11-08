@@ -66,6 +66,7 @@ import hellfirepvp.astralsorcery.client.util.resource.AssetLibrary;
 import hellfirepvp.astralsorcery.common.CommonProxy;
 import hellfirepvp.astralsorcery.common.auxiliary.tick.TickManager;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
+import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.crafting.helper.CraftingAccessManager;
 import hellfirepvp.astralsorcery.common.entities.EntityFlare;
 import hellfirepvp.astralsorcery.common.entities.EntityIlluminationSpark;
@@ -248,7 +249,8 @@ public class ClientProxy extends CommonProxy {
             BlocksAS.blockAltar,
             new ItemRendererJsonModel().add(0, "BlockAltar1", null)
                 .add(1, "BlockAltar2", null)
-                .add(2, "BlockAltar3", null));
+                .add(2, "BlockAltar3", null)
+                .add(3, "BlockAltar4", null));
         registerModelItem(
             BlocksAS.attunementRelay,
             new ItemRendererJsonModel().add(0, "BlockAttunementRelay", "BlockAttunementRelayGlass"));
@@ -274,6 +276,9 @@ public class ClientProxy extends CommonProxy {
 
     private void registerJsonBlockModels() {
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockAltar, "BlockAltar1", null);
+        // 1.12.2-1.8.5 iridescent altar body (T2/T3 keep the T1 body plus their TESR parts)
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .registerMeta(BlocksAS.blockAltar, BlockAltar.AltarType.ALTAR_4.ordinal(), "BlockAltar4", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockWell, "BlockWell", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.ritualPedestal, "BlockRitualPedestal", "BlockRitualPedestalGlass");

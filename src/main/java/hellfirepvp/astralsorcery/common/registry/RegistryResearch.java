@@ -61,6 +61,16 @@ public class RegistryResearch {
     private static void initRadiance() {
         ResearchProgression.Registry regRadiance = ResearchProgression.RADIANCE.getRegistry();
 
+        // 1.12.2-1.8.5
+        ResearchNode resHintRecipes = new ResearchNode(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            "CRAFTING_FOCUS_HINT",
+            4,
+            5);
+        resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.1"));
+        resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.2"));
+
+        regRadiance.register(resHintRecipes);
     }
 
     private static void initConstellation() {
@@ -267,6 +277,24 @@ public class RegistryResearch {
         regConstellation.register(resSpectralLens);
         regConstellation.register(resEnhancedCollCrystal);
         regConstellation.register(resDrawing);
+
+        // 1.12.2-1.8.5
+        ResearchNode resTraitUpgrade = new ResearchNode(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            "ALTAR4",
+            6,
+            3);
+        resTraitUpgrade.addPage(getTextPage("ALTAR4.1"));
+        resTraitUpgrade.addPage(new JournalPageConstellationRecipe(RegistryRecipes.rAltarUpgradeTrait));
+        resTraitUpgrade.addPage(new JournalPageStructure(MultiBlockArrays.patternAltarTrait));
+        resTraitUpgrade.addPage(getTextPage("ALTAR4.4"));
+        resTraitUpgrade.addSourceConnectionFrom(resInfuser);
+        registerItemLookup(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            resTraitUpgrade,
+            1,
+            ResearchProgression.CONSTELLATION);
+        regConstellation.register(resTraitUpgrade);
     }
 
     private static void initAttunement() {
