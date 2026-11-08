@@ -11,9 +11,6 @@ package hellfirepvp.astralsorcery.common.item.crystal.base;
 import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +27,6 @@ import hellfirepvp.astralsorcery.common.item.crystal.ItemCelestialCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.ItemTunedCelestialCrystal;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -47,8 +43,6 @@ public abstract class ItemRockCrystalBase extends Item implements ItemHighlighte
         setHasSubtypes(true);
         setCreativeTab(RegistryItems.creativeTabAstralSorcery);
     }
-
-
 
     @Override
     public Color getHightlightColor(ItemStack stack) {

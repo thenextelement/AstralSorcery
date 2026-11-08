@@ -95,9 +95,12 @@ public class RenderBlockMarblePillar implements ISimpleBlockRenderingHandler {
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         if (els == null) {
             rb.setRenderBounds(0, 0, 0, 1, 1, 1);
-            drawInventoryCube(rb, block, t, new IIcon[] { block.getIcon(0, metadata), block.getIcon(1, metadata),
-                block.getIcon(2, metadata), block.getIcon(3, metadata), block.getIcon(4, metadata),
-                block.getIcon(5, metadata) });
+            drawInventoryCube(
+                rb,
+                block,
+                t,
+                new IIcon[] { block.getIcon(0, metadata), block.getIcon(1, metadata), block.getIcon(2, metadata),
+                    block.getIcon(3, metadata), block.getIcon(4, metadata), block.getIcon(5, metadata) });
         } else {
             for (Element e : els) {
                 rb.setRenderBounds(e.x0, e.y0, e.z0, e.x1, e.y1, e.z1);

@@ -9,9 +9,6 @@
 package hellfirepvp.astralsorcery.common.item;
 
 import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,7 +25,6 @@ import hellfirepvp.astralsorcery.common.entities.EntityItemStardust;
 import hellfirepvp.astralsorcery.common.item.base.IItemVariants;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -97,8 +93,6 @@ public class ItemCraftingComponent extends Item implements IItemVariants {
         }
         return super.getUnlocalizedName(stack);
     }
-
-
 
     @Override
     public String[] getVariants() {

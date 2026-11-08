@@ -8,12 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.registry;
 
-import net.minecraftforge.oredict.OreDictionary;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.DustGrindstoneRecipe;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.SwordSharpeningRecipe;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalSharpeningRecipe;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalToolSharpeningRecipe;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import static hellfirepvp.astralsorcery.common.crafting.altar.AltarRecipeRegistry.*;
 import static hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry.registerInfusionRecipe;
 import static hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry.registerLowConsumptionInfusion;
@@ -24,6 +18,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 
 import com.google.common.collect.Lists;
@@ -52,6 +47,11 @@ import hellfirepvp.astralsorcery.common.crafting.altar.recipes.RecipeRitualPedes
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TelescopeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.AttunementUpgradeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.ConstellationUpgradeRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalToolSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.DustGrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.SwordSharpeningRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.AccessibleRecipeAdapater;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
@@ -214,7 +214,11 @@ public class RegistryRecipes {
         if (output.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
             List<ItemStack> st = new java.util.ArrayList<>();
             output.getItem()
-                .getSubItems(output.getItem(), output.getItem().getCreativeTab(), st);
+                .getSubItems(
+                    output.getItem(),
+                    output.getItem()
+                        .getCreativeTab(),
+                    st);
             output = st.isEmpty() ? new ItemStack(output.getItem(), output.stackSize, 0) : st.get(0);
         }
         output = ItemUtils.copyStackWithSize(output, output.stackSize);
@@ -397,12 +401,13 @@ public class RegistryRecipes {
                 ShapedRecipeSlot.LEFT,
                 ShapedRecipeSlot.RIGHT,
                 ShapedRecipeSlot.LOWER_CENTER),
-            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ENGRAVED, 5)).addPart(
-                raw,
-                ShapedRecipeSlot.UPPER_CENTER,
-                ShapedRecipeSlot.LEFT,
-                ShapedRecipeSlot.RIGHT,
-                ShapedRecipeSlot.LOWER_CENTER)
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ENGRAVED, 5))
+                .addPart(
+                    raw,
+                    ShapedRecipeSlot.UPPER_CENTER,
+                    ShapedRecipeSlot.LEFT,
+                    ShapedRecipeSlot.RIGHT,
+                    ShapedRecipeSlot.LOWER_CENTER)
                 .addPart(chiseled, ShapedRecipeSlot.CENTER),
             new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.RUNED, 3))
                 .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.UPPER_RIGHT)

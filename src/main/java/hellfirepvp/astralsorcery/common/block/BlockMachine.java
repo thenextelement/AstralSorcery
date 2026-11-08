@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
-import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe;
 import java.util.List;
 import java.util.Random;
 
@@ -34,6 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.client.util.RenderingUtils;
 import hellfirepvp.astralsorcery.common.CommonProxy;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.IVariantTileProvider;
@@ -43,7 +43,6 @@ import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
-import hellfirepvp.astralsorcery.common.util.SwordSharpenHelper;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -207,7 +206,12 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
                                             break;
                                         case FAIL_BREAK_ITEM:
                                             tgr.setGrindingItem(null);
-                                            worldIn.playSoundEffect(posX + 0.5, posY + 0.5, posZ + 0.5, "random.break", 0.5F,
+                                            worldIn.playSoundEffect(
+                                                posX + 0.5,
+                                                posY + 0.5,
+                                                posZ + 0.5,
+                                                "random.break",
+                                                0.5F,
                                                 worldIn.rand.nextFloat() * 0.2F + 0.8F);
                                             break;
                                         default:
@@ -222,7 +226,12 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
                                 ItemStack toSet = stack.copy();
                                 toSet.stackSize = 1;
                                 tgr.setGrindingItem(toSet);
-                                worldIn.playSoundEffect(posX + 0.5, posY + 0.5, posZ + 0.5, "random.pop", 0.5F,
+                                worldIn.playSoundEffect(
+                                    posX + 0.5,
+                                    posY + 0.5,
+                                    posZ + 0.5,
+                                    "random.pop",
+                                    0.5F,
                                     worldIn.rand.nextFloat() * 0.2F + 0.8F);
                                 if (!player.capabilities.isCreativeMode) {
                                     stack.stackSize--;

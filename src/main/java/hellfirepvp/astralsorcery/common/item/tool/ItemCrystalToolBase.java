@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +24,6 @@ import hellfirepvp.astralsorcery.common.entities.EntityCrystalTool;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.ToolCrystalProperties;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 import hellfirepvp.astralsorcery.common.util.nbt.NBTHelper;
 
 /**
@@ -152,7 +149,5 @@ public abstract class ItemCrystalToolBase extends ItemTool {
     public int getMaxDamage(ItemStack stack) {
         return 10;
     }
-
-
 
 }

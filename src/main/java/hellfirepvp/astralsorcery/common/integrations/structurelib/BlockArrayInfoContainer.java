@@ -61,8 +61,9 @@ public class BlockArrayInfoContainer<T extends TileEntity> implements IMultibloc
             out.add(e);
         }
         out.sort(
-            Comparator.comparingInt((Map.Entry<BlockPos, BlockArray.BlockInformation> e) -> e.getKey()
-                .getY())
+            Comparator.comparingInt(
+                (Map.Entry<BlockPos, BlockArray.BlockInformation> e) -> e.getKey()
+                    .getY())
                 .thenComparingInt(
                     e -> e.getKey()
                         .getX())

@@ -34,7 +34,9 @@ public class ModIntegrationStructureLib {
     public static void register() {
         IMultiblockInfoContainer.registerTileClass(
             TileAltar.class,
-            new BlockArrayInfoContainer<TileAltar>(ModIntegrationStructureLib::altarStructure, "astralsorcery.structurelib.altar"));
+            new BlockArrayInfoContainer<TileAltar>(
+                ModIntegrationStructureLib::altarStructure,
+                "astralsorcery.structurelib.altar"));
         IMultiblockInfoContainer.registerTileClass(
             TileRitualPedestal.class,
             new BlockArrayInfoContainer<TileRitualPedestal>(
@@ -80,7 +82,8 @@ public class ModIntegrationStructureLib {
             case DISCOVERY:
                 return MultiBlockArrays.patternAltarAttunement;
             case ATTUNEMENT:
-                return MultiBlockArrays.patternAltarAttunement.matches(altar.getWorldObj(), at) ? altarT3() : MultiBlockArrays.patternAltarAttunement;
+                return MultiBlockArrays.patternAltarAttunement.matches(altar.getWorldObj(), at) ? altarT3()
+                    : MultiBlockArrays.patternAltarAttunement;
             case CONSTELLATION_CRAFT:
                 return altarT3();
             default:

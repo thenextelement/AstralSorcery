@@ -11,7 +11,6 @@ package hellfirepvp.astralsorcery.common.item.tool;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -35,7 +34,6 @@ import hellfirepvp.astralsorcery.common.entities.EntityCrystalTool;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.ToolCrystalProperties;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 import hellfirepvp.astralsorcery.common.util.nbt.NBTHelper;
 
 /**
@@ -169,8 +167,6 @@ public class ItemCrystalSword extends ItemSword {
         }
         return modifiers;
     }
-
-
 
     @SideOnly(Side.CLIENT)
     @Override

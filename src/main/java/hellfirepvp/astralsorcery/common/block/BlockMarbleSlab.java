@@ -72,8 +72,9 @@ public class BlockMarbleSlab extends BlockSlab {
 
     @Override
     public String func_150002_b(int meta) {
-        return super.getUnlocalizedName() + "." + EnumType.byMetadata(meta & 7)
-            .getName();
+        return super.getUnlocalizedName() + "."
+            + EnumType.byMetadata(meta & 7)
+                .getName();
     }
 
     @Override
