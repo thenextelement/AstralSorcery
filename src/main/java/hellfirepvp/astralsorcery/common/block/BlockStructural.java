@@ -45,12 +45,28 @@ import hellfirepvp.astralsorcery.common.util.BlockPos;
  */
 public class BlockStructural extends BlockContainer implements BlockCustomName {
 
+    /** 1.7 stand-in for 1.10's Material.BARRIER: invisible, but not air and not replaceable. */
+    public static final Material STRUCTURAL = new Material(net.minecraft.block.material.MapColor.airColor) {
+
+        {
+            setImmovableMobility();
+        }
+
+        @Override
+        public boolean isOpaque() {
+            return false;
+        }
+    };
+
+
     // public static PropertyEnum<BlockType> BLOCK_TYPE = PropertyEnum.create("blocktype", BlockType.class);
     public static final AxisAlignedBB FULL_BLOCK_AABB = AxisAlignedBB
         .getBoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
     public BlockStructural() {
-        super(Material.air);
+        // 1.10 used Material.BARRIER. Material.air makes World#isAirBlock true for this block, so the telescope
+        // (which removes itself when the space above is air) deleted itself right after being placed.
+        super(STRUCTURAL);
         setBlockName("BlockStructural");
         setBlockUnbreakable();
         // setSoundType(SoundType.GLASS);

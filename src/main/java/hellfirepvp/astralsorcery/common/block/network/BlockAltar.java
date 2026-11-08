@@ -252,7 +252,9 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
         NBTTagCompound pers = NBTHelper.getPersistentData(stack);
         BlockPos pos = new BlockPos(x, y, z);
         int exp = pers.getInteger("exp");
-        int lvl = pers.getInteger("lvl");
+        // stacks from creative/NEI carry no "lvl": fall back to the altar type of the placed block (same ordering)
+        int lvl = pers.hasKey("lvl") ? pers.getInteger("lvl") : worldIn.getBlockMetadata(x, y, z);
+        lvl = Math.max(0, Math.min(lvl, TileAltar.AltarLevel.values().length - 1));
         TileAltar ta = MiscUtils.getTileAt(worldIn, pos, TileAltar.class, true);
         if (ta != null) {
             ta.onPlace(exp, TileAltar.AltarLevel.values()[lvl]);

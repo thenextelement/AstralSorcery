@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -52,7 +51,6 @@ import hellfirepvp.astralsorcery.common.util.data.Vector3;
 public class TESRAltar extends TileEntitySpecialRenderer {
 
     private static final Random rand = new Random();
-    private static final ModelChest field_147510_h = new ModelChest();
     private static final ASaltarT2 modelAltar2 = new ASaltarT2();
     private static final BindableResource texAltar2 = AssetLibrary
         .loadTexture(AssetLoader.TextureLocation.MODELS, "base/altarT2");
@@ -65,10 +63,19 @@ public class TESRAltar extends TileEntitySpecialRenderer {
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
 
         TileAltar te = (TileAltar) tile;
+        long sBase = 7553015156732193565L;
+        sBase ^= (long) te.xCoord;
+        sBase ^= (long) te.yCoord;
+        sBase ^= (long) te.zCoord;
+        double jBase = ClientScheduler.getClientTick() + partialTicks;
+        jBase /= 20D;
+
         switch (te.getAltarLevel()) {
-            case DISCOVERY:
-                this.bindTexture(new ResourceLocation("textures/entity/chest/normal.png"));
-                ModelChest modelchest = field_147510_h;
+            case ATTUNEMENT:
+                renderT2Additions(te, x, y, z, jBase);
+                break;
+            case CONSTELLATION_CRAFT:
+                renderT3Additions(te, x, y, z, jBase);
                 break;
             case TRAIT_CRAFT:
                 if (te.getMultiblockState()) {

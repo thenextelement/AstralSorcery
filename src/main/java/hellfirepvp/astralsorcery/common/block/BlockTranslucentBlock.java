@@ -47,7 +47,7 @@ import hellfirepvp.astralsorcery.common.util.MiscUtils;
 public class BlockTranslucentBlock extends BlockContainer {
 
     public BlockTranslucentBlock() {
-        super(Material.air); // Material.BARRIER -> (new
+        super(BlockStructural.STRUCTURAL); // Material.BARRIER -> (new
                              // Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
         setBlockName("BlockTranslucentBlock");
         setBlockUnbreakable();

@@ -43,7 +43,7 @@ public class BlockFakeTree extends BlockContainer {
 
     public BlockFakeTree() {
         // Material.BARRIER -> (new Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
-        super(Material.air);
+        super(BlockStructural.STRUCTURAL);
         setBlockName("BlockFakeTree");
         setBlockUnbreakable();
         setResistance(6000001.0F);

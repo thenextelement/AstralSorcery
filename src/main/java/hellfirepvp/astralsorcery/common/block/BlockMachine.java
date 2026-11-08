@@ -285,10 +285,6 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     @Override
     public void onBlockPlacedBy(World worldIn, int x, int y, int z, EntityLivingBase placer, ItemStack stack) {
         BlockPos pos = new BlockPos(x, y, z).up();
-        System.out.println(worldIn);
-        System.out.println(pos);
-        System.out.println(placer);
-        System.out.println(stack);
         MachineType type = MachineType.values()[stack.getItemDamage()];
         switch (type) {
             case TELESCOPE:
