@@ -504,3 +504,6 @@ perk.TRV_STEPASSIST=Hiking boots
 perk.TRV_STEPASSIST.info=Stepping up single blocks seems way easier
 
 constellation.noInformation=There is nothing here.
+
+item.BucketLiquidStarlight.name=Liquid Starlight Bucket
+tile.FluidBlockLiquidStarlight.name=Liquid Starlight

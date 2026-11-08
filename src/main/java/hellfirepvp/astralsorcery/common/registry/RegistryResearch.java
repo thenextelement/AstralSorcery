@@ -51,10 +51,10 @@ public class RegistryResearch {
 
     public static void init() {
         initDiscovery();
-        // initCrafting();
-        // initAttunement();
-        // initConstellation();
-        // initRadiance();
+        initCrafting();
+        initAttunement();
+        initConstellation();
+        initRadiance();
     }
 
     private static void initRadiance() {

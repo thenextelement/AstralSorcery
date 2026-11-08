@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 public class PlayerUtil {
 
     public static EntityPlayerMP getPlayerByUUID(UUID theUUID) {
+        if (theUUID == null || MinecraftServer.getServer() == null) return null;
         final List<EntityPlayerMP> players = MinecraftServer.getServer()
             .getConfigurationManager().playerEntityList;
         EntityPlayerMP entityplayermp;

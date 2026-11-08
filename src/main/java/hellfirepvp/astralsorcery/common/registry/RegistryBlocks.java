@@ -100,12 +100,52 @@ public class RegistryBlocks {
         FluidRegistry.registerFluid(f);
         fluidLiquidStarlight = FluidRegistry.getFluid(f.getName());
         blockLiquidStarlight = new FluidBlockLiquidStarlight();
-        // GameRegistry.register(blockLiquidStarlight.setUnlocalizedName(blockLiquidStarlight.getClass().getSimpleName()).setRegistryName(blockLiquidStarlight.getClass().getSimpleName()));
+        blockLiquidStarlight.setBlockName(blockLiquidStarlight.getClass()
+            .getSimpleName());
+        GameRegistry.registerBlock(
+            blockLiquidStarlight,
+            blockLiquidStarlight.getClass()
+                .getSimpleName());
         fluidLiquidStarlight.setBlock(blockLiquidStarlight);
 
-        // FluidRegistry.addBucketForFluid(BlocksAS.fluidLiquidStarlight);
-        // ItemsAS.itemBucketLiquidStarlight =
-        // UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluidLiquidStarlight);
+        // 1.10 used Forge's UniversalBucket; 1.7 needs a dedicated bucket item + container registration.
+        net.minecraft.item.Item bucket = new net.minecraft.item.ItemBucket(blockLiquidStarlight)
+            .setUnlocalizedName("BucketLiquidStarlight")
+            .setTextureName("astralsorcery:bucket_liquidstarlight")
+            .setContainerItem(net.minecraft.init.Items.bucket)
+            .setCreativeTab(hellfirepvp.astralsorcery.common.registry.RegistryItems.creativeTabAstralSorcery);
+        GameRegistry.registerItem(bucket, "ItemBucketLiquidStarlight");
+        hellfirepvp.astralsorcery.common.lib.ItemsAS.itemBucketLiquidStarlight = new net.minecraft.item.ItemStack(bucket);
+        net.minecraftforge.fluids.FluidContainerRegistry.registerFluidContainer(
+            new net.minecraftforge.fluids.FluidStack(fluidLiquidStarlight, net.minecraftforge.fluids.FluidContainerRegistry.BUCKET_VOLUME),
+            new net.minecraft.item.ItemStack(bucket),
+            new net.minecraft.item.ItemStack(net.minecraft.init.Items.bucket));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new BucketHandler(bucket));
+    }
+
+    /** Lets empty buckets pick up liquid starlight source blocks (vanilla only handles water/lava). */
+    public static class BucketHandler {
+
+        private final net.minecraft.item.Item bucket;
+
+        private BucketHandler(net.minecraft.item.Item bucket) {
+            this.bucket = bucket;
+        }
+
+        @cpw.mods.fml.common.eventhandler.SubscribeEvent
+        public void onFill(net.minecraftforge.event.entity.player.FillBucketEvent event) {
+            net.minecraft.util.MovingObjectPosition mop = event.target;
+            if (mop == null || mop.typeOfHit != net.minecraft.util.MovingObjectPosition.MovingObjectType.BLOCK) return;
+            if (event.world.getBlock(mop.blockX, mop.blockY, mop.blockZ) == blockLiquidStarlight
+                && event.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ) == 0) {
+                event.world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+                event.result = new net.minecraft.item.ItemStack(bucket);
+                if (event.entityPlayer != null && RegistryAchievements.achvLiqStarlight != null) {
+                    event.entityPlayer.addStat(RegistryAchievements.achvLiqStarlight, 1);
+                }
+                event.setResult(cpw.mods.fml.common.eventhandler.Event.Result.ALLOW);
+            }
+        }
     }
 
     // Blocks

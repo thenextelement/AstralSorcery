@@ -66,9 +66,8 @@ public class ActiveCraftingTask {
 
     @Nullable
     public EntityPlayer tryGetCraftingPlayerServer() {
-        // return
-        // FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUUID(playerCraftingUUID);
-        return null;
+        return playerCraftingUUID == null ? null
+            : hellfirepvp.astralsorcery.common.util.PlayerUtil.getPlayerByUUID(playerCraftingUUID);
     }
 
     // True if the recipe progressed, false if it's stuck

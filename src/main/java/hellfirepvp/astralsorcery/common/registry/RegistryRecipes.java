@@ -125,7 +125,7 @@ public class RegistryRecipes {
     public static void init() {
         initVanillaRecipes();
 
-        // initAltarRecipes();
+        initAltarRecipes();
 
         initInfusionRecipes();
 
@@ -185,15 +185,8 @@ public class RegistryRecipes {
 
         CraftingManager manager = CraftingManager.getInstance();
 
-        manager.addRecipe(
-            new ItemStack(Blocks.fence, 2),
-            " D ",
-            " W ",
-            " D ",
-            'D',
-            new ItemStack(Items.dye, 1, EnumDyeColor.RED.getDyeDamage()),
-            'W',
-            new ItemStack(ItemsAS.illuminationWand));
+        manager.getRecipeList()
+            .add(new RecipeChangeWandColor());
 
         rLPRAltar = new ShapedRecipe(BlocksAS.blockAltar)
             .addPart(BlockBlackMarble.BlackMarbleBlockType.RAW.asStack(), ShapedRecipeSlot.UPPER_CENTER)
@@ -290,22 +283,28 @@ public class RegistryRecipes {
                 .setInput(new ItemStack(BlocksAS.customSandOre, 1, BlockCustomSandOre.OreType.AQUAMARINE.ordinal()))
                 .setExp(1F);
 
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2), rLPRAltar.makeLightProximityRecipe());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rLPRWand.makeLightProximityRecipe());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rRJournal.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rCCParchment.make());
-        //
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rBlackMarbleRaw.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleArch.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarblePillar.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleRuned.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleEngraved.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleChiseled.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleBricks.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleStairs.make());
+        addRecipe(manager, rLPRAltar.makeLightProximityRecipe());
+        addRecipe(manager, rLPRWand.makeLightProximityRecipe());
+        addRecipe(manager, rRJournal.make());
+        addRecipe(manager, rCCParchment.make());
+
+        addRecipe(manager, rBlackMarbleRaw.make());
+        addRecipe(manager, rMarbleArch.make());
+        addRecipe(manager, rMarblePillar.make());
+        addRecipe(manager, rMarbleRuned.make());
+        addRecipe(manager, rMarbleEngraved.make());
+        addRecipe(manager, rMarbleChiseled.make());
+        addRecipe(manager, rMarbleBricks.make());
+        addRecipe(manager, rMarbleStairs.make());
 
         rSmeltStarmetalOre.register();
         rSmeltAquamarineOre.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void addRecipe(CraftingManager manager, net.minecraft.item.crafting.IRecipe recipe) {
+        manager.getRecipeList()
+            .add(recipe);
     }
 
     public static void initAltarRecipes() {
