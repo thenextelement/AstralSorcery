@@ -87,15 +87,9 @@ public class BlockAttunementRelay extends BlockContainer {
         if (!worldIn.isRemote) {
             BlockPos pos = new BlockPos(x, y, z);
             TileEntity inv = MiscUtils.getTileAt(worldIn, pos, TileEntity.class, true);
-            // if(inv != null) {
-            // for (EnumFacing face : EnumFacing.VALUES) {
-            // IInventory handle = inv.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, face);
-            // if(handle != null) {
-            // ItemUtils.dropInventory(handle, worldIn, pos);
-            // break;
-            // }
-            // }
-            // }
+        if (!worldIn.isRemote) {
+            ItemUtils.dropTileInventory(inv, worldIn, pos);
+        }
 
             BlockAltar.startSearchForRelayUpdate(worldIn, pos.getX(), pos.getY(), pos.getZ());
         }

@@ -326,7 +326,7 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
     }
 
     @Override
-    protected void onInventoryChanged(int slotChanged) {
+    public void onInventoryChanged(int slotChanged) {
         if (!worldObj.isRemote) {
             ItemStack in = getInventoryHandler().getStackInSlot(0);
             if (in != null && in.getItem() != null && in.getItem() instanceof ItemTunedCrystalBase) {

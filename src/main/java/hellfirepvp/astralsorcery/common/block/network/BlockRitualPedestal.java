@@ -130,7 +130,7 @@ public class BlockRitualPedestal extends BlockStarlightNetwork {
             if (other.isSideSolid(world, toCheck.getX(), toCheck.getY(), toCheck.getZ(), ForgeDirection.DOWN)) {
                 TileReceiverBaseInventory.ItemHandlerTile handle = te.getInventoryHandler();
                 ItemUtils.dropInventory(te.getInventoryHandler(), world, pos);
-                // handle.clearInventory();
+                handle.clearInventory(); // was commented out in the port: item duplication
                 te.markForUpdate();
             }
         }
