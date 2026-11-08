@@ -159,7 +159,7 @@ public class CommonProxy implements IGuiHandler {
         RegistryRecipes.init();
         RegistryResearch.init();
 
-        // LootTableUtil.initLootTable();
+        LootTableUtil.initLootTable();
         ConstellationEffectRegistry.init();
 
         registerOreDictEntries();

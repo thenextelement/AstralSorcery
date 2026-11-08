@@ -507,3 +507,9 @@ constellation.noInformation=There is nothing here.
 
 item.BucketLiquidStarlight.name=Liquid Starlight Bucket
 tile.FluidBlockLiquidStarlight.name=Liquid Starlight
+astralsorcery.nei.altar.discovery=Luminous Crafting Table
+astralsorcery.nei.altar.attunement=Starlight Crafting Altar
+astralsorcery.nei.altar.constellation_craft=Celestial Altar
+astralsorcery.nei.infuser=Starlight Infuser
+astralsorcery.nei.well=Lightwell
+astralsorcery.nei.transmutation=Starlight Transmutation

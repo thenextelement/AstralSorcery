@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.registry.structures;
 
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -383,7 +384,7 @@ public class StructureAncientShrine extends StructureBlockArray {
             @Override
             public void onPlace(IBlockAccess access, BlockPos at, TileEntity te) {
                 if (te instanceof TileEntityChest) {
-                    // ((TileEntityChest) te).setLootTable(LootTableUtil.LOOT_TABLE_SHRINE, STATIC_RAND.nextLong());
+                    LootTableUtil.fillShrineChest((TileEntityChest) te, STATIC_RAND);
                 }
             }
         };

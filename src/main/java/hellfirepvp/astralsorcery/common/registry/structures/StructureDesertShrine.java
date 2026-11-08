@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.registry.structures;
 
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import java.util.Map;
 import java.util.Random;
 
@@ -273,7 +274,7 @@ public class StructureDesertShrine extends StructureBlockArray {
             @Override
             public void onPlace(IBlockAccess access, BlockPos at, TileEntity te) {
                 if (te instanceof TileEntityChest) {
-                    // ((TileEntityChest) te).setLootTable(LootTableUtil.LOOT_TABLE_SHRINE, STATIC_RAND.nextLong());
+                    LootTableUtil.fillShrineChest((TileEntityChest) te, STATIC_RAND);
                 }
             }
         };

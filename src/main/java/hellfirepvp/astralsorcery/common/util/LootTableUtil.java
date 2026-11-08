@@ -8,6 +8,8 @@
 
 package hellfirepvp.astralsorcery.common.util;
 
+import hellfirepvp.astralsorcery.common.data.config.Config;
+import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import net.minecraft.util.ResourceLocation;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
@@ -25,22 +27,44 @@ public class LootTableUtil {
         AstralSorcery.MODID.toLowerCase(),
         "chest_shrine");
 
-    // private static final ImmutableSet<ResourceLocation> constellationPaperTables =
-    // ImmutableSet.of(LootTableList.CHESTS_STRONGHOLD_LIBRARY, LootTableList.CHESTS_ABANDONED_MINESHAFT,
-    // LootTableList.CHESTS_JUNGLE_TEMPLE, LootTableList.CHESTS_DESERT_PYRAMID, LootTableList.CHESTS_IGLOO_CHEST);
+    /** 1.7 has no loot tables: the shrine chest uses a ChestGenHooks category mirroring loot_tables/chest_shrine.json. */
+    public static final String CHEST_SHRINE = AstralSorcery.MODID + ":chest_shrine";
 
-    // public static void initLootTable() {
-    // LootTableList.register(LOOT_TABLE_SHRINE);
-    // }
-    //
-    // @SubscribeEvent
-    // public void onLootLoad(LootTableLoadEvent event) {
-    // ResourceLocation name = event.getName();
-    // if(constellationPaperTables.contains(name)) {
-    // event.getTable().getPool("main").addEntry(new LootEntryItem(ItemsAS.constellationPaper,
-    // Config.constellationPaperRarity, Config.constellationPaperQuality,
-    // new LootFunction[0], new LootCondition[0], "astralsorcery:constellation_paper"));
-    // }
-    // }
+    public static void initLootTable() {
+        net.minecraftforge.common.ChestGenHooks shrine = net.minecraftforge.common.ChestGenHooks.getInfo(CHEST_SHRINE);
+        shrine.setMin(5);
+        shrine.setMax(8); // 4-6 rolls + 1-2 bonus rolls in 1.10
+        shrine.addItem(content(new net.minecraft.item.ItemStack(ItemsAS.constellationPaper, 1, 0), 1, 1, 18));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(ItemsAS.craftingComponent, 1, 0), 1, 2, 12));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.bone), 1, 3, 10));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.gold_ingot), 1, 2, 7));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.iron_ingot), 1, 4, 15));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.diamond), 1, 2, 3));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.glowstone_dust), 1, 3, 7));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.emerald), 1, 1, 1));
+        shrine.addItem(content(new net.minecraft.item.ItemStack(net.minecraft.init.Items.ender_pearl), 1, 1, 3));
+
+        // 1.10 added constellation papers to these vanilla loot tables
+        String[] paperChests = { net.minecraftforge.common.ChestGenHooks.STRONGHOLD_LIBRARY,
+            net.minecraftforge.common.ChestGenHooks.MINESHAFT_CORRIDOR,
+            net.minecraftforge.common.ChestGenHooks.PYRAMID_JUNGLE_CHEST,
+            net.minecraftforge.common.ChestGenHooks.PYRAMID_DESERT_CHEST };
+        for (String chest : paperChests) {
+            net.minecraftforge.common.ChestGenHooks.addItem(
+                chest,
+                content(new net.minecraft.item.ItemStack(ItemsAS.constellationPaper, 1, 0), 1, 1, Config.constellationPaperRarity));
+        }
+    }
+
+    private static net.minecraft.util.WeightedRandomChestContent content(net.minecraft.item.ItemStack stack, int min,
+        int max, int weight) {
+        return new net.minecraft.util.WeightedRandomChestContent(stack, min, max, weight);
+    }
+
+    public static void fillShrineChest(net.minecraft.inventory.IInventory chest, java.util.Random rand) {
+        net.minecraftforge.common.ChestGenHooks info = net.minecraftforge.common.ChestGenHooks.getInfo(CHEST_SHRINE);
+        net.minecraft.util.WeightedRandomChestContent
+            .generateChestContents(rand, info.getItems(rand), chest, info.getCount(rand));
+    }
 
 }
