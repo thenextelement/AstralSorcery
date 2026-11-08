@@ -23,14 +23,36 @@ import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
 
 /** Starlight altar recipes, one handler per altar tier. Layout is a 5x5 grid: 3x3 core plus the outer relay slots. */
-public class AltarRecipeHandler extends ASRecipeHandlerBase {
+public abstract class AltarRecipeHandler extends ASRecipeHandlerBase {
+
+    // NEI re-instantiates handlers via a public no-arg constructor, hence one subclass per tier.
+    public static class Discovery extends AltarRecipeHandler {
+
+        public Discovery() {
+            super(TileAltar.AltarLevel.DISCOVERY);
+        }
+    }
+
+    public static class Attunement extends AltarRecipeHandler {
+
+        public Attunement() {
+            super(TileAltar.AltarLevel.ATTUNEMENT);
+        }
+    }
+
+    public static class Constellation extends AltarRecipeHandler {
+
+        public Constellation() {
+            super(TileAltar.AltarLevel.CONSTELLATION_CRAFT);
+        }
+    }
 
     private static final int GX = 10, GY = 2;
     private static final int OUT_X = 138, OUT_Y = GY + 2 * SLOT;
 
     private final TileAltar.AltarLevel level;
 
-    public AltarRecipeHandler(TileAltar.AltarLevel level) {
+    protected AltarRecipeHandler(TileAltar.AltarLevel level) {
         this.level = level;
     }
 
