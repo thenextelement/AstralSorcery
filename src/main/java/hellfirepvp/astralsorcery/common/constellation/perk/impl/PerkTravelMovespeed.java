@@ -43,9 +43,10 @@ public class PerkTravelMovespeed extends ConstellationPerk {
         if (side == Side.SERVER) {
             BaseAttributeMap map = player.getAttributeMap();
             IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.movementSpeed);
-            // if(!instance.hasModifier(modMovespeedIncrease)) {
-            instance.applyModifier(modMovespeedIncrease);
-            // }
+            // 1.7 throws if the same modifier is applied twice
+            if (instance.getModifier(modMovespeedIncrease.getID()) == null) {
+                instance.applyModifier(modMovespeedIncrease);
+            }
             addAlignmentCharge(player, 0.002);
             setCooldownActiveForPlayer(player, 20);
         }
@@ -55,9 +56,9 @@ public class PerkTravelMovespeed extends ConstellationPerk {
     public void onTimeout(EntityPlayer player) {
         BaseAttributeMap map = player.getAttributeMap();
         IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.movementSpeed);
-        // if(instance.hasModifier(modMovespeedIncrease)) {
-        instance.removeModifier(modMovespeedIncrease);
-        // }
+        if (instance.getModifier(modMovespeedIncrease.getID()) != null) {
+            instance.removeModifier(modMovespeedIncrease);
+        }
     }
 
     @Override
