@@ -24,12 +24,12 @@ import hellfirepvp.astralsorcery.AstralSorcery;
 public class RegistrySounds {
 
     public static void init() {
-        clipSwitch = new ResourceLocation(AstralSorcery.MODID, "sounds/clip");
-        attunement = new ResourceLocation(AstralSorcery.MODID, "sounds/attunementAltar");
-        craftFinish = new ResourceLocation(AstralSorcery.MODID, "sounds/finish");
-        bookClose = new ResourceLocation(AstralSorcery.MODID, "sounds/book_close");
-        bookFlip = new ResourceLocation(AstralSorcery.MODID, "sounds/book_turn1");
-        bookFlip = new ResourceLocation(AstralSorcery.MODID, "sounds/book_turn2");
+        // 1.7 plays sounds by sounds.json event name ("astralsorcery:<event>"), not by file path
+        clipSwitch = new ResourceLocation(AstralSorcery.MODID, "clipSwitch");
+        attunement = new ResourceLocation(AstralSorcery.MODID, "attunement");
+        craftFinish = new ResourceLocation(AstralSorcery.MODID, "craftFinish");
+        bookClose = new ResourceLocation(AstralSorcery.MODID, "bookClose");
+        bookFlip = new ResourceLocation(AstralSorcery.MODID, "bookFlip");
     }
 
     /*
