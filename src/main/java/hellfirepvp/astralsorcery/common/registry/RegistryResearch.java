@@ -70,7 +70,28 @@ public class RegistryResearch {
         resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.1"));
         resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.2"));
 
+        ResearchNode resCape = new ResearchNode(
+            new net.minecraft.item.ItemStack(hellfirepvp.astralsorcery.common.lib.ItemsAS.armorImbuedCape),
+            "ATT_CAPE",
+            3,
+            6);
+        resCape.addPage(getTextPage("ATT_CAPE.1"));
+        resCape.addPage(
+            new hellfirepvp.astralsorcery.client.gui.journal.page.JournalPageTraitRecipe(RegistryRecipes.rCapeBase));
+        resCape.addPage(getTextPage("ATT_CAPE.3"));
+        resCape.addPage(getTextPage("ATT_CAPE.4"));
+        resCape.addSourceConnectionFrom(resHintRecipes);
+        registerItemLookup(
+            new net.minecraft.item.ItemStack(
+                hellfirepvp.astralsorcery.common.lib.ItemsAS.armorImbuedCape,
+                1,
+                OreDictionary.WILDCARD_VALUE),
+            resCape,
+            1,
+            ResearchProgression.RADIANCE);
+
         regRadiance.register(resHintRecipes);
+        regRadiance.register(resCape);
     }
 
     private static void initConstellation() {

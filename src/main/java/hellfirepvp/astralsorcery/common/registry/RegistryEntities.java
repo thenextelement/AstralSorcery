@@ -43,6 +43,13 @@ public class RegistryEntities {
         registerEntity(EntityStarburst.class, "EntityStarBurst", modEid++, 32, 1, true);
         registerEntity(EntityIlluminationSpark.class, "EntityIlluminationSpark", modEid++, 32, 1, true);
         registerEntity(EntityCrystalTool.class, "EntityCrystalTool", modEid++, 64, 20, true);
+        registerEntity(
+            hellfirepvp.astralsorcery.common.entities.EntitySpectralTool.class,
+            "EntitySpectralTool",
+            modEid++,
+            32,
+            1,
+            true);
     }
 
     private static void registerEntity(Class<? extends Entity> entityClass, String name, int id, int trackingRange,

@@ -375,6 +375,9 @@ public class ClientProxy extends CommonProxy {
         // RenderEntityGrindstone.Factory());
         RenderingRegistry.registerEntityRenderingHandler(EntityItemHighlighted.class, new RenderEntityItemHighlight());
         RenderingRegistry.registerEntityRenderingHandler(EntityFlare.class, new RenderEntityFlare());
+        RenderingRegistry.registerEntityRenderingHandler(
+            hellfirepvp.astralsorcery.common.entities.EntitySpectralTool.class,
+            new hellfirepvp.astralsorcery.client.render.entity.RenderSpectralTool());
         RenderingRegistry.registerEntityRenderingHandler(EntityStarburst.class, new RenderEntityStarburst());
         RenderingRegistry
             .registerEntityRenderingHandler(EntityIlluminationSpark.class, new RenderEntityIlluminationSpark());

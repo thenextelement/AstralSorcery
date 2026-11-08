@@ -15,8 +15,19 @@ import hellfirepvp.astralsorcery.common.event.EntityKnockbackEvent;
 @Mixin(EntityLivingBase.class)
 public abstract class MixinEntityLivingBase {
 
-    @Inject(method = "knockBack", at = @At("HEAD"))
+    @Inject(method = "moveEntityWithHeading", at = @At("HEAD"), cancellable = true)
+    private void astralsorcery$vicioGlide(float strafe, float forward, CallbackInfo ci) {
+        if (hellfirepvp.astralsorcery.common.constellation.cape.impl.VicioGlideHandler
+            .travel((EntityLivingBase) (Object) this)) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "knockBack", at = @At("HEAD"), cancellable = true)
     private void astralsorcery$onKnockback(Entity attacker, float strength, double x, double z, CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS.post(new EntityKnockbackEvent((EntityLivingBase) (Object) this, attacker, strength));
+        if (MinecraftForge.EVENT_BUS
+            .post(new EntityKnockbackEvent((EntityLivingBase) (Object) this, attacker, strength))) {
+            ci.cancel(); // octans mantle in water
+        }
     }
 }

@@ -121,7 +121,7 @@ public class CommonProxy implements IGuiHandler {
         worldGenerator.pushConfigEntries();
         ConstellationEffectRegistry.addDynamicConfigEntries();
         ConstellationPerks.addDynamicConfigEntries();
-        // CapeEffectRegistry.addDynamicConfigEntries();
+        hellfirepvp.astralsorcery.common.constellation.cape.CapeEffectRegistry.addDynamicConfigEntries();
         Config.addDynamicEntry(TileTreeBeacon.ConfigEntryTreeBeacon.instance);
         // Config.addDynamicEntry(TileOreGenerator.ConfigEntryMultiOre.instance);
         // Config.addDynamicEntry(TileChalice.ConfigEntryChalice.instance);
@@ -162,6 +162,7 @@ public class CommonProxy implements IGuiHandler {
 
         LootTableUtil.initLootTable();
         ConstellationEffectRegistry.init();
+        hellfirepvp.astralsorcery.common.constellation.cape.CapeEffectRegistry.init();
 
         registerOreDictEntries();
         RegistryAchievements.init();
@@ -202,6 +203,8 @@ public class CommonProxy implements IGuiHandler {
         registerEventHandler(new EventHandlerMisc());
         registerEventHandler(TransmissionChunkTracker.getInstance());
         registerEventHandler(TickManager.getInstance());
+        registerEventHandler(hellfirepvp.astralsorcery.common.event.listener.EventHandlerCapeEffects.INSTANCE);
+        registerEventHandler(hellfirepvp.astralsorcery.common.util.effect.time.TimeStopController.INSTANCE);
         registerEventHandler(StarlightTransmissionHandler.getInstance());
         registerEventHandler(new LootTableUtil());
         registerEventHandler(BlockDropCaptureAssist.instance);
@@ -248,6 +251,8 @@ public class CommonProxy implements IGuiHandler {
         manager.register(new PlayerPerkHandler());
         manager.register(commonScheduler);
         manager.register(PlayerChargeHandler.instance);
+        manager.register(hellfirepvp.astralsorcery.common.event.listener.EventHandlerCapeEffects.INSTANCE);
+        manager.register(hellfirepvp.astralsorcery.common.util.effect.time.TimeStopController.INSTANCE);
 
         // TickTokenizedMaps
         manager.register(EventHandlerServer.spawnDenyRegions);

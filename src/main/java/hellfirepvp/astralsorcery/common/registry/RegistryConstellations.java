@@ -31,8 +31,8 @@ import hellfirepvp.astralsorcery.common.constellation.starmap.ConstellationMapEf
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.event.APIRegistryEvent;
 import hellfirepvp.astralsorcery.common.item.ItemCraftingComponent;
-import hellfirepvp.astralsorcery.common.util.OreDictAlias;
 import hellfirepvp.astralsorcery.common.lib.EnchantmentsAS;
+import hellfirepvp.astralsorcery.common.util.OreDictAlias;
 
 /**
  * This class is part of the Astral Sorcery Mod

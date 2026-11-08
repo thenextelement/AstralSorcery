@@ -45,6 +45,7 @@ import hellfirepvp.astralsorcery.common.crafting.altar.recipes.LensRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.PrismLensRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.RecipeRitualPedestal;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TelescopeRecipe;
+import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TraitRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.AttunementUpgradeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.ConstellationUpgradeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalSharpeningRecipe;
@@ -113,6 +114,8 @@ public class RegistryRecipes {
 
     public static AttunementUpgradeRecipe rAltarUpgradeAttenuation;
     public static ConstellationUpgradeRecipe rAltarUpgradeConstellation;
+    public static TraitRecipe rCapeBase;
+    public static java.util.Map<hellfirepvp.astralsorcery.common.constellation.IConstellation, hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe> capeCraftingRecipes = new java.util.HashMap<>();
     public static hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.TraitUpgradeRecipe rAltarUpgradeTrait;
 
     // CraftingComponents
@@ -383,6 +386,66 @@ public class RegistryRecipes {
         rSmeltAquamarineOre.register();
     }
 
+    /** 1.12.2-1.8.5 Mantle of the Stars: base mantle + one attunement recipe per non-minor constellation. */
+    private static void initMantleRecipes() {
+        rCapeBase = registerTraitRecipe(
+            new ShapedRecipe(new ItemStack(ItemsAS.armorImbuedCape))
+                .addPart(net.minecraft.init.Items.leather_chestplate, ShapedRecipeSlot.CENTER)
+                .addPart(ItemHandle.getCrystalVariant(false, false), ShapedRecipeSlot.UPPER_CENTER)
+                .addPart(
+                    ItemsAS.illuminationPowder,
+                    ShapedRecipeSlot.LEFT,
+                    ShapedRecipeSlot.LOWER_LEFT,
+                    ShapedRecipeSlot.RIGHT,
+                    ShapedRecipeSlot.LOWER_RIGHT));
+        rCapeBase.setInnerTraitItem(
+            ItemCraftingComponent.MetaType.RESO_GEM.asStack(),
+            TraitRecipe.TraitRecipeSlot.LEFT_CENTER,
+            TraitRecipe.TraitRecipeSlot.RIGHT_CENTER);
+        rCapeBase.setCstItem(
+            ItemCraftingComponent.MetaType.RESO_GEM.asStack(),
+            ConstellationRecipe.ConstellationAtlarSlot.UP_LEFT_LEFT,
+            ConstellationRecipe.ConstellationAtlarSlot.UP_RIGHT_RIGHT);
+        rCapeBase.setCstItem(
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            ConstellationRecipe.ConstellationAtlarSlot.DOWN_LEFT_LEFT,
+            ConstellationRecipe.ConstellationAtlarSlot.DOWN_RIGHT_RIGHT);
+        rCapeBase.setAttItem(
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            AttunementRecipe.AttunementAltarSlot.LOWER_LEFT,
+            AttunementRecipe.AttunementAltarSlot.LOWER_RIGHT);
+        rCapeBase.addOuterTraitItem(net.minecraft.init.Items.feather)
+            .addOuterTraitItem(net.minecraft.init.Items.ender_pearl)
+            .addOuterTraitItem(ItemCraftingComponent.MetaType.STARDUST.asStack())
+            .addOuterTraitItem(ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack());
+
+        for (hellfirepvp.astralsorcery.common.constellation.IConstellation c : hellfirepvp.astralsorcery.common.constellation.ConstellationRegistry
+            .getAllConstellations()) {
+            if (c instanceof hellfirepvp.astralsorcery.common.constellation.IMinorConstellation) continue;
+            List<ItemHandle> signature = c.getConstellationSignatureItems();
+            if (signature.isEmpty()) continue;
+            ItemHandle first = signature.get(0);
+            hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe recipe = new hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe(
+                c,
+                new ShapedRecipe(new ItemStack(ItemsAS.armorImbuedCape))
+                    .addPart(ItemsAS.armorImbuedCape, ShapedRecipeSlot.CENTER)
+                    .addPart(
+                        first,
+                        ShapedRecipeSlot.UPPER_CENTER,
+                        ShapedRecipeSlot.LEFT,
+                        ShapedRecipeSlot.RIGHT,
+                        ShapedRecipeSlot.LOWER_CENTER));
+            for (ItemHandle sig : signature) {
+                recipe.addOuterTraitItem(sig);
+            }
+            recipe.setInnerTraitItem(
+                ItemCraftingComponent.MetaType.STARDUST.asStack(),
+                TraitRecipe.TraitRecipeSlot.values());
+            registerAltarRecipe(recipe);
+            capeCraftingRecipes.put(c, recipe);
+        }
+    }
+
     /** Sooty marble variants (1.12.2-1.8.5): arch, bricks, chiseled, engraved, runed, pillar. */
     private static ShapedRecipe[] buildBlackMarbleRecipes() {
         ItemStack raw = BlockBlackMarble.BlackMarbleBlockType.RAW.asStack();
@@ -448,6 +511,8 @@ public class RegistryRecipes {
         rAltarUpgradeConstellation = registerAltarRecipe(new ConstellationUpgradeRecipe());
         rAltarUpgradeTrait = registerAltarRecipe(
             new hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.TraitUpgradeRecipe());
+
+        initMantleRecipes();
 
         DiscoveryRecipe dr = registerDiscoveryRecipe(rCCParchment);
         dr.setPassiveStarlightRequirement(50);

@@ -11,6 +11,7 @@ public enum Mixins implements IMixins {
     Vanilla(new MixinBuilder()
         .setPhase(Phase.EARLY)
         .addCommonMixins(
+            "minecraft.AccessorNetHandlerPlayServer",
             "minecraft.MixinChunk",
             "minecraft.MixinEntityLivingBase",
             "minecraft.MixinItemStack",

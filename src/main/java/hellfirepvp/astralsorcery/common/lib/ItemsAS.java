@@ -61,6 +61,7 @@ public class ItemsAS {
     public static ItemArchitectWand architectWand;
     public static ItemExchangeWand exchangeWand;
     public static ItemIlluminationPowder illuminationPowder;
+    public static hellfirepvp.astralsorcery.common.item.wearable.ItemCape armorImbuedCape;
     public static ItemInfusedGlass infusedGlass;
 
     public static ItemCrystalPickaxe crystalPickaxe;
