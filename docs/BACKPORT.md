@@ -15,7 +15,7 @@ Rule for contributors/agents: never `git show`, `git diff`, check out or otherwi
 Source: `git diff 3488cc84 2006ca5ce`. Each item is translated to the 1.7.10 port (block+meta instead of block
 states, JSON models via `JsonModel`, both event buses, mixins instead of ASM, etc.).
 
-- [ ] Grindstone recipe registry (crystal/tool/sword sharpening, dust recipes)
+- [x] Grindstone recipe registry (crystal/tool/sword sharpening, dust recipes, MineTweaker `mods.astralsorcery.Grindstone`, NEI)
 - [ ] Sooty marble variants, marble slabs, decorative blocks
 - [ ] Evorsio + Pelotrio constellations, ritual effects
 - [ ] Tier 4 "Iridescent" altar, trait upgrade/recipes, journal trait pages

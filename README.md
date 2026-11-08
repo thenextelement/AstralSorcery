@@ -14,7 +14,7 @@ Verified in-game (dedicated server + client):
   constellations in the night sky, telescope GUI
 - Journal + research pages, altar GUI and altar crafting (wand-started), lightwell catalyst/liquid starlight,
   multiblock pasting with the correct marble variants
-- NEI recipe handlers (altar tiers, starlight infuser, lightwell, transmutation)
+- NEI recipe handlers (altar tiers, starlight infuser, lightwell, transmutation, grindstone)
 - MineTweaker 3 scripts (`mods.astralsorcery.*`, see `AS-Example.zs`)
 
 Ported but not yet exercised in-game: rituals, attunement, starlight network linking, perks, celestial gateway.
@@ -23,7 +23,8 @@ Untested: StructureLib (optional) support. The Multiblock Hologram Projector sho
 used on the core block (altar, ritual pedestal, attunement altar, infuser, relay, celestial gateway, celestial
 collector crystal).
 
-Not in scope for 1.4.x: Evorsio/Pelotrio (1.12 constellations; stubs exist), 1.12 grindstone sharpening recipes.
+Backported from 1.12 (GPL, up to 1.8.5): grindstone recipe registry (crystal/tool/sword sharpening, ore -> dust,
+`mods.astralsorcery.Grindstone`, NEI). See `docs/BACKPORT.md` for the backport checklist and licensing boundary.
 
 ## 1.7-specific architecture notes
 

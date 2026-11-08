@@ -44,7 +44,9 @@ public interface SerializeableRecipe {
         ALTAR_REMOVE((v) -> new AltarRecipeRemove()),
         ALTAR_T1_ADD((v) -> new AltarRecipeDiscovery()),
         ALTAR_T2_ADD((v) -> new AltarRecipeAttunement()),
-        ALTAR_T3_ADD((v) -> new AltarRecipeConstellation());
+        ALTAR_T3_ADD((v) -> new AltarRecipeConstellation()),
+        GRINDSTONE_ADD((v) -> new GrindstoneRecipeAdd()),
+        GRINDSTONE_REMOVE((v) -> new GrindstoneRecipeRemove());
 
         private final Function<Void, ? extends SerializeableRecipe> recipeProvider;
 

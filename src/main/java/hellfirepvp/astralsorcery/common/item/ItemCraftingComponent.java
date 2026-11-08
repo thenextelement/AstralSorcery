@@ -25,7 +25,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.entities.EntityItemStardust;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
 import hellfirepvp.astralsorcery.common.item.base.IItemVariants;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
@@ -38,7 +37,7 @@ import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
  * Created by HellFirePvP
  * Date: 17.08.2016 / 13:10
  */
-public class ItemCraftingComponent extends Item implements IGrindable, IItemVariants {
+public class ItemCraftingComponent extends Item implements IItemVariants {
 
     private IIcon[] icons = new IIcon[MetaType.values().length];
 
@@ -99,25 +98,7 @@ public class ItemCraftingComponent extends Item implements IGrindable, IItemVari
         return super.getUnlocalizedName(stack);
     }
 
-    @Override
-    public boolean canGrind(TileGrindstone grindstone, ItemStack stack) {
-        MetaType type = MetaType.fromMeta(stack.getItemDamage());
-        return type.isGrindable();
-    }
 
-    @Nonnull
-    @Override
-    public GrindResult grind(TileGrindstone grindstone, ItemStack stack, Random rand) {
-        MetaType type = MetaType.fromMeta(stack.getItemDamage());
-        switch (type) {
-            case STARMETAL_INGOT:
-                if (rand.nextInt(20) == 0) {
-                    return GrindResult.itemChange(new ItemStack(this, 1, MetaType.STARDUST.getMeta()));
-                }
-                break;
-        }
-        return GrindResult.failNoOp();
-    }
 
     @Override
     public String[] getVariants() {

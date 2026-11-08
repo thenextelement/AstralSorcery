@@ -24,6 +24,7 @@ public class NEIAstralSorceryConfig implements IConfigureNEI {
         register(new SimpleRecipeHandlers.Infuser());
         register(new SimpleRecipeHandlers.Well());
         register(new SimpleRecipeHandlers.Transmutation());
+        register(new SimpleRecipeHandlers.Grindstone());
 
         // internal blocks that only exist in the world (1.10 never exposed them as items)
         for (net.minecraft.block.Block internal : new net.minecraft.block.Block[] {

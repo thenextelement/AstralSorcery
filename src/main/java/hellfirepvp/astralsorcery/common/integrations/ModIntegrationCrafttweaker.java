@@ -50,6 +50,7 @@ public class ModIntegrationCrafttweaker {
         MineTweakerAPI.registerClass(LightTransmutations.class);
         MineTweakerAPI.registerClass(AltarRecipe.class);
         MineTweakerAPI.registerClass(WellRecipe.class);
+        MineTweakerAPI.registerClass(hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.tweaks.GrindstoneRecipe.class);
 
         MineTweakerImplementationAPI.onReloadEvent(AstralRecipeReloadHandlerPre.instance);
         // MineTweaker 3 (1.7) has no post-reload hook; the pre-reload handler schedules the apply step instead.

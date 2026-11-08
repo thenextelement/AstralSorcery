@@ -23,7 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import hellfirepvp.astralsorcery.common.entities.EntityCrystalTool;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.ToolCrystalProperties;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
@@ -37,7 +36,7 @@ import hellfirepvp.astralsorcery.common.util.nbt.NBTHelper;
  * Created by HellFirePvP
  * Date: 18.09.2016 / 12:25
  */
-public abstract class ItemCrystalToolBase extends ItemTool implements IGrindable {
+public abstract class ItemCrystalToolBase extends ItemTool {
 
     private static final Random rand = new Random();
     private final int crystalCount;
@@ -154,24 +153,6 @@ public abstract class ItemCrystalToolBase extends ItemTool implements IGrindable
         return 10;
     }
 
-    @Override
-    public boolean canGrind(TileGrindstone grindstone, ItemStack stack) {
-        return true;
-    }
 
-    @Nonnull
-    @Override
-    public GrindResult grind(TileGrindstone grindstone, ItemStack stack, Random rand) {
-        ToolCrystalProperties prop = getToolProperties(stack);
-        ToolCrystalProperties result = prop.grindCopy(rand);
-        if (result == null) {
-            return GrindResult.failBreakItem();
-        }
-        setToolProperties(stack, result);
-        if (result.getSize() <= 0) {
-            return GrindResult.failBreakItem();
-        }
-        return GrindResult.success();
-    }
 
 }

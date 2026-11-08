@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.entities.EntityCrystal;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
 import hellfirepvp.astralsorcery.common.item.base.ItemHighlighted;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.ItemCelestialCrystal;
@@ -40,7 +39,7 @@ import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
  * Created by HellFirePvP
  * Date: 08.05.2016 / 21:38
  */
-public abstract class ItemRockCrystalBase extends Item implements IGrindable, ItemHighlighted {
+public abstract class ItemRockCrystalBase extends Item implements ItemHighlighted {
 
     public ItemRockCrystalBase() {
         setMaxStackSize(1);
@@ -49,25 +48,7 @@ public abstract class ItemRockCrystalBase extends Item implements IGrindable, It
         setCreativeTab(RegistryItems.creativeTabAstralSorcery);
     }
 
-    @Override
-    public boolean canGrind(TileGrindstone grindstone, ItemStack stack) {
-        return true;
-    }
 
-    @Nonnull
-    @Override
-    public GrindResult grind(TileGrindstone grindstone, ItemStack stack, Random rand) {
-        CrystalProperties prop = CrystalProperties.getCrystalProperties(stack);
-        CrystalProperties result = prop.grindCopy(rand);
-        if (result == null) {
-            return GrindResult.failBreakItem();
-        }
-        CrystalProperties.applyCrystalProperties(stack, result);
-        if (result.getSize() <= 0) {
-            return GrindResult.failBreakItem();
-        }
-        return GrindResult.success();
-    }
 
     @Override
     public Color getHightlightColor(ItemStack stack) {

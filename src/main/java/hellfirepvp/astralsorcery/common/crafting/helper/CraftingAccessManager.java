@@ -8,6 +8,8 @@
 
 package hellfirepvp.astralsorcery.common.crafting.helper;
 
+import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import java.awt.Color;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -63,6 +65,7 @@ public class CraftingAccessManager {
         removeAll(InfusionRecipeRegistry.mtRecipes);
         removeAll(LightOreTransmutations.mtTransmutations);
         removeAll(WellLiquefaction.mtLiquefactions.values());
+        removeAll(GrindstoneRecipeRegistry.mtRecipes);
         for (TileAltar.AltarLevel al : TileAltar.AltarLevel.values()) {
             removeAll(AltarRecipeRegistry.mtRecipes.get(al));
         }
@@ -72,6 +75,7 @@ public class CraftingAccessManager {
         InfusionRecipeRegistry.recipes.clear();
         LightOreTransmutations.mtTransmutations.clear();
         WellLiquefaction.mtLiquefactions.clear();
+        GrindstoneRecipeRegistry.mtRecipes.clear();
         AltarRecipeRegistry.mtRecipes.clear();
         AltarRecipeRegistry.recipes.clear();
 
@@ -93,6 +97,20 @@ public class CraftingAccessManager {
         // OreTypes.loadFromFallback();
         LightOreTransmutations.loadFromFallback();
         WellLiquefaction.loadFromFallback();
+        GrindstoneRecipeRegistry.loadFromFallback();
+    }
+
+    public static void addGrindstoneRecipe(ItemHandle in, ItemStack out, int chance) {
+        hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe gr = new hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe(
+            in,
+            out,
+            chance);
+        GrindstoneRecipeRegistry.mtRecipes.add(gr);
+        addRecipe(gr);
+    }
+
+    public static void removeGrindstoneRecipe(ItemStack out) {
+        markForRemoval(GrindstoneRecipeRegistry.tryRemoveGrindstoneRecipe(out));
     }
 
     public static void registerMTInfusion(AbstractInfusionRecipe recipe) {

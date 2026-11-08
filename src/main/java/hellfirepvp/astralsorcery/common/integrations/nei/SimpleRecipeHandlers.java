@@ -19,10 +19,12 @@ import net.minecraftforge.fluids.FluidStack;
 import hellfirepvp.astralsorcery.common.base.LightOreTransmutations;
 import hellfirepvp.astralsorcery.common.base.WellLiquefaction;
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import hellfirepvp.astralsorcery.common.crafting.infusion.AbstractInfusionRecipe;
 import hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry;
 
-/** One-input -> one-output handlers: starlight infuser, lightwell liquefaction, starlight transmutation. */
+/** One-input -> one-output handlers: starlight infuser, lightwell liquefaction, starlight transmutation, grindstone. */
 public class SimpleRecipeHandlers {
 
     private static final int IN_X = 40, OUT_X = 110, Y = 20;
@@ -143,6 +145,37 @@ public class SimpleRecipeHandlers {
         @Override
         public String getOverlayIdentifier() {
             return "astralsorcery.transmutation";
+        }
+    }
+
+    public static class Grindstone extends ASRecipeHandlerBase {
+
+        @Override
+        protected List<ASCachedRecipe> buildAll() {
+            List<ASCachedRecipe> out = new ArrayList<>();
+            for (GrindstoneRecipe r : GrindstoneRecipeRegistry.getValidRecipes()) {
+                ItemStack res = r.getOutputForMatching();
+                List<ItemStack> in = r.getInputForRender()
+                    .getApplicableItemsForRender();
+                if (res == null || in.isEmpty()) continue;
+                out.add(new ASCachedRecipe(res, OUT_X, Y).addInput(in, IN_X, Y));
+            }
+            return out;
+        }
+
+        @Override
+        protected List<int[]> slotPositions() {
+            return twoSlots();
+        }
+
+        @Override
+        protected String titleKey() {
+            return "astralsorcery.nei.grindstone";
+        }
+
+        @Override
+        public String getOverlayIdentifier() {
+            return "astralsorcery.grindstone";
         }
     }
 }

@@ -23,7 +23,6 @@ import hellfirepvp.astralsorcery.client.util.TextureHelper;
 import hellfirepvp.astralsorcery.client.util.resource.AssetLibrary;
 import hellfirepvp.astralsorcery.client.util.resource.AssetLoader;
 import hellfirepvp.astralsorcery.client.util.resource.BindableResource;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
 import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 import hellfirepvp.astralsorcery.common.util.SwordSharpenHelper;
 
@@ -59,41 +58,27 @@ public class TESRGrindstone extends TileEntitySpecialRenderer {
         GL11.glPopAttrib();
 
         ItemStack grind = te.getGrindingItem();
-        if (grind != null) {
-            if (grind.getItem() != null) {
-                TextureHelper.refreshTextureBindState();
-                TextureHelper.setActiveTextureToAtlasSprite();
-                Minecraft mc = Minecraft.getMinecraft();
-                if (grind.getItem() instanceof IGrindable) {
-                    IGrindable grindable = (IGrindable) grind.getItem();
-                    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-                    GL11.glPushMatrix();
-                    GL11.glTranslated(x, y, z);
-                    grindable.applyClientGrindstoneTransforms();
-                    RenderHelper.enableStandardItemLighting();
-                    RenderItem.getInstance()
-                        .renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, grind, 0, 0);
-                    // Minecraft.getMinecraft().getRenderItem().renderItem(grind,
-                    // ItemCameraTransforms.TransformType.GROUND);
-                    RenderHelper.disableStandardItemLighting();
-                    GL11.glPopMatrix();
-                    GL11.glPopAttrib();
-                }
-                if (SwordSharpenHelper.isSharpenableItem(grind)) {
-                    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-                    GL11.glPushMatrix();
-                    GL11.glTranslated(x, y, z);
-                    IGrindable.applyDefaultGrindstoneTransforms();
-                    RenderHelper.enableStandardItemLighting();
-                    RenderItem.getInstance()
-                        .renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, grind, 0, 0);
-                    // Minecraft.getMinecraft().getRenderItem().renderItem(grind,
-                    // ItemCameraTransforms.TransformType.GROUND);
-                    RenderHelper.disableStandardItemLighting();
-                    GL11.glPopMatrix();
-                    GL11.glPopAttrib();
-                }
-            }
+        if (grind != null && grind.getItem() != null) {
+            // 1.12.2-1.8.5 placement, rendered as a frozen item entity (1.7 has no TransformType.GROUND)
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            GL11.glPushMatrix();
+            GL11.glTranslated(x + 0.5, y + 0.75, z + 0.6);
+            GL11.glRotated(125, 1, 0, 0);
+            GL11.glRotated(180, 0, 0, 1);
+            net.minecraft.entity.item.EntityItem ei = new net.minecraft.entity.item.EntityItem(
+                Minecraft.getMinecraft().theWorld,
+                0,
+                0,
+                0,
+                grind);
+            ei.hoverStart = 0F;
+            boolean frame = net.minecraft.client.renderer.entity.RenderItem.renderInFrame;
+            net.minecraft.client.renderer.entity.RenderItem.renderInFrame = true;
+            net.minecraft.client.renderer.entity.RenderManager.instance.renderEntityWithPosYaw(ei, 0, 0, 0, 0, 0);
+            net.minecraft.client.renderer.entity.RenderItem.renderInFrame = frame;
+            GL11.glPopMatrix();
+            GL11.glPopAttrib();
+            TextureHelper.refreshTextureBindState();
         }
     }
 

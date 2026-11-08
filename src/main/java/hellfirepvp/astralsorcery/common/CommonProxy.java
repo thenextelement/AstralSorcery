@@ -257,6 +257,9 @@ public class CommonProxy implements IGuiHandler {
     public void postInit() {
         ModIntegrationBloodMagic.sendIMC();
 
+        // ore -> dust grindstone recipes need every mod's ore dictionary entries
+        hellfirepvp.astralsorcery.common.registry.RegistryRecipes.initGrindstoneOreRecipes();
+
         AstralSorcery.log.info("[AstralSorcery] Post compile recipes");
 
         CraftingAccessManager.compile();

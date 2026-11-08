@@ -8,6 +8,12 @@
 
 package hellfirepvp.astralsorcery.common.registry;
 
+import net.minecraftforge.oredict.OreDictionary;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.DustGrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.SwordSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalToolSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import static hellfirepvp.astralsorcery.common.crafting.altar.AltarRecipeRegistry.*;
 import static hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry.registerInfusionRecipe;
 import static hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry.registerLowConsumptionInfusion;
@@ -128,6 +134,8 @@ public class RegistryRecipes {
 
         initInfusionRecipes();
 
+        initGrindstoneRecipes();
+
         InfusionRecipeRegistry.cacheLocalRecipes();
         AltarRecipeRegistry.cacheLocalRecipes();
     }
@@ -163,6 +171,55 @@ public class RegistryRecipes {
         registerInfusionRecipe(new InfusionRecipeChargeTool(ItemsAS.chargedCrystalPickaxe));
         registerInfusionRecipe(new InfusionRecipeChargeTool(ItemsAS.chargedCrystalShovel));
         registerInfusionRecipe(new InfusionRecipeChargeTool(ItemsAS.chargedCrystalSword));
+    }
+
+    // ---- Grindstone (backported from 1.12.2-1.8.5)
+
+    private static void initGrindstoneRecipes() {
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new CrystalToolSharpeningRecipe(1));
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new CrystalSharpeningRecipe(1));
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new SwordSharpeningRecipe());
+
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(
+            ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack(),
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            20);
+    }
+
+    /** ore* -> dust* recipes for every ore dictionary pair; runs after all mods registered their ores. */
+    public static void initGrindstoneOreRecipes() {
+        String srcPrefix = "ore";
+        String dstPrefix = "dust";
+
+        for (String oreDict : OreDictionary.getOreNames()) {
+            if (oreDict.startsWith(srcPrefix)) {
+                String suffix = oreDict.substring(srcPrefix.length());
+                attemptRegisterGrindstoneRecipe(oreDict, dstPrefix + suffix, 0.85F);
+            }
+        }
+        // cache after the ore recipes so /mt reload restores them too
+        GrindstoneRecipeRegistry.cacheLocalFallback();
+    }
+
+    private static void attemptRegisterGrindstoneRecipe(String nameIn, String nameOut, float doubleChance) {
+        boolean multi = nameIn.endsWith("Redstone");
+
+        List<ItemStack> inputs = new java.util.ArrayList<>(OreDictionary.getOres(nameIn));
+        List<ItemStack> outputs = OreDictionary.getOres(nameOut);
+        ItemStack output = outputs.isEmpty() ? null : outputs.get(0);
+        if (inputs.isEmpty() || output == null || output.getItem() == null) return;
+        if (output.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+            List<ItemStack> st = new java.util.ArrayList<>();
+            output.getItem()
+                .getSubItems(output.getItem(), output.getItem().getCreativeTab(), st);
+            output = st.isEmpty() ? new ItemStack(output.getItem(), output.stackSize, 0) : st.get(0);
+        }
+        output = ItemUtils.copyStackWithSize(output, output.stackSize);
+        if (multi) {
+            output.stackSize = output.stackSize * 4;
+        }
+        GrindstoneRecipeRegistry
+            .registerGrindstoneRecipe(new DustGrindstoneRecipe(new ItemHandle(inputs), output, 12, doubleChance));
     }
 
     public static void initVanillaRecipes() {

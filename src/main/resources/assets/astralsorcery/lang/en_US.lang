@@ -513,6 +513,7 @@ astralsorcery.nei.altar.constellation_craft=Celestial Altar
 astralsorcery.nei.infuser=Starlight Infuser
 astralsorcery.nei.well=Lightwell
 astralsorcery.nei.transmutation=Starlight Transmutation
+astralsorcery.nei.grindstone=Grindstone
 astralsorcery.structurelib.altar=Starlight Altar structure (shows the next tier's structure once the current one is complete)
 astralsorcery.structurelib.ritual_pedestal=Ritual Pedestal structure
 astralsorcery.structurelib.attunement_altar=Attunement Altar frame
