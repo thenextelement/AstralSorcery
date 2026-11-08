@@ -53,7 +53,8 @@ public class BlockTransmutationHandler implements StarlightNetworkRegistry.IStar
 
         if (!runningTransmutations.containsKey(pos)) {
             Block tryStateIn = world.getBlock(pos.getX(), pos.getY(), pos.getZ());
-            LightOreTransmutations.Transmutation tr = LightOreTransmutations.searchForTransmutation(tryStateIn);
+            LightOreTransmutations.Transmutation tr = LightOreTransmutations
+                .searchForTransmutation(tryStateIn, world.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ()));
             if (tr != null) {
                 ActiveTransmutation atr = new ActiveTransmutation();
                 runningTransmutations.put(pos, atr);
@@ -80,7 +81,13 @@ public class BlockTransmutationHandler implements StarlightNetworkRegistry.IStar
         if (node.accCharge >= node.runningTransmutation.cost) {
             runningTransmutations.remove(pos);
 
-            world.setBlock(pos.getX(), pos.getY(), pos.getZ(), node.runningTransmutation.output);
+            world.setBlock(
+                pos.getX(),
+                pos.getY(),
+                pos.getZ(),
+                node.runningTransmutation.output,
+                node.runningTransmutation.outputMeta,
+                3);
         }
 
     }

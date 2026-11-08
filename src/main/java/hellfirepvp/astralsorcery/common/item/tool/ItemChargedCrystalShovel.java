@@ -38,7 +38,7 @@ public class ItemChargedCrystalShovel extends ItemCrystalShovel implements Charg
         if (!world.isRemote) {// && !player.getCooldownTracker().hasCooldown(ItemsAS.chargedCrystalShovel)) {
             BlockPos pos = new BlockPos(x, y, z);
             Block at = world.getBlock(pos.getX(), pos.getY(), pos.getZ());
-            if (at.isToolEffective("shovel", at.getDamageValue(world, pos.getX(), pos.getY(), pos.getZ()))) {
+            if (at.isToolEffective("shovel", world.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ()))) {
                 BlockArray shovelables = BlockDiscoverer
                     .discoverBlocksWithSameStateAround(world, pos, false, 8, 100, true);
                 if (shovelables != null) {
@@ -54,7 +54,7 @@ public class ItemChargedCrystalShovel extends ItemCrystalShovel implements Charg
                             BlocksAS.blockFakeTree);
                         TileFakeTree tt = MiscUtils.getTileAt(world, blocks.getKey(), TileFakeTree.class, true);
                         if (tt != null) {
-                            tt.setupTile(player, itemstack, blocks.getValue().type);
+                            tt.setupTile(player, itemstack, blocks.getValue().type, blocks.getValue().metadata);
                         } else {
                             world.setBlock(
                                 blocks.getKey()

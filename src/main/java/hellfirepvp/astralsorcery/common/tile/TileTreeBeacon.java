@@ -124,7 +124,8 @@ public class TileTreeBeacon extends TileReceiverBase {
 
     private boolean tryHarvestBlock(World world, BlockPos out, BlockPos treeBlockPos, Block fakedState) {
         if (rand.nextInt(ConfigEntryTreeBeacon.dropsChance) == 0) {
-            int meta = fakedState.getDamageValue(world, treeBlockPos.getX(), treeBlockPos.getY(), treeBlockPos.getZ());
+            TileFakeTree fakeTile = MiscUtils.getTileAt(world, treeBlockPos, TileFakeTree.class, false);
+            int meta = fakeTile != null ? fakeTile.getFakedMeta() : 0;
             List<ItemStack> drops = fakedState
                 .getDrops(world, treeBlockPos.getX(), treeBlockPos.getY(), treeBlockPos.getZ(), meta, 0);
             if (rand.nextBoolean()) {
@@ -208,13 +209,14 @@ public class TileTreeBeacon extends TileReceiverBase {
             if (treePositions.getSize() + world.capturedBlockSnapshots.size() <= ConfigEntryTreeBeacon.maxCount) {
                 for (BlockSnapshot snapshot : world.capturedBlockSnapshots) {
                     Block setBlock = snapshot.getCurrentBlock();
+                    int setMeta = world.getBlockMetadata(snapshot.x, snapshot.y, snapshot.z);
                     if (!setBlock.equals(BlocksAS.blockFakeTree) && !setBlock.equals(Blocks.dirt)
                         && !setBlock.equals(Blocks.grass)) {
                         world.setBlock(snapshot.x, snapshot.y, snapshot.z, BlocksAS.blockFakeTree);
                         BlockPos pos = new BlockPos(snapshot.x, snapshot.y, snapshot.z);
                         TileFakeTree tft = MiscUtils.getTileAt(world, pos, TileFakeTree.class, true);
                         if (tft != null) {
-                            tft.setupTile(origin, setBlock);
+                            tft.setupTile(origin, setBlock, setMeta);
                         }
                         if (treePositions.offerElement(pos)) ret = true;
                     }

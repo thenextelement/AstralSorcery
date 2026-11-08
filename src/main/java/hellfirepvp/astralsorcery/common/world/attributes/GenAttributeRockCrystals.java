@@ -44,14 +44,16 @@ public class GenAttributeRockCrystals extends WorldGenAttribute {
             BlockPos pos = new BlockPos(xPos, yPos, zPos);
             Block state = world.getBlock(pos.getX(), pos.getY(), pos.getZ());
             if (state.equals(Blocks.stone)) {
-                // BlockStone stoneType = state.getItemDropped(BlockStone.VARIANT);
-                // if (stoneType != null && stoneType.equals(BlockStone.EnumType.STONE)) {
-                int newState = BlocksAS.customOre.damageDropped(BlockCustomOre.OreType.ROCK_CRYSTAL.getMeta());// getDefaultState().withProperty(BlockCustomOre.ORE_TYPE,
-                                                                                                               // BlockCustomOre.OreType.ROCK_CRYSTAL);
-                world.setBlock(pos.getX(), pos.getY(), pos.getZ(), state, newState, 3);
+                // was setBlock(stone, meta) after the port: rock crystal ore never generated
+                world.setBlock(
+                    pos.getX(),
+                    pos.getY(),
+                    pos.getZ(),
+                    BlocksAS.customOre,
+                    BlockCustomOre.OreType.ROCK_CRYSTAL.getMeta(),
+                    3);
                 RockCrystalBuffer buf = WorldCacheManager.getOrLoadData(world, WorldCacheManager.SaveKey.ROCK_CRYSTAL);
                 buf.addOre(pos);
-                // }
             }
         }
     }

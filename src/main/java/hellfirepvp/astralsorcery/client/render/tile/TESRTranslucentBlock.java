@@ -85,6 +85,9 @@ public class TESRTranslucentBlock extends TileEntitySpecialRenderer {
         tess.startDrawingQuads();
         // VertexBuffer vb = tes.getBuffer();
         // vb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        for (TranslucentBlockState tbs : blocks) {
+            ((AirBlockRenderWorld) iba).setMetadata(tbs.posX, tbs.posY, tbs.posZ, tbs.meta);
+        }
         RenderBlocks rb = new RenderBlocks(iba);
         for (TranslucentBlockState tbs : blocks) {
             rb.renderBlockAllFaces(tbs.block, tbs.posX, tbs.posY, tbs.posZ);
@@ -117,24 +120,38 @@ public class TESRTranslucentBlock extends TileEntitySpecialRenderer {
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
         TileTranslucent te = (TileTranslucent) tile;
-        if (te.getFakedState() == null) return;
-        Block renderState = te.getFakedState();
-        TESRTranslucentBlock.blocks
-            .add(new TESRTranslucentBlock.TranslucentBlockState(renderState, te.xCoord, te.yCoord, te.zCoord));
+        if (te.getFakedState() == null || te.getFakedState() == net.minecraft.init.Blocks.air) return;
+        TESRTranslucentBlock.blocks.add(
+            new TESRTranslucentBlock.TranslucentBlockState(te.getFakedState(), te.getFakedMeta(), te.xCoord, te.yCoord, te.zCoord));
     }
 
     public static class TranslucentBlockState {
 
         public final Block block;
+        public final int meta;
         public final int posX;
         public final int posY;
         public final int posZ;
 
-        public TranslucentBlockState(Block block, int x, int y, int z) {
+        public TranslucentBlockState(Block block, int meta, int x, int y, int z) {
             this.block = block;
+            this.meta = meta;
             this.posX = x;
             this.posY = y;
             this.posZ = z;
+        }
+
+        // value-based hash: the batch display list is rebuilt only when the set of faked blocks changes
+        @Override
+        public int hashCode() {
+            return (Block.getIdFromBlock(block) * 31 + meta) * 31 + ((posX * 31 + posY) * 31 + posZ);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof TranslucentBlockState)) return false;
+            TranslucentBlockState t = (TranslucentBlockState) o;
+            return t.block == block && t.meta == meta && t.posX == posX && t.posY == posY && t.posZ == posZ;
         }
 
     }

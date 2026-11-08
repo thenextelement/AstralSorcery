@@ -34,9 +34,20 @@ public class AirBlockRenderWorld implements IBlockAccess {
         this.globalType = globalType;
     }
 
+    private final java.util.Map<Long, Integer> metaOverrides = new java.util.HashMap<>();
+
+    /** Lets RenderBlocks see the metadata of a faked block at the given position. */
+    public void setMetadata(int x, int y, int z, int meta) {
+        metaOverrides.put(key(x, y, z), meta);
+    }
+
+    private static long key(int x, int y, int z) {
+        return ((long) x & 0x3FFFFFFL) << 38 | ((long) y & 0xFFFL) << 26 | ((long) z & 0x3FFFFFFL);
+    }
+
     @Override
     public Block getBlock(int x, int y, int z) {
-        return null;
+        return net.minecraft.init.Blocks.air;
     }
 
     @Nullable
@@ -57,7 +68,8 @@ public class AirBlockRenderWorld implements IBlockAccess {
 
     @Override
     public int getBlockMetadata(int x, int y, int z) {
-        return 0;
+        Integer m = metaOverrides.get(key(x, y, z));
+        return m == null ? 0 : m;
     }
     // public Block getBlockState(BlockPos pos) {
     // return Blocks.AIR.getDefaultState();

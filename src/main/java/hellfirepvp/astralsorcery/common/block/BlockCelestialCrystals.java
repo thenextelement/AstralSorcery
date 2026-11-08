@@ -155,7 +155,7 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
                         pos.down()
                             .getZ());
                     if (down instanceof BlockCustomOre
-                        && down.damageDropped(metadata) == (BlockCustomOre.OreType.STARMETAL.getMeta())
+                        && world.getBlockMetadata(x, y - 1, z) == BlockCustomOre.OreType.STARMETAL.getMeta()
                         && rand.nextInt(3) == 0) {
                         drops.add(ItemRockCrystalBase.createRandomCelestialCrystal()); // Lucky~~
                     }
@@ -191,7 +191,7 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
                 pos.down()
                     .getZ());
             if (down instanceof BlockCustomOre
-                && down.damageDropped(meta) == BlockCustomOre.OreType.STARMETAL.getMeta()) {
+                && meta == BlockCustomOre.OreType.STARMETAL.getMeta()) {
                 tile.tryGrowth(0.3);
             }
         }

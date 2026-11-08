@@ -48,7 +48,8 @@ public class TileCelestialCrystals extends TileSkybound {
     public int getGrowth() {
         Block state = worldObj.getBlock(xCoord, yCoord, zCoord);
         if (!(state instanceof BlockCelestialCrystals)) return 0;
-        return state.damageDropped(BlockCelestialCrystals.STAGE);
+        return net.minecraft.util.MathHelper
+            .clamp_int(worldObj.getBlockMetadata(xCoord, yCoord, zCoord), 0, BlockCelestialCrystals.STAGE);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class TileCelestialCrystals extends TileSkybound {
             double mul = 1;
             BlockPos down = new BlockPos(xCoord, yCoord, zCoord).down();
             Block downState = worldObj.getBlock(down.getX(), down.getY(), down.getZ());
-            if (downState == BlocksAS.customOre && (downState.getDamageValue(worldObj, xCoord, yCoord, zCoord)
+            if (downState == BlocksAS.customOre && (worldObj.getBlockMetadata(xCoord, yCoord - 1, zCoord)
                 == BlockCustomOre.OreType.STARMETAL.getMeta())) {// getValue(BlockCustomOre.ORE_TYPE) ==
                                                                  // BlockCustomOre.OreType.STARMETAL) {
                 mul *= 0.3;
@@ -73,7 +74,7 @@ public class TileCelestialCrystals extends TileSkybound {
         } else {
             BlockPos pos = new BlockPos(xCoord, yCoord, zCoord).down();
             Block downState = worldObj.getBlock(pos.getX(), pos.getY(), pos.getZ());
-            if (downState == BlocksAS.customOre && downState.getDamageValue(worldObj, xCoord, yCoord, zCoord)
+            if (downState == BlocksAS.customOre && worldObj.getBlockMetadata(xCoord, yCoord - 1, zCoord)
                 == BlockCustomOre.OreType.STARMETAL.getMeta()) {
                 playStarmetalOreParticles();
             }
@@ -111,10 +112,11 @@ public class TileCelestialCrystals extends TileSkybound {
 
     public void grow() {
         Block current = worldObj.getBlock(xCoord, yCoord, zCoord);
-        int stage = current.damageDropped(BlockCelestialCrystals.STAGE);
+        if (!(current instanceof BlockCelestialCrystals)) return;
+        int stage = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
         if (stage < 4) {
-            int next = BlocksAS.celestialCrystals.damageDropped(stage + 1);
-            worldObj.setBlock(xCoord, yCoord, zCoord, current, next, 3);
+            // keep the tile entity: only change metadata
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, stage + 1, 3);
         }
     }
 

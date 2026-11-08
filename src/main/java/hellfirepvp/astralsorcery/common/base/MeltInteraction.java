@@ -32,10 +32,20 @@ public interface MeltInteraction {
     @Nullable
     public ItemStack getMeltResultStack();
 
+    /** Metadata of the placed melt result block (1.7 has no block states). */
+    default public int getMeltResultMeta() {
+        ItemStack out = getMeltResultStack();
+        if (out != null && out.getItem() instanceof net.minecraft.item.ItemBlock) {
+            return out.getItem()
+                .getMetadata(out.getItemDamage());
+        }
+        return 0;
+    }
+
     default public void placeResultAt(World world, BlockPos pos) {
         Block result = getMeltResultState();
         if (result != null) {
-            world.setBlock(pos.getX(), pos.getY(), pos.getZ(), result, 3, 1);// todo check this
+            world.setBlock(pos.getX(), pos.getY(), pos.getZ(), result, getMeltResultMeta(), 3);
         } else {
             world.setBlockToAir(pos.getX(), pos.getY(), pos.getZ());
             ItemStack resultStack = getMeltResultStack();

@@ -97,7 +97,14 @@ public class CEffectMineralis extends CEffectPositionList {
                     if (blockStack != null) {
                         Block state = ItemUtils.createBlockState(blockStack);
                         if (state != null) {
-                            world.setBlock(sel.getX(), sel.getY(), sel.getZ(), state);
+                            world.setBlock(
+                                sel.getX(),
+                                sel.getY(),
+                                sel.getZ(),
+                                state,
+                                blockStack.getItem()
+                                    .getMetadata(blockStack.getItemDamage()),
+                                3);
                         }
                     }
                 } else {
