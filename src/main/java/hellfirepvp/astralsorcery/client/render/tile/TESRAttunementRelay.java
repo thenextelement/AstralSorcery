@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
-import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
-import hellfirepvp.astralsorcery.client.util.model.ModelRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -31,10 +29,6 @@ public class TESRAttunementRelay extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
-        // Static block body (was a JSON block model in 1.10)
-        ModelRenderHelper.beginWorld(x, y, z);
-        JsonModelLibrary.renderLayered("BlockAttunementRelay", "BlockAttunementRelayGlass");
-        ModelRenderHelper.end();
 
         TileAttunementRelay te = (TileAttunementRelay) tile;
         TileInventoryBase.ItemHandlerTile iht = te.getInventoryHandler();

@@ -60,6 +60,36 @@ public class JsonModel {
         return name;
     }
 
+    /** Receives every face of the model (vertices/uvs in 0..1 block space, 4 each). */
+    public interface FaceVisitor {
+
+        void visit(ResourceLocation texture, float[][] vertices, float[][] uvs, float[] normal);
+    }
+
+    public void visitFaces(FaceVisitor visitor) {
+        for (Element e : elements) {
+            for (Face f : e.faces) {
+                ResourceLocation tex = resolveTexture(f.texture);
+                if (tex != null) visitor.visit(tex, f.vertices, f.uvs, f.normal);
+            }
+        }
+    }
+
+    /** All textures used by faces of this model. */
+    public java.util.Set<ResourceLocation> getUsedTextures() {
+        java.util.Set<ResourceLocation> out = new java.util.HashSet<>();
+        visitFaces((tex, v, uv, n) -> out.add(tex));
+        return out;
+    }
+
+    /** Atlas sprite name for a model texture file (textures/<path>.png -> astralsorcery:jsonmodel/<path>). */
+    public static String spriteNameFor(ResourceLocation textureFile) {
+        String path = textureFile.getResourcePath();
+        if (path.startsWith("textures/")) path = path.substring("textures/".length());
+        if (path.endsWith(".png")) path = path.substring(0, path.length() - 4);
+        return textureFile.getResourceDomain() + ":jsonmodel/" + path;
+    }
+
     /** Model-space bounds in block units: {minX, minY, minZ, maxX, maxY, maxZ}; unit cube if empty. */
     public float[] getBounds() {
         float[] b = { Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE,

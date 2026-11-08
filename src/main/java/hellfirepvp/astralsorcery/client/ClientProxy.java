@@ -14,7 +14,6 @@ import hellfirepvp.astralsorcery.common.tile.TileRitualLink;
 import hellfirepvp.astralsorcery.common.tile.TileCelestialGateway;
 import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
 import hellfirepvp.astralsorcery.client.util.model.ItemRendererJsonModel;
-import hellfirepvp.astralsorcery.client.render.tile.TESRStaticModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +120,15 @@ public class ClientProxy extends CommonProxy {
         // OBJLoader.INSTANCE.addDomain(AstralSorcery.MODID);
 
         super.preInit();
+
+        // Static block bodies are baked into chunk meshes from the 1.10 JSON models
+        hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel = cpw.mods.fml.client.registry.RenderingRegistry
+            .getNextAvailableRenderId();
+        cpw.mods.fml.client.registry.RenderingRegistry.registerBlockHandler(
+            new hellfirepvp.astralsorcery.client.util.model.JsonBlockModelRenderer(
+                hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel));
+        MinecraftForge.EVENT_BUS.register(hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.INSTANCE);
+        registerJsonBlockModels();
 
         registerFluidRenderers();
         registerEntityRenderers();
@@ -252,6 +260,28 @@ public class ClientProxy extends CommonProxy {
         registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, "BlockPrism", null));
     }
 
+    private void registerJsonBlockModels() {
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockAltar, "BlockAltar1", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockWell, "BlockWell", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.ritualPedestal, "BlockRitualPedestal", "BlockRitualPedestalGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.attunementRelay, "BlockAttunementRelay", "BlockAttunementRelayGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.starlightInfuser, "BlockStarlightInfuser", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lens, "BlockLens_tesr", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, "BlockPrism", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.drawingTable, "BlockMapDrawingTable", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.celestialGateway, "BlockCelestialGateway", "BlockCelestialGatewayOrb");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.ritualLink, "BlockRitualLink", "BlockRitualLinkGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.treeBeacon, "BlockTreeBeacon", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.blockIlluminator, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator");
+    }
+
     private void registerModelItem(net.minecraft.block.Block block, ItemRendererJsonModel renderer) {
         Item item = Item.getItemFromBlock(block);
         if (item != null) {
@@ -312,11 +342,6 @@ public class ClientProxy extends CommonProxy {
         registerTESR(TileTranslucent.class, new TESRTranslucentBlock());
         registerTESR(TileAttunementRelay.class, new TESRAttunementRelay());
         registerTESR(TileMapDrawingTable.class, new TESRMapDrawingTable());
-        // Blocks that only had a JSON block model in 1.10
-        registerTESR(TileCelestialGateway.class, new TESRStaticModel("BlockCelestialGateway", "BlockCelestialGatewayOrb"));
-        registerTESR(TileRitualLink.class, new TESRStaticModel("BlockRitualLink", "BlockRitualLinkGlass"));
-        registerTESR(TileTreeBeacon.class, new TESRStaticModel("BlockTreeBeacon", null));
-        registerTESR(TileIlluminator.class, new TESRStaticModel("BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
     }
 
     private <T extends TileEntity> void registerTESR(Class<T> tile, TileEntitySpecialRenderer renderer) {

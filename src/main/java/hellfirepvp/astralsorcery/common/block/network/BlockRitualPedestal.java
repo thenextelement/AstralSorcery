@@ -173,9 +173,20 @@ public class BlockRitualPedestal extends BlockStarlightNetwork {
         return BlockBoxUtil.offset(box, x, y, z);
     }
 
+    // glass parts render in the translucent pass, the rest in the solid pass
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 0 || pass == 1;
+    }
+
     @Override
     public int getRenderType() {
-        return -1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     // @Override

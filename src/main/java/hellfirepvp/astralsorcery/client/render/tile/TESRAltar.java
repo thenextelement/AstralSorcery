@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
-import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
-import hellfirepvp.astralsorcery.client.util.model.ModelRenderHelper;
 import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
@@ -65,10 +63,6 @@ public class TESRAltar extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
-        // Static block body (was a JSON block model in 1.10)
-        ModelRenderHelper.beginWorld(x, y, z);
-        JsonModelLibrary.renderLayered("BlockAltar1", null);
-        ModelRenderHelper.end();
 
         TileAltar te = (TileAltar) tile;
         switch (te.getAltarLevel()) {

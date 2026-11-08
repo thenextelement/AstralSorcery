@@ -223,7 +223,7 @@ public class BlockMapDrawingTable extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return -1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     @Override

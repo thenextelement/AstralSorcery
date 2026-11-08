@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
-import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
-import hellfirepvp.astralsorcery.client.util.model.ModelRenderHelper;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,10 +76,6 @@ public class TESRPrismLens extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
-        // Static block body (was a JSON block model in 1.10)
-        ModelRenderHelper.beginWorld(x, y, z);
-        JsonModelLibrary.renderLayered("BlockPrism", null);
-        ModelRenderHelper.end();
 
         TileCrystalPrismLens te = (TileCrystalPrismLens) tile;
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);

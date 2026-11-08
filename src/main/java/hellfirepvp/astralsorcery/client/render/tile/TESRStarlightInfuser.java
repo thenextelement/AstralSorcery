@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
-import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
-import hellfirepvp.astralsorcery.client.util.model.ModelRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -30,10 +28,6 @@ public class TESRStarlightInfuser extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
-        // Static block body (was a JSON block model in 1.10)
-        ModelRenderHelper.beginWorld(x, y, z);
-        JsonModelLibrary.renderLayered("BlockStarlightInfuser", null);
-        ModelRenderHelper.end();
 
         TileStarlightInfuser te = (TileStarlightInfuser) tile;
         ItemStack in = te.getInputStack();
