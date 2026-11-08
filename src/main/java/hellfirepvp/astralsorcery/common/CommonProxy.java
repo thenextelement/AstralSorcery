@@ -145,6 +145,7 @@ public class CommonProxy implements IGuiHandler {
 
         RegistryBlocks.init();
         RegistryItems.init();
+        RegistryConstellations.initConstellationSignatures();
         RegistryEntities.init();
         RegistryStructures.init();
         RegistryPotions.init();

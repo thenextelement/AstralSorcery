@@ -11,9 +11,13 @@ package hellfirepvp.astralsorcery.common.registry;
 import static hellfirepvp.astralsorcery.common.constellation.starmap.ConstellationMapEffectRegistry.registerMapEffect;
 import static hellfirepvp.astralsorcery.common.lib.Constellations.*;
 
+import java.awt.Color;
 import java.util.Arrays;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +28,10 @@ import hellfirepvp.astralsorcery.common.constellation.MoonPhase;
 import hellfirepvp.astralsorcery.common.constellation.distribution.WorldSkyHandler;
 import hellfirepvp.astralsorcery.common.constellation.star.StarLocation;
 import hellfirepvp.astralsorcery.common.constellation.starmap.ConstellationMapEffectRegistry;
+import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.event.APIRegistryEvent;
+import hellfirepvp.astralsorcery.common.item.ItemCraftingComponent;
+import hellfirepvp.astralsorcery.common.util.OreDictAlias;
 import hellfirepvp.astralsorcery.common.lib.EnchantmentsAS;
 
 /**
@@ -164,6 +171,71 @@ public class RegistryConstellations {
                 new ConstellationMapEffectRegistry.PotionMapEffect(Potion.digSlowdown, 0, 1)));
     }
 
+    /** 1.12.2-1.8.5 signature items (mantle attunement, wand augments); needs items and blocks registered. */
+    public static void initConstellationSignatures() {
+        ItemHandle starDust = new ItemHandle(ItemCraftingComponent.MetaType.STARDUST.asStack());
+
+        discidia.addSignatureItem(new ItemHandle(new ItemStack(Items.flint)));
+        discidia.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_IRON_INGOT));
+        discidia.addSignatureItem(new ItemHandle(new ItemStack(Items.arrow)));
+        discidia.addSignatureItem(new ItemHandle("dustRedstone"));
+
+        armara.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_IRON_INGOT));
+        armara.addSignatureItem(new ItemHandle(new ItemStack(Items.leather)));
+        armara.addSignatureItem(new ItemHandle(new ItemStack(Items.clay_ball)));
+        armara.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_GLOWSTONE_DUST));
+
+        vicio.addSignatureItem(new ItemHandle(new ItemStack(Items.feather)));
+        vicio.addSignatureItem(new ItemHandle(new ItemStack(Items.sugar)));
+        vicio.addSignatureItem(new ItemHandle(new ItemStack(Items.string)));
+        vicio.addSignatureItem(new ItemHandle(new ItemStack(Items.fish)));
+
+        aevitas.addSignatureItem(new ItemHandle(OreDictAlias.BLOCK_SAPLING));
+        aevitas.addSignatureItem(starDust);
+        aevitas.addSignatureItem(new ItemHandle(new ItemStack(Items.wheat_seeds)));
+        aevitas.addSignatureItem(new ItemHandle(new ItemStack(Items.reeds)));
+
+        evorsio.addSignatureItem(new ItemHandle("cobblestone"));
+        evorsio.addSignatureItem(new ItemHandle(new ItemStack(Items.flint)));
+        evorsio.addSignatureItem(new ItemHandle(new ItemStack(Items.gunpowder)));
+        evorsio.addSignatureItem(new ItemHandle(new ItemStack(Blocks.tnt)));
+
+        lucerna.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_GLOWSTONE_DUST));
+        lucerna.addSignatureItem(new ItemHandle(new ItemStack(Blocks.torch)));
+        lucerna.addSignatureItem(new ItemHandle("dustRedstone"));
+        lucerna.addSignatureItem(new ItemHandle(new ItemStack(Items.coal)));
+
+        mineralis.addSignatureItem(new ItemHandle("oreIron"));
+        mineralis.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_GOLD_INGOT));
+        mineralis.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_IRON_INGOT));
+        mineralis.addSignatureItem(new ItemHandle("dustRedstone"));
+
+        horologium.addSignatureItem(starDust);
+        horologium.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_DIAMOND));
+        horologium.addSignatureItem(new ItemHandle(new ItemStack(Items.ender_pearl)));
+        horologium.addSignatureItem(new ItemHandle(new ItemStack(Items.clock)));
+
+        octans.addSignatureItem(new ItemHandle(new ItemStack(Items.fish)));
+        octans.addSignatureItem(new ItemHandle(new ItemStack(Items.fishing_rod)));
+        octans.addSignatureItem(new ItemHandle("dyeBlue"));
+        octans.addSignatureItem(new ItemHandle(new ItemStack(Items.clay_ball)));
+
+        bootes.addSignatureItem(new ItemHandle(new ItemStack(Items.wheat)));
+        bootes.addSignatureItem(new ItemHandle(new ItemStack(Items.bone)));
+        bootes.addSignatureItem(new ItemHandle(new ItemStack(Items.apple)));
+        bootes.addSignatureItem(new ItemHandle(new ItemStack(Items.leather)));
+
+        fornax.addSignatureItem(new ItemHandle(new ItemStack(Items.coal)));
+        fornax.addSignatureItem(new ItemHandle("dustRedstone"));
+        fornax.addSignatureItem(new ItemHandle(OreDictAlias.ITEM_IRON_INGOT));
+        fornax.addSignatureItem(new ItemHandle(new ItemStack(Items.gunpowder)));
+
+        pelotrio.addSignatureItem(new ItemHandle(new ItemStack(Items.blaze_powder)));
+        pelotrio.addSignatureItem(new ItemHandle(new ItemStack(Items.apple)));
+        pelotrio.addSignatureItem(new ItemHandle(new ItemStack(Items.egg)));
+        pelotrio.addSignatureItem(new ItemHandle(new ItemStack(Items.rotten_flesh)));
+    }
+
     private static void registerConstellations() {
         // Major
         ConstellationRegistry.registerConstellation(discidia);
@@ -191,7 +263,7 @@ public class RegistryConstellations {
     private static void buildConstellations() {
         StarLocation sl1, sl2, sl3, sl4, sl5, sl6, sl7, sl8, sl9;
 
-        discidia = new ConstellationBase.Major("discidia");
+        discidia = new ConstellationBase.Major("discidia", new Color(0xE01903));
         sl1 = discidia.addStar(7, 2);
         sl2 = discidia.addStar(3, 6);
         sl3 = discidia.addStar(5, 12);
@@ -209,7 +281,7 @@ public class RegistryConstellations {
         discidia.addConnection(sl6, sl7);
         discidia.addConnection(sl7, sl8);
 
-        armara = new ConstellationBase.Major("armara");
+        armara = new ConstellationBase.Major("armara", new Color(0xB7BBB8));
         sl1 = armara.addStar(8, 4);
         sl2 = armara.addStar(9, 15);
         sl3 = armara.addStar(11, 26);
@@ -229,7 +301,7 @@ public class RegistryConstellations {
         armara.addConnection(sl2, sl7);
         armara.addConnection(sl5, sl7);
 
-        vicio = new ConstellationBase.Major("vicio");
+        vicio = new ConstellationBase.Major("vicio", new Color(0x00BDAD));
         sl1 = vicio.addStar(3, 8);
         sl2 = vicio.addStar(13, 9);
         sl3 = vicio.addStar(6, 23);
@@ -245,7 +317,7 @@ public class RegistryConstellations {
         vicio.addConnection(sl5, sl6);
         vicio.addConnection(sl6, sl7);
 
-        aevitas = new ConstellationBase.Major("aevitas");
+        aevitas = new ConstellationBase.Major("aevitas", new Color(0x29F615));
         sl1 = aevitas.addStar(15, 14);
         sl2 = aevitas.addStar(7, 12);
         sl3 = aevitas.addStar(3, 6);
@@ -266,7 +338,7 @@ public class RegistryConstellations {
         aevitas.addConnection(sl4, sl9);
 
         // 1.12.2-1.8.5
-        evorsio = new ConstellationBase.Major("evorsio");
+        evorsio = new ConstellationBase.Major("evorsio", new Color(0xA00100));
         sl1 = evorsio.addStar(13, 16);
         sl2 = evorsio.addStar(18, 6);
         sl3 = evorsio.addStar(26, 4);
@@ -282,7 +354,7 @@ public class RegistryConstellations {
         evorsio.addConnection(sl1, sl6);
         evorsio.addConnection(sl1, sl7);
 
-        lucerna = new ConstellationBase.Weak("lucerna");
+        lucerna = new ConstellationBase.Weak("lucerna", new Color(0xFFE709));
         sl1 = lucerna.addStar(15, 13);
         sl2 = lucerna.addStar(3, 5);
         sl3 = lucerna.addStar(25, 3);
@@ -296,7 +368,7 @@ public class RegistryConstellations {
         lucerna.addConnection(sl1, sl5);
         lucerna.addConnection(sl1, sl6);
 
-        mineralis = new ConstellationBase.Weak("mineralis");
+        mineralis = new ConstellationBase.Weak("mineralis", new Color(0xCB7D0A));
         sl1 = mineralis.addStar(16, 2);
         sl2 = mineralis.addStar(8, 8);
         sl3 = mineralis.addStar(9, 22);
@@ -312,7 +384,7 @@ public class RegistryConstellations {
         mineralis.addConnection(sl6, sl1);
         mineralis.addConnection(sl1, sl4);
 
-        horologium = new ConstellationBase.WeakSpecial("horologium") {
+        horologium = new ConstellationBase.WeakSpecial("horologium", new Color(0x7D16B4)) {
 
             @Override
             public boolean doesShowUp(WorldSkyHandler handle, World world, long day) {
@@ -334,7 +406,7 @@ public class RegistryConstellations {
         horologium.addConnection(sl3, sl4);
         horologium.addConnection(sl4, sl1);
 
-        octans = new ConstellationBase.Weak("octans");
+        octans = new ConstellationBase.Weak("octans", new Color(0x706EFF));
         sl1 = octans.addStar(3, 6);
         sl2 = octans.addStar(11, 11);
         sl3 = octans.addStar(18, 4);
@@ -345,7 +417,7 @@ public class RegistryConstellations {
         octans.addConnection(sl3, sl4);
         octans.addConnection(sl2, sl4);
 
-        bootes = new ConstellationBase.Weak("bootes");
+        bootes = new ConstellationBase.Weak("bootes", new Color(0xD41CD6));
         sl1 = bootes.addStar(9, 22);
         sl2 = bootes.addStar(3, 14);
         sl3 = bootes.addStar(22, 27);
@@ -360,7 +432,7 @@ public class RegistryConstellations {
         bootes.addConnection(sl4, sl5);
         bootes.addConnection(sl5, sl6);
 
-        fornax = new ConstellationBase.Weak("fornax");
+        fornax = new ConstellationBase.Weak("fornax", new Color(0xFF4E1B));
         sl1 = fornax.addStar(4, 20);
         sl2 = fornax.addStar(14, 23);
         sl3 = fornax.addStar(28, 16);
@@ -373,7 +445,7 @@ public class RegistryConstellations {
         fornax.addConnection(sl2, sl5);
 
         // 1.12.2-1.8.5
-        pelotrio = new ConstellationBase.WeakSpecial("pelotrio") {
+        pelotrio = new ConstellationBase.WeakSpecial("pelotrio", new Color(0xEC006B)) {
 
             @Override
             public boolean doesShowUp(WorldSkyHandler handle, World world, long day) {
@@ -404,7 +476,7 @@ public class RegistryConstellations {
         pelotrio.addConnection(sl4, sl6);
         pelotrio.addConnection(sl6, sl3);
 
-        gelu = new ConstellationBase.Minor("gelu");
+        gelu = new ConstellationBase.Minor("gelu", new Color(0x758BA8));
         sl1 = gelu.addStar(8, 7);
         sl2 = gelu.addStar(28, 8);
         sl3 = gelu.addStar(23, 21);
@@ -417,7 +489,7 @@ public class RegistryConstellations {
         gelu.addConnection(sl2, sl5);
         gelu.addConnection(sl4, sl6);
 
-        ulteria = new ConstellationBase.Minor("ulteria");
+        ulteria = new ConstellationBase.Minor("ulteria", new Color(0x347463));
         sl1 = ulteria.addStar(14, 9);
         sl2 = ulteria.addStar(17, 16);
         sl3 = ulteria.addStar(25, 19);
@@ -428,7 +500,7 @@ public class RegistryConstellations {
         ulteria.addConnection(sl2, sl3);
         ulteria.addConnection(sl4, sl5);
 
-        alcara = new ConstellationBase.Minor("alcara");
+        alcara = new ConstellationBase.Minor("alcara", new Color(0x802952));
         sl1 = alcara.addStar(6, 27);
         sl2 = alcara.addStar(14, 20);
         sl3 = alcara.addStar(17, 24);
@@ -443,7 +515,7 @@ public class RegistryConstellations {
         alcara.addConnection(sl4, sl6);
 
         // 1.12.2-1.8.5
-        vorux = new ConstellationBase.Minor("vorux");
+        vorux = new ConstellationBase.Minor("vorux", new Color(0xA8881E));
         sl1 = vorux.addStar(3, 21);
         sl2 = vorux.addStar(7, 7);
         sl3 = vorux.addStar(14, 15);
