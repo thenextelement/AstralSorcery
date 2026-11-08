@@ -1,5 +1,6 @@
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.Random;
 
@@ -217,6 +218,22 @@ public class BlockMapDrawingTable extends BlockContainer {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
         return drawingTableBox;
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/drawing_table");
     }
 
     @Override

@@ -8,6 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,6 +64,22 @@ public class BlockStarlightInfuser extends BlockStarlightNetwork {
             }
         }
         return true;
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/infuser");
     }
 
     @Override

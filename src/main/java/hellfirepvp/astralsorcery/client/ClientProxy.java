@@ -8,6 +8,13 @@
 
 package hellfirepvp.astralsorcery.client;
 
+import hellfirepvp.astralsorcery.common.tile.TileIlluminator;
+import hellfirepvp.astralsorcery.common.tile.TileTreeBeacon;
+import hellfirepvp.astralsorcery.common.tile.TileRitualLink;
+import hellfirepvp.astralsorcery.common.tile.TileCelestialGateway;
+import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
+import hellfirepvp.astralsorcery.client.util.model.ItemRendererJsonModel;
+import hellfirepvp.astralsorcery.client.render.tile.TESRStaticModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,13 +164,11 @@ public class ClientProxy extends CommonProxy {
     public void init() {
         super.init();
 
-        MinecraftForge.EVENT_BUS.register(new ClientRenderEventHandler());
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new ClientRenderEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ClientConnectionEventHandler());
-        MinecraftForge.EVENT_BUS.register(EffectHandler.getInstance());
-        MinecraftForge.EVENT_BUS.register(new ClientGatewayHandler());
+        // Single instances on both buses (see CommonProxy#registerEventHandler)
+        registerEventHandler(new ClientRenderEventHandler());
+        registerEventHandler(new ClientConnectionEventHandler());
+        registerEventHandler(EffectHandler.getInstance());
+        registerEventHandler(new ClientGatewayHandler());
 
         registerDisplayInformationInit();
 
@@ -187,6 +192,8 @@ public class ClientProxy extends CommonProxy {
 
         ((IReloadableResourceManager) Minecraft.getMinecraft()
             .getResourceManager()).registerReloadListener(ItemColorizationHelper.instance);
+        ((IReloadableResourceManager) Minecraft.getMinecraft()
+            .getResourceManager()).registerReloadListener(JsonModelLibrary.INSTANCE);
     }
 
     @Override
@@ -229,7 +236,27 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlocksAS.celestialCrystals), new TESRCelestialCrystals());
 
-        // ItemRenderRegistry.register(ItemsAS.something, new ? implements IItemRenderer());
+        registerModelItem(BlocksAS.blockAltar, new ItemRendererJsonModel().add(0, "BlockAltar1", null)
+            .add(1, "BlockAltar2", null)
+            .add(2, "BlockAltar3", null));
+        registerModelItem(BlocksAS.attunementRelay, new ItemRendererJsonModel().add(0, "BlockAttunementRelay", "BlockAttunementRelayGlass"));
+        registerModelItem(BlocksAS.ritualPedestal, new ItemRendererJsonModel().add(0, "BlockRitualPedestal", "BlockRitualPedestalGlass"));
+        registerModelItem(BlocksAS.blockWell, new ItemRendererJsonModel().add(0, "BlockWell", null));
+        registerModelItem(BlocksAS.blockIlluminator, new ItemRendererJsonModel().add(0, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
+        registerModelItem(BlocksAS.starlightInfuser, new ItemRendererJsonModel().add(0, "BlockStarlightInfuser", null));
+        registerModelItem(BlocksAS.ritualLink, new ItemRendererJsonModel().add(0, "BlockRitualLink", "BlockRitualLinkGlass"));
+        registerModelItem(BlocksAS.treeBeacon, new ItemRendererJsonModel().add(0, "BlockTreeBeacon", null));
+        registerModelItem(BlocksAS.drawingTable, new ItemRendererJsonModel().add(0, "BlockMapDrawingTable", null));
+        registerModelItem(BlocksAS.celestialGateway, new ItemRendererJsonModel().add(0, "BlockCelestialGateway", "BlockCelestialGatewayOrb"));
+        registerModelItem(BlocksAS.lens, new ItemRendererJsonModel().add(0, "BlockLens_full", null));
+        registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, "BlockPrism", null));
+    }
+
+    private void registerModelItem(net.minecraft.block.Block block, ItemRendererJsonModel renderer) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != null) {
+            MinecraftForgeClient.registerItemRenderer(item, renderer);
+        }
     }
 
     @Override
@@ -261,6 +288,11 @@ public class ClientProxy extends CommonProxy {
         registerTESR(TileTranslucent.class, new TESRTranslucentBlock());
         registerTESR(TileAttunementRelay.class, new TESRAttunementRelay());
         registerTESR(TileMapDrawingTable.class, new TESRMapDrawingTable());
+        // Blocks that only had a JSON block model in 1.10
+        registerTESR(TileCelestialGateway.class, new TESRStaticModel("BlockCelestialGateway", "BlockCelestialGatewayOrb"));
+        registerTESR(TileRitualLink.class, new TESRStaticModel("BlockRitualLink", "BlockRitualLinkGlass"));
+        registerTESR(TileTreeBeacon.class, new TESRStaticModel("BlockTreeBeacon", null));
+        registerTESR(TileIlluminator.class, new TESRStaticModel("BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
     }
 
     private <T extends TileEntity> void registerTESR(Class<T> tile, TileEntitySpecialRenderer renderer) {

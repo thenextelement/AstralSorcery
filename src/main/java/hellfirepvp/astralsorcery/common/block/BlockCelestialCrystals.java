@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -250,6 +251,22 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
     @Override
     public boolean isNormalCube() {
         return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/celestial_crystals");
     }
 
     @Override

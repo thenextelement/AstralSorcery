@@ -8,6 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -99,6 +102,22 @@ public class BlockAttunementAltar extends BlockContainer {
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
         return super.getPickBlock(target, world, x, y, z, player);
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:marble_raw");
     }
 
     @Override

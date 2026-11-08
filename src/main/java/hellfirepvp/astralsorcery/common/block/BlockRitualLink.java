@@ -8,6 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -61,6 +64,17 @@ public class BlockRitualLink extends BlockContainer {
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/ritual_link");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -77,7 +91,7 @@ public class BlockRitualLink extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     // @Override

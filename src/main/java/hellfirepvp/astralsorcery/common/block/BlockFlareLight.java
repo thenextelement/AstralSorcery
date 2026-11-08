@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ public class BlockFlareLight extends Block {
 
     @Override
     public int getRenderType() {
-        return 2;
+        return -1;
     }
 
     @Override
@@ -196,6 +197,17 @@ public class BlockFlareLight extends Block {
     @Override
     public boolean canCollideCheck(int meta, boolean includeLiquid) {
         return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:glowstone");
     }
 
     @Override

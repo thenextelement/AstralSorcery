@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -295,6 +296,17 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
     // }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/telescope");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false; // state.getValue(BLOCK_TYPE).getblock().isOpaqueCube();
     }
@@ -337,7 +349,7 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     @Override

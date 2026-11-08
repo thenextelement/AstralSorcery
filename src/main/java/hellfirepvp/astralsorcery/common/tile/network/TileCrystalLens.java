@@ -221,7 +221,9 @@ public class TileCrystalLens extends TileTransmissionBase {
     public void writeCustomNBT(NBTTagCompound compound) {
         super.writeCustomNBT(compound);
 
-        this.properties.writeToNBT(compound);
+        if (this.properties != null) {
+            this.properties.writeToNBT(compound);
+        }
         compound.setInteger("color", lensColor != null ? lensColor.ordinal() : -1);
 
         NBTTagList list = new NBTTagList();

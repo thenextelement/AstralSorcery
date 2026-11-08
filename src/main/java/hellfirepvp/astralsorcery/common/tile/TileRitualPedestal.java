@@ -894,7 +894,7 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
         public void updateLink(@Nonnull World world, @Nullable BlockPos ritualLink) {
             BlockPos prev = this.ritualLinkTo;
             this.ritualLinkTo = ritualLink;
-            if (!prev.equals(this.ritualLinkTo) && this.ce != null) {
+            if (!java.util.Objects.equals(prev, this.ritualLinkTo) && this.ce != null) {
                 this.ce.clearCache();
                 markDirty(world);
             }

@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.Random;
 
@@ -90,7 +91,7 @@ public class BlockFakeTree extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     // @Override
@@ -112,6 +113,17 @@ public class BlockFakeTree extends BlockContainer {
     // public boolean isTranslucent() {
     // return true;
     // }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:log_oak");
+    }
 
     @Override
     public boolean isOpaqueCube() {

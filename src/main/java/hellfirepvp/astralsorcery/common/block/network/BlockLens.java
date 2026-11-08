@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,6 +83,17 @@ public class BlockLens extends BlockStarlightNetwork implements BlockVariants {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
         return boxLens;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/lens");
     }
 
     @Override
@@ -187,7 +199,7 @@ public class BlockLens extends BlockStarlightNetwork implements BlockVariants {
 
     @Override
     public int getRenderType() {
-        return RenderingRegistry.getNextAvailableRenderId();
+        return -1;
     }
 
     @Override

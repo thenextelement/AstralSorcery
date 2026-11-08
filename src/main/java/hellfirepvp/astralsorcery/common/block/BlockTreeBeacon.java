@@ -8,6 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -45,6 +48,17 @@ public class BlockTreeBeacon extends BlockStarlightNetwork {
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/tree_beacon");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -66,7 +80,7 @@ public class BlockTreeBeacon extends BlockStarlightNetwork {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     @Override

@@ -385,6 +385,11 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     // }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -394,6 +399,22 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
+    private net.minecraft.util.IIcon[] machineIcons;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister reg) {
+        machineIcons = new net.minecraft.util.IIcon[] { reg.registerIcon("astralsorcery:particle/telescope"),
+            reg.registerIcon("astralsorcery:particle/grindstone") };
+        this.blockIcon = machineIcons[0];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.IIcon getIcon(int side, int meta) {
+        return machineIcons[meta >= 0 && meta < machineIcons.length ? meta : 0];
+    }
     @Override
     public int getRenderType() {
         return -1;

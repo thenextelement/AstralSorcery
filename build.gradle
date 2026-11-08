@@ -2,3 +2,8 @@
 plugins {
     id 'com.gtnewhorizons.gtnhconvention'
 }
+
+// Dev convenience: forward the terminal's stdin to `runServer`, so console commands can be typed/piped in.
+tasks.named('runServer').configure {
+    standardInput = System.in
+}

@@ -8,6 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -36,6 +39,27 @@ public class BlockCelestialCollectorCrystal extends BlockCollectorCrystalBase {
     public BlockCelestialCollectorCrystal() {
         super(Material.glass);
         setBlockName("BlockCelestialCollectorCrystal");
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/celestial_collector_crystal");
     }
 
     @Override

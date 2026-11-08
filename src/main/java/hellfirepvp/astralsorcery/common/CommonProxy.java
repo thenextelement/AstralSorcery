@@ -76,6 +76,7 @@ import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.registry.RegistryPerks;
 import hellfirepvp.astralsorcery.common.registry.RegistryPotions;
 import hellfirepvp.astralsorcery.common.registry.RegistryRecipes;
+import hellfirepvp.astralsorcery.common.registry.RegistryStructures;
 import hellfirepvp.astralsorcery.common.registry.RegistryResearch;
 import hellfirepvp.astralsorcery.common.registry.RegistrySounds;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightNetworkRegistry;
@@ -145,7 +146,7 @@ public class CommonProxy implements IGuiHandler {
         RegistryBlocks.init();
         RegistryItems.init();
         RegistryEntities.init();
-        // RegistryStructures.init();
+        RegistryStructures.init();
         RegistryPotions.init();
 
         // Transmission registry
@@ -189,25 +190,21 @@ public class CommonProxy implements IGuiHandler {
 
         MinecraftForge.TERRAIN_GEN_BUS.register(TreeCaptureHelper.eventInstance);
 
-        MinecraftForge.EVENT_BUS.register(new EventHandlerNetwork());
-        EventHandlerServer eventHandlerServer = new EventHandlerServer();
-        MinecraftForge.EVENT_BUS.register(eventHandlerServer);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(eventHandlerServer);
-        MinecraftForge.EVENT_BUS.register(new EventHandlerAchievements());
-        MinecraftForge.EVENT_BUS.register(new EventHandlerMisc());
-        MinecraftForge.EVENT_BUS.register(TransmissionChunkTracker.getInstance());
-        MinecraftForge.EVENT_BUS.register(TickManager.getInstance());
-        MinecraftForge.EVENT_BUS.register(StarlightTransmissionHandler.getInstance());
-        MinecraftForge.EVENT_BUS.register(new LootTableUtil());
-        MinecraftForge.EVENT_BUS.register(BlockDropCaptureAssist.instance);
-        MinecraftForge.EVENT_BUS.register(ChunkVersionController.instance);
-        MinecraftForge.EVENT_BUS.register(CelestialGatewaySystem.instance);
+        registerEventHandler(new EventHandlerNetwork());
+        registerEventHandler(new EventHandlerServer());
+        registerEventHandler(new EventHandlerAchievements());
+        registerEventHandler(new EventHandlerMisc());
+        registerEventHandler(TransmissionChunkTracker.getInstance());
+        registerEventHandler(TickManager.getInstance());
+        registerEventHandler(StarlightTransmissionHandler.getInstance());
+        registerEventHandler(new LootTableUtil());
+        registerEventHandler(BlockDropCaptureAssist.instance);
+        registerEventHandler(ChunkVersionController.instance);
+        registerEventHandler(CelestialGatewaySystem.instance);
 
         GameRegistry.registerWorldGenerator(worldGenerator.setupAttributes(), 50);
         if (Config.enableRetroGen) {
-            MinecraftForge.EVENT_BUS.register(new RetroGenController());
+            registerEventHandler(new RetroGenController());
         }
         RegistrySounds.init();
 
@@ -221,6 +218,18 @@ public class CommonProxy implements IGuiHandler {
         HerdableAnimal.init();
         WellLiquefaction.init();
         TreeTypes.init();
+    }
+
+    /**
+     * 1.7.10 splits events across two buses: Forge events (world, entity, player interaction...) fire on
+     * MinecraftForge.EVENT_BUS, while FML events (TickEvent, PlayerLoggedIn/Out, ItemCrafted, FMLNetworkEvent,
+     * KeyInputEvent...) fire on FMLCommonHandler.bus(). 1.10 had a single bus, so handlers are registered on both.
+     */
+    public static void registerEventHandler(Object handler) {
+        MinecraftForge.EVENT_BUS.register(handler);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(handler);
     }
 
     protected void registerTickHandlers(TickManager manager) {

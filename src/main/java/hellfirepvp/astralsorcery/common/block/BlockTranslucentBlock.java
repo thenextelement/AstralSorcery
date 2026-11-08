@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
@@ -119,13 +120,24 @@ public class BlockTranslucentBlock extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     // @Override
     // public BlockRenderLayer getBlockLayer() {
     // return BlockRenderLayer.TRANSLUCENT;
     // }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:glass");
+    }
 
     @Override
     public boolean isOpaqueCube() {

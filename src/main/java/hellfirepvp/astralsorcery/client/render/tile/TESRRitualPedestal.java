@@ -8,6 +8,8 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
+import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
+import hellfirepvp.astralsorcery.client.util.model.ModelRenderHelper;
 import java.awt.Color;
 
 import net.minecraft.client.Minecraft;
@@ -41,6 +43,11 @@ public class TESRRitualPedestal extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+        // Static block body (was a JSON block model in 1.10)
+        ModelRenderHelper.beginWorld(x, y, z);
+        JsonModelLibrary.renderLayered("BlockRitualPedestal", "BlockRitualPedestalGlass");
+        ModelRenderHelper.end();
+
         TileRitualPedestal te = (TileRitualPedestal) tile;
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         renderCrystalStack(te, x, y, z);
