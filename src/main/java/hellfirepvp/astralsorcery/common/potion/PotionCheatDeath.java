@@ -34,7 +34,7 @@ public class PotionCheatDeath extends PotionCustomTexture {
     public static final Color PHOENIX_COLOR = new Color(0xFF5711);
 
     public PotionCheatDeath() {
-        super(24, false, 0xFF5711);
+        super(hellfirepvp.astralsorcery.common.registry.RegistryPotions.findFreePotionId(24), false, 0xFF5711);
         setPotionName("effect.as.cheatdeath");
         // setBeneficial(); could be isUsable()
     }

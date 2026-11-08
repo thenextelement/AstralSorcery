@@ -29,7 +29,7 @@ public class PotionBleed extends PotionCustomTexture {
     private static Object texBuffer = null;
 
     public PotionBleed() {
-        super(25, true, 0x751200);
+        super(hellfirepvp.astralsorcery.common.registry.RegistryPotions.findFreePotionId(25), true, 0x751200);
         setPotionName("effect.as.bleed");
     }
 

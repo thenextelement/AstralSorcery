@@ -12,7 +12,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 public class EnchantmentScorchingHeat extends EnchantmentBase {
 
     public EnchantmentScorchingHeat() {
-        super("as.smelting", 101, 1, EnumEnchantmentType.digger);
+        super("as.smelting", hellfirepvp.astralsorcery.common.registry.RegistryEnchantments.findFreeEnchantmentId(101), 1, EnumEnchantmentType.digger);
     }
 
 }
