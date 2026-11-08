@@ -13,4 +13,7 @@ public class RenderIDs {
 
     /** Blocks whose static body is a baked JSON model (client/util/model/JsonBlockModelRenderer). */
     public static int jsonModel = -1;
+
+    /** Marble and sooty marble (pillar variant uses the 1.12 column model). */
+    public static int marblePillar = -1;
 }

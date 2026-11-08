@@ -22,6 +22,7 @@ import hellfirepvp.astralsorcery.common.block.BlockFlareLight;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
 import hellfirepvp.astralsorcery.common.block.BlockMapDrawingTable;
 import hellfirepvp.astralsorcery.common.block.BlockMarble;
+import hellfirepvp.astralsorcery.common.block.BlockMarbleSlab;
 import hellfirepvp.astralsorcery.common.block.BlockMarbleStairs;
 import hellfirepvp.astralsorcery.common.block.BlockRitualLink;
 import hellfirepvp.astralsorcery.common.block.BlockStarlightInfuser;
@@ -57,6 +58,7 @@ public class BlocksAS {
     public static BlockWell blockWell;
     public static BlockMarble blockMarble;
     public static BlockMarbleStairs blockMarbleStairs;
+    public static BlockMarbleSlab blockMarbleSlab, blockMarbleDoubleSlab;
     public static BlockBlackMarble blockBlackMarble;
     public static BlockFlareLight blockVolatileLight;
     public static BlockWorldIlluminator blockIlluminator;

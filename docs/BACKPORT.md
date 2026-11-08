@@ -16,7 +16,7 @@ Source: `git diff 3488cc84 2006ca5ce`. Each item is translated to the 1.7.10 por
 states, JSON models via `JsonModel`, both event buses, mixins instead of ASM, etc.).
 
 - [x] Grindstone recipe registry (crystal/tool/sword sharpening, dust recipes, MineTweaker `mods.astralsorcery.Grindstone`, NEI)
-- [ ] Sooty marble variants, marble slabs, decorative blocks
+- [x] Sooty marble variants, marble slabs, 1.12 pillar model (festive/holiday textures skipped)
 - [ ] Evorsio + Pelotrio constellations, ritual effects
 - [ ] Tier 4 "Iridescent" altar, trait upgrade/recipes, journal trait pages
 - [ ] Mantles (capes) + constellation mantle effects (vicio flight adapted for 1.7, no elytra)

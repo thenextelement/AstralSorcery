@@ -123,6 +123,11 @@ public class ClientProxy extends CommonProxy {
             new hellfirepvp.astralsorcery.client.util.model.JsonBlockModelRenderer(
                 hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel));
         MinecraftForge.EVENT_BUS.register(hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.INSTANCE);
+        hellfirepvp.astralsorcery.common.lib.RenderIDs.marblePillar = cpw.mods.fml.client.registry.RenderingRegistry
+            .getNextAvailableRenderId();
+        cpw.mods.fml.client.registry.RenderingRegistry.registerBlockHandler(
+            new hellfirepvp.astralsorcery.client.render.block.RenderBlockMarblePillar(
+                hellfirepvp.astralsorcery.common.lib.RenderIDs.marblePillar));
         registerJsonBlockModels();
 
         registerFluidRenderers();

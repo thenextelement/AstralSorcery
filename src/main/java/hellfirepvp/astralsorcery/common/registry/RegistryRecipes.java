@@ -32,6 +32,7 @@ import hellfirepvp.astralsorcery.common.block.BlockBlackMarble;
 import hellfirepvp.astralsorcery.common.block.BlockCustomOre;
 import hellfirepvp.astralsorcery.common.block.BlockCustomSandOre;
 import hellfirepvp.astralsorcery.common.block.BlockMarble;
+import hellfirepvp.astralsorcery.common.block.BlockMarbleSlab;
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.crafting.RecipeChangeWandColor;
 import hellfirepvp.astralsorcery.common.crafting.ShapedLightProximityRecipe;
@@ -76,6 +77,8 @@ public class RegistryRecipes {
     public static ShapedRecipe rMarbleRuned, rMarbleEngraved, rMarbleChiseled, rMarbleArch, rMarblePillar,
         rMarbleBricks, rMarbleStairs;
     public static ShapedRecipe rBlackMarbleRaw;
+    public static ShapedRecipe rBlackMarbleArch, rBlackMarbleBricks, rBlackMarbleChiseled, rBlackMarbleEngraved,
+        rBlackMarbleRuned, rBlackMarblePillar, rMarbleSlab;
 
     // LightProximityRecipes
     public static ShapedRecipe rLPRAltar;
@@ -330,6 +333,20 @@ public class RegistryRecipes {
             ShapedRecipeSlot.LOWER_CENTER,
             ShapedRecipeSlot.LOWER_RIGHT);
 
+        ShapedRecipe[] black = buildBlackMarbleRecipes();
+        rBlackMarbleArch = black[0];
+        rBlackMarbleBricks = black[1];
+        rBlackMarbleChiseled = black[2];
+        rBlackMarbleEngraved = black[3];
+        rBlackMarbleRuned = black[4];
+        rBlackMarblePillar = black[5];
+        rMarbleSlab = new ShapedRecipe(
+            new ItemStack(BlocksAS.blockMarbleSlab, 6, BlockMarbleSlab.EnumType.BRICKS.ordinal())).addPart(
+                BlockMarble.MarbleBlockType.BRICKS.asStack(),
+                ShapedRecipeSlot.UPPER_LEFT,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.UPPER_RIGHT);
+
         rSmeltStarmetalOre = new SmeltingRecipe(ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack())
             .setInput(new ItemStack(BlocksAS.customOre, 1, BlockCustomOre.OreType.STARMETAL.ordinal()))
             .setExp(2F);
@@ -352,9 +369,50 @@ public class RegistryRecipes {
         addRecipe(manager, rMarbleChiseled.make());
         addRecipe(manager, rMarbleBricks.make());
         addRecipe(manager, rMarbleStairs.make());
+        addRecipe(manager, rMarbleSlab.make());
+        for (ShapedRecipe r : black) {
+            addRecipe(manager, r.make());
+        }
 
         rSmeltStarmetalOre.register();
         rSmeltAquamarineOre.register();
+    }
+
+    /** Sooty marble variants (1.12.2-1.8.5): arch, bricks, chiseled, engraved, runed, pillar. */
+    private static ShapedRecipe[] buildBlackMarbleRecipes() {
+        ItemStack raw = BlockBlackMarble.BlackMarbleBlockType.RAW.asStack();
+        ItemStack chiseled = BlockBlackMarble.BlackMarbleBlockType.CHISELED.asStack();
+        return new ShapedRecipe[] {
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ARCH, 3))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.UPPER_CENTER, ShapedRecipeSlot.UPPER_RIGHT),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.BRICKS, 4)).addPart(
+                raw,
+                ShapedRecipeSlot.UPPER_LEFT,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.LEFT,
+                ShapedRecipeSlot.CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.CHISELED, 4)).addPart(
+                raw,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.LEFT,
+                ShapedRecipeSlot.RIGHT,
+                ShapedRecipeSlot.LOWER_CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ENGRAVED, 5)).addPart(
+                raw,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.LEFT,
+                ShapedRecipeSlot.RIGHT,
+                ShapedRecipeSlot.LOWER_CENTER)
+                .addPart(chiseled, ShapedRecipeSlot.CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.RUNED, 3))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.UPPER_RIGHT)
+                .addPart(chiseled, ShapedRecipeSlot.UPPER_CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.PILLAR, 2))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.LEFT) };
+    }
+
+    private static ItemStack blackMarble(BlockBlackMarble.BlackMarbleBlockType type, int amount) {
+        return new ItemStack(BlocksAS.blockBlackMarble, amount, type.getMeta());
     }
 
     @SuppressWarnings("unchecked")
@@ -764,6 +822,9 @@ public class RegistryRecipes {
                         .setPassiveStarlightRequirement(20);
 
         registerAltarRecipe(new DiscoveryRecipe(rMarbleStairs)).setPassiveStarlightRequirement(20);
+        for (ShapedRecipe r : buildBlackMarbleRecipes()) {
+            registerAltarRecipe(new DiscoveryRecipe(r)).setPassiveStarlightRequirement(20);
+        }
 
         registerAltarRecipe(
             new DiscoveryRecipe(

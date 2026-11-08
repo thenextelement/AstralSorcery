@@ -27,6 +27,7 @@ import hellfirepvp.astralsorcery.client.util.resource.SpriteQuery;
 import hellfirepvp.astralsorcery.common.block.BlockCustomOre;
 import hellfirepvp.astralsorcery.common.block.BlockCustomSandOre;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
+import hellfirepvp.astralsorcery.common.block.BlockBlackMarble;
 import hellfirepvp.astralsorcery.common.block.BlockMarble;
 import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.block.network.BlockCollectorCrystalBase;
@@ -700,10 +701,22 @@ public class RegistryResearch {
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleRuned));
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleEngraved));
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleStairs));
+        resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleSlab));
 
-        ResearchNode resSootyMarble = new ResearchNode(new ItemStack(BlocksAS.blockBlackMarble), "SOOTYMARBLE", 5, 2);
+        BlockBlackMarble.BlackMarbleBlockType[] sValues = BlockBlackMarble.BlackMarbleBlockType.values();
+        ItemStack[] sootyStacks = new ItemStack[sValues.length];
+        for (int i = 0; i < sValues.length; i++) {
+            sootyStacks[i] = sValues[i].asStack();
+        }
+        ResearchNode resSootyMarble = new ResearchNode(sootyStacks, "SOOTYMARBLE", 5, 2);
         resSootyMarble.addPage(getTextPage("SOOTYMARBLE.1"));
         resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleRaw));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleBricks));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarblePillar));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleChiseled));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleArch));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleRuned));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleEngraved));
 
         ResearchNode resTable = new ResearchNode(
             new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_1.ordinal()),
@@ -721,11 +734,13 @@ public class RegistryResearch {
             resTable,
             1,
             ResearchProgression.DISCOVERY);
-        registerItemLookup(
-            new ItemStack(BlocksAS.blockBlackMarble, 1, OreDictionary.WILDCARD_VALUE),
-            resSootyMarble,
-            0,
-            ResearchProgression.DISCOVERY);
+        BlockBlackMarble.BlackMarbleBlockType[] sootyPageOrder = { BlockBlackMarble.BlackMarbleBlockType.RAW,
+            BlockBlackMarble.BlackMarbleBlockType.BRICKS, BlockBlackMarble.BlackMarbleBlockType.PILLAR,
+            BlockBlackMarble.BlackMarbleBlockType.CHISELED, BlockBlackMarble.BlackMarbleBlockType.ARCH,
+            BlockBlackMarble.BlackMarbleBlockType.RUNED, BlockBlackMarble.BlackMarbleBlockType.ENGRAVED };
+        for (int i = 0; i < sootyPageOrder.length; i++) {
+            registerItemLookup(sootyPageOrder[i].asStack(), resSootyMarble, i + 1, ResearchProgression.DISCOVERY);
+        }
         registerItemLookup(
             BlockMarble.MarbleBlockType.BRICKS.asStack(),
             resMarbleTypes,
@@ -760,6 +775,11 @@ public class RegistryResearch {
             new ItemStack(BlocksAS.blockMarbleStairs, 1, OreDictionary.WILDCARD_VALUE),
             resMarbleTypes,
             7,
+            ResearchProgression.DISCOVERY);
+        registerItemLookup(
+            new ItemStack(BlocksAS.blockMarbleSlab, 1, OreDictionary.WILDCARD_VALUE),
+            resMarbleTypes,
+            8,
             ResearchProgression.DISCOVERY);
         registerItemLookup(
             ItemCraftingComponent.MetaType.AQUAMARINE.asStack(),

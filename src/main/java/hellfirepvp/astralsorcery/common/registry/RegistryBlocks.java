@@ -32,6 +32,7 @@ import hellfirepvp.astralsorcery.common.block.BlockFlareLight;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
 import hellfirepvp.astralsorcery.common.block.BlockMapDrawingTable;
 import hellfirepvp.astralsorcery.common.block.BlockMarble;
+import hellfirepvp.astralsorcery.common.block.BlockMarbleSlab;
 import hellfirepvp.astralsorcery.common.block.BlockMarbleStairs;
 import hellfirepvp.astralsorcery.common.block.BlockRitualLink;
 import hellfirepvp.astralsorcery.common.block.BlockStarlightInfuser;
@@ -164,6 +165,22 @@ public class RegistryBlocks {
         blockMarble = registerBlockCustomName(new BlockMarble());
 
         blockMarbleStairs = registerBlock(new BlockMarbleStairs());
+        blockMarbleSlab = new BlockMarbleSlab(false);
+        blockMarbleDoubleSlab = new BlockMarbleSlab(true);
+        GameRegistry.registerBlock(
+            blockMarbleSlab,
+            net.minecraft.item.ItemSlab.class,
+            "BlockMarbleSlab",
+            blockMarbleSlab,
+            blockMarbleDoubleSlab,
+            false);
+        GameRegistry.registerBlock(
+            blockMarbleDoubleSlab,
+            net.minecraft.item.ItemSlab.class,
+            "BlockMarbleDoubleSlab",
+            blockMarbleSlab,
+            blockMarbleDoubleSlab,
+            true);
 
         blockBlackMarble = registerBlockCustomName(new BlockBlackMarble());
 
