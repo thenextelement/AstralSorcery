@@ -104,6 +104,9 @@ public class AstralSorcery {
 
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
+        if (hellfirepvp.astralsorcery.common.base.Mods.MINETWEAKER.isPresent()) {
+            hellfirepvp.astralsorcery.common.integrations.ModIntegrationCrafttweaker.applyInitialModifications();
+        }
         CelestialGatewaySystem.instance.onServerStart();
     }
 

@@ -39,7 +39,9 @@ public class SimpleRecipeHandlers {
         @Override
         protected List<ASCachedRecipe> buildAll() {
             List<ASCachedRecipe> out = new ArrayList<>();
-            for (AbstractInfusionRecipe r : InfusionRecipeRegistry.recipes) {
+            List<AbstractInfusionRecipe> all = new ArrayList<>(InfusionRecipeRegistry.recipes);
+            all.addAll(InfusionRecipeRegistry.mtRecipes); // MineTweaker additions are kept separately
+            for (AbstractInfusionRecipe r : all) {
                 ItemStack res = r.getOutputForRender();
                 if (res == null) continue;
                 ItemHandle in = r.getInput();
@@ -80,7 +82,9 @@ public class SimpleRecipeHandlers {
         @Override
         protected List<ASCachedRecipe> buildAll() {
             List<ASCachedRecipe> out = new ArrayList<>();
-            for (WellLiquefaction.LiquefactionEntry e : WellLiquefaction.getRegisteredLiquefactions()) {
+            List<WellLiquefaction.LiquefactionEntry> all = new ArrayList<>(WellLiquefaction.getRegisteredLiquefactions());
+            all.addAll(WellLiquefaction.mtLiquefactions.values());
+            for (WellLiquefaction.LiquefactionEntry e : all) {
                 ItemStack bucket = FluidContainerRegistry.fillFluidContainer(
                     new FluidStack(e.producing, FluidContainerRegistry.BUCKET_VOLUME),
                     FluidContainerRegistry.EMPTY_BUCKET);
@@ -111,7 +115,9 @@ public class SimpleRecipeHandlers {
         @Override
         protected List<ASCachedRecipe> buildAll() {
             List<ASCachedRecipe> out = new ArrayList<>();
-            for (LightOreTransmutations.Transmutation t : LightOreTransmutations.getRegisteredTransmutations()) {
+            List<LightOreTransmutations.Transmutation> all = new ArrayList<>(LightOreTransmutations.getRegisteredTransmutations());
+            all.addAll(LightOreTransmutations.mtTransmutations);
+            for (LightOreTransmutations.Transmutation t : all) {
                 ItemStack in = t.getInputDisplayStack();
                 ItemStack res = t.getOutputDisplayStack();
                 if (in == null || res == null) continue;

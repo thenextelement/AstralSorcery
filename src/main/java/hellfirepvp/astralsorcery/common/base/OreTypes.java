@@ -78,6 +78,23 @@ public class OreTypes implements ConfigDataAdapter<OreEntry> {
         return entries;
     }
 
+    /** MineTweaker: add an ore dictionary entry with the given weight. */
+    public void addOreEntry(String oreDictName, double weight) {
+        appendOreEntry(new OreEntry(oreDictName, Math.max(1, (int) Math.round(weight))));
+    }
+
+    /** MineTweaker: remove all entries for the given ore dictionary name. */
+    public void removeOreEntry(String oreDictName) {
+        java.util.Iterator<OreEntry> it = oreDictWeights.iterator();
+        while (it.hasNext()) {
+            OreEntry e = it.next();
+            if (e.oreName.equals(oreDictName)) {
+                totalWeight -= e.weight;
+                it.remove();
+            }
+        }
+    }
+
     private void appendOreEntry(OreEntry entry) {
         oreDictWeights.add(entry);
         totalWeight += entry.weight;
