@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.registry.structures;
 
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -39,17 +40,13 @@ public class StructureAncientShrine extends StructureBlockArray {
 
     private void load() {
         Block m = BlocksAS.blockMarble;
-        Block mRaw = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.RAW);
-        Block mBrick = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                         // BlockMarble.MarbleBlockType.BRICKS);
-        Block mChisel = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                          // BlockMarble.MarbleBlockType.CHISELED);
-        Block mPillar = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                          // BlockMarble.MarbleBlockType.PILLAR);
-        Block mArch = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.ARCH);
-        Block mRuned = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.RUNED);
-        Block mEngraved = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                            // BlockMarble.MarbleBlockType.ENGRAVED);
+        BlockMeta mRaw = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mBrick = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mChisel = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mPillar = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mArch = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mRuned = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
+        BlockMeta mEngraved = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ENGRAVED.getMeta());
         Block air = Blocks.air;
 
         addBlockCube(mRaw, -7, 0, -7, 7, 0, 7);

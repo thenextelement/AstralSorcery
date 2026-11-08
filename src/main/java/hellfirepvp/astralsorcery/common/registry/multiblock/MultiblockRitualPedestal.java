@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.registry.multiblock;
 
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
@@ -32,10 +33,10 @@ public class MultiblockRitualPedestal extends PatternBlockArray {
 
         addBlock(0, 0, 0, BlocksAS.ritualPedestal);
 
-        Block mch = marble;// .getDefaultState().withProperty(MARBLE_TYPE, MarbleBlockType.CHISELED);
-        Block mbr = marble;// .getDefaultState().withProperty(MARBLE_TYPE, MarbleBlockType.BRICKS);
-        Block mrw = marble;// .getDefaultState().withProperty(MARBLE_TYPE, MarbleBlockType.RAW);
-        Block mar = marble;// .getDefaultState().withProperty(MARBLE_TYPE, MarbleBlockType.ARCH);
+        BlockMeta mch = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mbr = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mrw = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mar = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
 
         addBlock(0, -1, 0, mch);
 
