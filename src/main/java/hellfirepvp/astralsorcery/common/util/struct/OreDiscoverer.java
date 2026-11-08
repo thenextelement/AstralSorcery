@@ -26,38 +26,40 @@ public class OreDiscoverer {
         xzLimit = MathHelper.clamp_int(xzLimit, 0, 32);
         BlockPos originPos = position.toBlockPos();
         BlockArray out = new BlockArray();
-        List<Block> successfulOres = new ArrayList<>(12);
-        // BlockPos.MutableBlockPos.PooledMutableBlockPos pooledPos = BlockPos.PooledMutableBlockPos.retain();
-        // try {
-        // for (int xx = -xzLimit; xx <= xzLimit; xx++) {
-        // for (int zz = -xzLimit; zz <= xzLimit; zz++) {
-        // pooledPos.setPos(originPos.getX() + xx, 0, originPos.getZ() + zz);
-        // Chunk c = world.getChunkFromBlockCoords(pooledPos);
-        // int highest = (c.getTopFilledSegment() + 1) * 16;
-        // for (int y = 0; y < highest; y++) {
-        // pooledPos.setY(y);
-        // Block at = c.getBlockState(pooledPos);
-        // if(successfulOres.contains(at)) {
-        // out.addBlock(new BlockPos(pooledPos), at);
-        // } else if (isOre(world, at, pooledPos)) {
-        // out.addBlock(new BlockPos(pooledPos), at);
-        // successfulOres.add(at);
-        // }
-        // }
-        // }
-        // }
-        // } finally {
-        // pooledPos.release();
-        // }
+        java.util.Set<Long> knownOres = new java.util.HashSet<>();
+        java.util.Set<Long> knownNonOres = new java.util.HashSet<>();
+        for (int xx = -xzLimit; xx <= xzLimit; xx++) {
+            for (int zz = -xzLimit; zz <= xzLimit; zz++) {
+                int wx = originPos.getX() + xx;
+                int wz = originPos.getZ() + zz;
+                net.minecraft.world.chunk.Chunk c = world.getChunkFromBlockCoords(wx, wz);
+                int highest = (c.getTopFilledSegment() + 1) * 16;
+                for (int y = 0; y < highest; y++) {
+                    Block at = c.getBlock(wx & 15, y, wz & 15);
+                    if (at == net.minecraft.init.Blocks.air) continue;
+                    int meta = c.getBlockMetadata(wx & 15, y, wz & 15);
+                    long key = ((long) Block.getIdFromBlock(at) << 4) | (meta & 15);
+                    if (knownNonOres.contains(key)) continue;
+                    if (!knownOres.contains(key)) {
+                        if (!isOre(at, meta)) {
+                            knownNonOres.add(key);
+                            continue;
+                        }
+                        knownOres.add(key);
+                    }
+                    out.addBlock(new BlockPos(wx, y, wz), new BlockMeta(at, meta));
+                }
+            }
+        }
         return out;
     }
 
-    private static boolean isOre(World world, Block state, BlockPos pos) {
+    private static boolean isOre(Block state, int meta) {
         if (state instanceof BlockOre) { // WELL that's easy enough.
             return true;
         }
-        ItemStack blockStack = ItemUtils.createBlockStack(state);
-        if (blockStack == null || blockStack.getItem() == null) return false;
+        if (net.minecraft.item.Item.getItemFromBlock(state) == null) return false;
+        ItemStack blockStack = new ItemStack(state, 1, state.damageDropped(meta));
         return ItemUtils.hasOreNamePart(blockStack, "ore");
     }
 

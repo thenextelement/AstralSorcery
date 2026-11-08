@@ -118,6 +118,9 @@ public class AstralSorcery {
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
         ResearchManager.saveAndClearServerCache();
+
+        hellfirepvp.astralsorcery.common.data.server.ServerData.writeData();
+        hellfirepvp.astralsorcery.common.event.listener.EventHandlerServer.isDataInitialized = false; // Fix for SP stuffs
     }
 
     @Mod.EventHandler

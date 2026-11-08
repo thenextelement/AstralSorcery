@@ -104,25 +104,17 @@ public class EventHandlerServer {
         TickEvent.Type.SERVER);
     public static TimeoutList<EntityPlayer> invulnerabilityCooldown = new TimeoutList<>(null, TickEvent.Type.SERVER);
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void onLoad(WorldEvent.Load event) {
-    // World w = event.world;
-    // int id = w.provider.dimensionId;
-    // if(!w.isRemote && !isDataInitialized) {
-    // //This is kinda an early point in server startup, when it loads the overworld.
-    // //Since the FML Server start events are either too early or too late, we do it here.
-    //// ServerData.reloadDataFromSaveHandler(w.getSaveHandler());
-    // isDataInitialized = true;
-    // }
-    // if(DataWorldSkyHandlers.hasWorldHandler(id, w.isRemote ? Side.CLIENT : Side.SERVER) &&
-    // !Config.weakSkyRendersWhitelist.contains(w.provider.dimensionId)) {
-    // AstralSorcery.log.info("[AstralSorcery] Found worldProvider in Dimension " + id + " : " +
-    // w.provider.getClass().getName());
-    //// w.provider = new WorldProviderBrightnessInj(w, w.provider);
-    // AstralSorcery.log.info("[AstralSorcery] Injected WorldProvider into dimension " + id + " (chaining old
-    // provider.)");
-    // }
-    // }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onLoad(WorldEvent.Load event) {
+        World w = event.world;
+        if (!w.isRemote && !isDataInitialized) {
+            // This is kinda an early point in server startup, when it loads the overworld.
+            // Since the FML Server start events are either too early or too late, we do it here.
+            hellfirepvp.astralsorcery.common.data.server.ServerData.reloadDataFromSaveHandler(w.getSaveHandler());
+            isDataInitialized = true;
+        }
+        // Solar eclipse brightness (1.10: WorldProviderBrightnessInj) is handled by MixinWorld on 1.7.
+    }
 
     @SubscribeEvent
     public void onUnload(WorldEvent.Unload event) {
