@@ -13,10 +13,12 @@ public enum Mixins implements IMixins {
         .addCommonMixins(
             "minecraft.MixinChunk",
             "minecraft.MixinEntityLivingBase",
-            "minecraft.MixinItemStack")
+            "minecraft.MixinItemStack",
+            "minecraft.MixinWorld")
         .addClientMixins(
             "minecraft.MixinMinecraft",
-            "minecraft.MixinNetHandlerPlayClient")),
+            "minecraft.MixinNetHandlerPlayClient",
+            "minecraft.MixinWorldClientSide")),
 
     ;
     // spotless:on
