@@ -257,7 +257,7 @@ public class ClientProxy extends CommonProxy {
         registerModelItem(BlocksAS.drawingTable, new ItemRendererJsonModel().add(0, "BlockMapDrawingTable", null));
         registerModelItem(BlocksAS.celestialGateway, new ItemRendererJsonModel().add(0, "BlockCelestialGateway", "BlockCelestialGatewayOrb"));
         registerModelItem(BlocksAS.lens, new ItemRendererJsonModel().add(0, "BlockLens_full", null));
-        registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, "BlockPrism", null));
+        registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, null, "BlockPrism"));
     }
 
     private void registerJsonBlockModels() {
@@ -270,7 +270,7 @@ public class ClientProxy extends CommonProxy {
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.starlightInfuser, "BlockStarlightInfuser", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lens, "BlockLens_tesr", null);
-        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, "BlockPrism", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, null, "BlockPrism"); // translucent layer in 1.10
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.drawingTable, "BlockMapDrawingTable", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels

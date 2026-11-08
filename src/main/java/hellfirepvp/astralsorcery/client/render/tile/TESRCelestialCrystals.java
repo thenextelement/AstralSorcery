@@ -156,7 +156,7 @@ public class TESRCelestialCrystals extends TileEntitySpecialRenderer implements 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         GL11.glPushMatrix();
-        GL11.glTranslated(0.5, 0.25, 0.5);
+        TESRCollectorCrystal.translateToItemOrigin(type, 0.25);
         GL11.glScalef(0.2F, 0.2F, 0.2F);
         GL11.glRotated(-10, 0, 0, 1);
         GL11.glRotated(20, 1, 0, 0);

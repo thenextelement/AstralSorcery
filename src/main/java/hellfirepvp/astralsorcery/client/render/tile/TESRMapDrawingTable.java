@@ -122,7 +122,12 @@ public class TESRMapDrawingTable extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         texDrawingTable.bind();
+        // pulled towards the camera so it doesn't z-fight with the baked table body (1.7 chunk vs TESR precision)
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(-1F, -2F);
         modelDrawingTable.render(null, te.hasParchment() ? 1 : 0, 0, 0, 0, 0, 1F);
+        GL11.glPolygonOffset(0F, 0F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         RenderHelper.disableStandardItemLighting();
         TextureHelper.refreshTextureBindState();
         GL11.glPopMatrix();

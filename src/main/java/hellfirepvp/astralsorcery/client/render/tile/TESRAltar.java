@@ -200,7 +200,12 @@ public class TESRAltar extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         texAltar3.bind();
+        // pulled towards the camera so it doesn't z-fight with the baked altar body (1.7 chunk vs TESR precision)
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(-1F, -2F);
         modelAltar3.render(null, (float) jump, 0, 0, 0, 0, 1F);
+        GL11.glPolygonOffset(0F, 0F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -221,7 +226,12 @@ public class TESRAltar extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         texAltar2.bind();
+        // pulled towards the camera so it doesn't z-fight with the baked altar body (1.7 chunk vs TESR precision)
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(-1F, -2F);
         modelAltar2.render(null, (float) jump, 0, 0, 0, 0, 1F);
+        GL11.glPolygonOffset(0F, 0F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         GL11.glPopAttrib();

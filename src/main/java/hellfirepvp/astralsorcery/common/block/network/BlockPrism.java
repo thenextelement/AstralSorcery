@@ -187,6 +187,12 @@ public class BlockPrism extends BlockStarlightNetwork {
         return null;
     }
 
+    // 1.10 rendered the whole prism in the translucent layer (glass cage)
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
     @Override
     public int getRenderType() {
         return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;

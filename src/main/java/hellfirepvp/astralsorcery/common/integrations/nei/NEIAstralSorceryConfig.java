@@ -24,6 +24,18 @@ public class NEIAstralSorceryConfig implements IConfigureNEI {
         register(new SimpleRecipeHandlers.Infuser());
         register(new SimpleRecipeHandlers.Well());
         register(new SimpleRecipeHandlers.Transmutation());
+
+        // internal blocks that only exist in the world (1.10 never exposed them as items)
+        for (net.minecraft.block.Block internal : new net.minecraft.block.Block[] {
+            hellfirepvp.astralsorcery.common.lib.BlocksAS.blockFakeTree,
+            hellfirepvp.astralsorcery.common.lib.BlocksAS.translucentBlock,
+            hellfirepvp.astralsorcery.common.lib.BlocksAS.blockStructural,
+            hellfirepvp.astralsorcery.common.lib.BlocksAS.blockVolatileLight,
+            hellfirepvp.astralsorcery.common.lib.BlocksAS.blockLiquidStarlight }) {
+            if (internal != null && net.minecraft.item.Item.getItemFromBlock(internal) != null) {
+                API.hideItem(new net.minecraft.item.ItemStack(internal, 1, net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE));
+            }
+        }
     }
 
     private static void register(TemplateRecipeHandler handler) {
