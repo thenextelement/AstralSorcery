@@ -58,6 +58,7 @@ public class ItemRendererJsonModel implements IItemRenderer {
         if (e == null) e = fallback;
         if (e == null) return;
         ModelRenderHelper.beginItem(type);
+        fitToUnitCube(e);
         JsonModelLibrary.renderLayered(e.solid, e.translucent);
         if (e.tesr != null && e.dummy != null) {
             try {
@@ -67,6 +68,28 @@ public class ItemRendererJsonModel implements IItemRenderer {
             }
         }
         ModelRenderHelper.endItem();
+    }
+
+    /** Models larger than one block (tier 2/3 altar, drawing table) are scaled down around the block center. */
+    private static void fitToUnitCube(Entry e) {
+        float[] b = null;
+        for (String n : new String[] { e.solid, e.translucent }) {
+            if (n == null) continue;
+            float[] mb = JsonModelLibrary.get(n)
+                .getBounds();
+            if (b == null) b = mb;
+            else for (int i = 0; i < 3; i++) {
+                b[i] = Math.min(b[i], mb[i]);
+                b[i + 3] = Math.max(b[i + 3], mb[i + 3]);
+            }
+        }
+        if (b == null) return;
+        float extent = Math.max(b[3] - b[0], Math.max(b[4] - b[1], b[5] - b[2]));
+        if (extent <= 1.01F) return;
+        float scale = 1F / extent;
+        org.lwjgl.opengl.GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        org.lwjgl.opengl.GL11.glScalef(scale, scale, scale);
+        org.lwjgl.opengl.GL11.glTranslatef(-(b[0] + b[3]) / 2F, -(b[1] + b[4]) / 2F, -(b[2] + b[5]) / 2F);
     }
 
     private static class Entry {

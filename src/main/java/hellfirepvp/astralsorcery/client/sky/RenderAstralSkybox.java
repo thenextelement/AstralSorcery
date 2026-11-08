@@ -283,12 +283,12 @@ public class RenderAstralSkybox extends IRenderHandler {
         // VertexBuffer vb = tessellator.getBuffer();
 
         GL11.glDepthMask(false);
-        // GlStateManager.enableFog();//todo check if needed
+        GL11.glEnable(GL11.GL_FOG);
         GL11.glColor3f(f, f1, f2);
 
         GL11.glCallList(glSkyList);
 
-        // GlStateManager.disableFog();//todo check if needed
+        GL11.glDisable(GL11.GL_FOG);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -320,7 +320,7 @@ public class RenderAstralSkybox extends IRenderHandler {
 
         GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, -((float) (absPlayerHorizon - 16.0D)), 0.0F);
-        // GlStateManager.callList(glSkyList2); //TODO
+        // GL11.glCallList(glSkyList2); // also disabled in the 1.10 original
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDepthMask(true);
@@ -328,7 +328,7 @@ public class RenderAstralSkybox extends IRenderHandler {
 
     private void renderDefaultCelestials(float partialTicks) {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE, GL11.GL_ZERO);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
         // GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
         // GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GL11.glPushMatrix();
@@ -420,7 +420,7 @@ public class RenderAstralSkybox extends IRenderHandler {
         // GlStateManager.disableBlend();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        // GlStateManager.enableFog();//todo check if needed
+        GL11.glEnable(GL11.GL_FOG);
         GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         // GL11.glDisable(GL11.GL_TEXTURE_2D);

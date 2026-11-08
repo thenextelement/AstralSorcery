@@ -60,6 +60,25 @@ public class JsonModel {
         return name;
     }
 
+    /** Model-space bounds in block units: {minX, minY, minZ, maxX, maxY, maxZ}; unit cube if empty. */
+    public float[] getBounds() {
+        float[] b = { Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE,
+            -Float.MAX_VALUE };
+        boolean any = false;
+        for (Element e : elements) {
+            for (Face f : e.faces) {
+                for (float[] v : f.vertices) {
+                    any = true;
+                    for (int i = 0; i < 3; i++) {
+                        b[i] = Math.min(b[i], v[i]);
+                        b[i + 3] = Math.max(b[i + 3], v[i]);
+                    }
+                }
+            }
+        }
+        return any ? b : new float[] { 0, 0, 0, 1, 1, 1 };
+    }
+
     /** Draws the model into the unit cube at the current origin. Caller controls blending, color and lighting. */
     public void render() {
         if (compiledLists == null) {
