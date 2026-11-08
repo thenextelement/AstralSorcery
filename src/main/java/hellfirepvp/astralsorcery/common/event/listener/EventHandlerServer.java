@@ -312,6 +312,8 @@ public class EventHandlerServer {
 
     @SubscribeEvent
     public void onRightClick(PlayerInteractEvent event) {
+        // 1.7 fires PlayerInteractEvent for left clicks and air clicks too (1.10 used RightClickBlock)
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
         ItemStack hand = event.entityPlayer.getHeldItem();
         // if(event.getHand() == EnumHand.OFF_HAND) {
         // hand = event.entityPlayer.getHeldItem(EnumHand.MAIN_HAND);
@@ -321,7 +323,13 @@ public class EventHandlerServer {
             ISpecialInteractItem i = (ISpecialInteractItem) hand.getItem();
             BlockPos pos = new BlockPos(event.x, event.y, event.z);
             if (i.needsSpecialHandling(event.world, pos, event.entityPlayer, hand)) {
-                i.onRightClick(event.world, pos, event.entityPlayer, event.face, hand);
+                if (event.world.isRemote) {
+                    // 1.7: a cancelled client-side interact never reaches the server, so forward the click
+                    // ourselves; the server-side event then performs the special interaction.
+                    AstralSorcery.proxy.forwardBlockInteractToServer(event.x, event.y, event.z, event.face);
+                } else {
+                    i.onRightClick(event.world, pos, event.entityPlayer, event.face, hand);
+                }
                 event.setCanceled(true);
             }
         }
@@ -329,6 +337,7 @@ public class EventHandlerServer {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRightClickLast(PlayerInteractEvent event) {
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
         if (!event.world.isRemote) {
             Block interacted = event.world.getBlock(event.x, event.y, event.z);
             if (interacted instanceof BlockWorkbench) {

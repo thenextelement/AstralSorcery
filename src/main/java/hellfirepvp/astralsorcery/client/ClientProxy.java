@@ -268,6 +268,30 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
+    public void forwardBlockInteractToServer(int x, int y, int z, int side) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer == null || mc.getNetHandler() == null) return;
+        float hx = 0.5F, hy = 0.5F, hz = 0.5F;
+        if (mc.objectMouseOver != null && mc.objectMouseOver.hitVec != null) {
+            hx = (float) mc.objectMouseOver.hitVec.xCoord - x;
+            hy = (float) mc.objectMouseOver.hitVec.yCoord - y;
+            hz = (float) mc.objectMouseOver.hitVec.zCoord - z;
+        }
+        mc.getNetHandler()
+            .addToSendQueue(
+                new net.minecraft.network.play.client.C08PacketPlayerBlockPlacement(
+                    x,
+                    y,
+                    z,
+                    side,
+                    mc.thePlayer.inventory.getCurrentItem(),
+                    hx,
+                    hy,
+                    hz));
+        mc.thePlayer.swingItem();
+    }
+
+    @Override
     public void scheduleClientside(Runnable r, int tickDelay) {
         scheduler.addRunnable(r, tickDelay);
     }

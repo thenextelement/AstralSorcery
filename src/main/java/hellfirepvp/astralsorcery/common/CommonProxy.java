@@ -281,6 +281,9 @@ public class CommonProxy implements IGuiHandler {
         scheduleClientside(r, 0);
     }
 
+    /** Client-only: send a block right-click to the server after the client-side event was cancelled. */
+    public void forwardBlockInteractToServer(int x, int y, int z, int side) {}
+
     public void scheduleDelayed(Runnable r, int tickDelay) {
         commonScheduler.addRunnable(r, tickDelay);
     }
