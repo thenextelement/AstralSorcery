@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -60,7 +61,7 @@ public class BlockAttunementAltar extends BlockContainer {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return boxAttunementAlar;
+        return BlockBoxUtil.offset(boxAttunementAlar, x, y, z);
     }
 
     /*

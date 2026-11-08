@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +83,7 @@ public class BlockLens extends BlockStarlightNetwork implements BlockVariants {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return boxLens;
+        return BlockBoxUtil.offset(boxLens, x, y, z);
     }
 
     @Override

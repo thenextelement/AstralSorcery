@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -86,7 +87,7 @@ public abstract class BlockCollectorCrystalBase extends BlockStarlightNetwork im
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return boxCrystal;
+        return BlockBoxUtil.offset(boxCrystal, x, y, z);
     }
 
     // @Override

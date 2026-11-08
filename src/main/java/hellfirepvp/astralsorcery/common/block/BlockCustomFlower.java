@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,7 +150,7 @@ public class BlockCustomFlower extends Block implements BlockCustomName, BlockVa
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
     }
 
     // @Nullable

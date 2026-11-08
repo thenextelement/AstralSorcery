@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.util.List;
 import java.util.Random;
 
@@ -111,7 +112,7 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
         MachineType type = MachineType.values()[meta];
         switch (type) {
             case TELESCOPE:
-                return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1), x, y, z);
         }
         return super.getCollisionBoundingBoxFromPool(worldIn, x, y, z);
     }
@@ -123,7 +124,7 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
         MachineType type = MachineType.values()[meta];
         switch (type) {
             case TELESCOPE:
-                return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1), x, y, z);
         }
         return super.getSelectedBoundingBoxFromPool(worldIn, x, y, z);
     }

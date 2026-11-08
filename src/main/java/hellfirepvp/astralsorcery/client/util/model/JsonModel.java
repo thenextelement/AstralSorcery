@@ -154,7 +154,7 @@ public class JsonModel {
     static JsonModel load(String name) {
         JsonModel model = new JsonModel(name);
         try {
-            model.parseRecursive(name, 0);
+            model.parseRecursive(name, AstralSorcery.MODID, 0);
         } catch (Exception exc) {
             AstralSorcery.log.warn("[JsonModel] Could not load model " + name + ": " + exc.getMessage());
         }
@@ -162,9 +162,9 @@ public class JsonModel {
         return model;
     }
 
-    private void parseRecursive(String modelName, int depth) throws Exception {
+    private void parseRecursive(String modelName, String defaultDomain, int depth) throws Exception {
         if (depth > 8) return;
-        String domain = AstralSorcery.MODID;
+        String domain = defaultDomain;
         String path = modelName;
         int idx = modelName.indexOf(':');
         if (idx >= 0) {
@@ -200,9 +200,11 @@ public class JsonModel {
             }
         }
         if (root.has("parent")) {
+            // like vanilla, an un-prefixed parent ("block/block") refers to the minecraft domain
             parseRecursive(
                 root.get("parent")
                     .getAsString(),
+                "minecraft",
                 depth + 1);
         }
     }

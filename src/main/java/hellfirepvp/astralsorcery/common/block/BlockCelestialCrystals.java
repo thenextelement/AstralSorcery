@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,17 +85,17 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        switch (STAGE) {
+        switch (MathHelper.clamp_int(worldIn.getBlockMetadata(x, y, z), 0, STAGE)) {
             case 0:
-                return bbStage0;
+                return BlockBoxUtil.offset(bbStage0, x, y, z);
             case 1:
-                return bbStage1;
+                return BlockBoxUtil.offset(bbStage1, x, y, z);
             case 2:
-                return bbStage2;
+                return BlockBoxUtil.offset(bbStage2, x, y, z);
             case 3:
-                return bbStage3;
+                return BlockBoxUtil.offset(bbStage3, x, y, z);
             case 4:
-                return bbStage4;
+                return BlockBoxUtil.offset(bbStage4, x, y, z);
         }
         return super.getCollisionBoundingBoxFromPool(worldIn, x, y, z);
     }

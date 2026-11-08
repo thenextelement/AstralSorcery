@@ -222,7 +222,7 @@ public class TileTreeBeacon extends TileReceiverBase {
             } else {
                 for (BlockSnapshot snapshot : world.capturedBlockSnapshots) {
                     Block current = world.getBlock(snapshot.x, snapshot.y, snapshot.z);
-                    world.notifyBlocksOfNeighborChange(snapshot.x, snapshot.y, snapshot.z, current, 3);
+                    world.markBlockForUpdate(snapshot.x, snapshot.y, snapshot.z);
                 }
             }
         }

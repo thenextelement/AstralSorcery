@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -42,7 +43,7 @@ public class BlockOpaqueCosmeticRock extends Block implements BlockCustomName {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return FULL_BLOCK_AABB;
+        return BlockBoxUtil.offset(FULL_BLOCK_AABB, x, y, z);
     }
 
     @Override

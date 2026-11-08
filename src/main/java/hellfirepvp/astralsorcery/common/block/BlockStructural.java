@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -102,11 +103,11 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
         BlockType type = BlockType.values()[meta];
         switch (type) {
             case TELESCOPE_STRUCT:
-                return AxisAlignedBB.getBoundingBox(0, -1, 0, 1, 1, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, -1, 0, 1, 1, 1), x, y, z);
             // case ATTUNEMENT_ALTAR_STRUCT:
-            // return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+            // return BlockBoxUtil.offset(new AxisAlignedBB(0, 0, 0, 0, 0, 0), x, y, z);
         }
-        return FULL_BLOCK_AABB;
+        return BlockBoxUtil.offset(FULL_BLOCK_AABB, x, y, z);
     }
 
     @Override

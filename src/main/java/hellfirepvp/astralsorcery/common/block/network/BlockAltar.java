@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block.network;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -200,11 +201,11 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
          * TileAltar.AltarLevel al = ta.getAltarLevel();
          * switch (al) {
          * case DISCOVERY:
-         * return boxDiscovery;
+         * return BlockBoxUtil.offset(boxDiscovery, x, y, z);
          * case ATTENUATION:
-         * return boxAttenuation;
+         * return BlockBoxUtil.offset(boxAttenuation, x, y, z);
          * case CONSTELLATION_CRAFT:
-         * return boxConstellation;
+         * return BlockBoxUtil.offset(boxConstellation, x, y, z);
          * case TRAIT_CRAFT:
          * break;
          * case ENDGAME:
@@ -216,10 +217,10 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
         // if(type != null) {
         // AxisAlignedBB box = type.getBox();
         // if(box != null) {
-        // return box;
+        // return BlockBoxUtil.offset(box, x, y, z);
         // }
         // }
-        return FULL_BLOCK_AABB;
+        return BlockBoxUtil.offset(FULL_BLOCK_AABB, x, y, z);
     }
 
     @Override

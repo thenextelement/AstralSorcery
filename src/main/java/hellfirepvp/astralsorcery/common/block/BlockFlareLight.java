@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class BlockFlareLight extends Block {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return FULL_BLOCK_AABB;
+        return null; // no collision (1.10 had an empty addCollisionBoxToList)
     }
 
     // @Override

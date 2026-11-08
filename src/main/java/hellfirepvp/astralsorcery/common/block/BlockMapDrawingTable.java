@@ -1,5 +1,6 @@
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.Random;
@@ -217,7 +218,7 @@ public class BlockMapDrawingTable extends BlockContainer {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return drawingTableBox;
+        return BlockBoxUtil.offset(drawingTableBox, x, y, z);
     }
 
     @Override

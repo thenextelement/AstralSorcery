@@ -8,6 +8,7 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -45,7 +46,7 @@ public class BlockRitualLink extends BlockContainer {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
     }
 
     @Override
