@@ -16,10 +16,12 @@ Verified in-game (dedicated server + client):
   multiblock pasting with the correct marble variants
 - NEI recipe handlers (altar tiers, starlight infuser, lightwell, transmutation)
 - MineTweaker 3 scripts (`mods.astralsorcery.*`, see `AS-Example.zs`)
-- StructureLib (optional): the Multiblock Hologram Projector shows/builds AS multiblocks when used on the core
-  block (altar, ritual pedestal, attunement altar, infuser, relay, celestial gateway, celestial collector crystal)
 
 Ported but not yet exercised in-game: rituals, attunement, starlight network linking, perks, celestial gateway.
+
+Untested: StructureLib (optional) support. The Multiblock Hologram Projector should show/build AS multiblocks when
+used on the core block (altar, ritual pedestal, attunement altar, infuser, relay, celestial gateway, celestial
+collector crystal).
 
 Not in scope for 1.4.x: Evorsio/Pelotrio (1.12 constellations; stubs exist), 1.12 grindstone sharpening recipes.
 
