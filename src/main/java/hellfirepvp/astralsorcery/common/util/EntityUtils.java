@@ -39,7 +39,12 @@ public class EntityUtils {
 
     public static boolean canEntitySpawnHere(World world, BlockPos at, ResourceLocation entityKey,
         boolean respectConditions) {
-        Entity entity = EntityList.createEntityByName(entityKey.toString(), world);
+        return canEntitySpawnHere(world, at, entityKey.getResourcePath(), respectConditions);
+    }
+
+    /** entityName: 1.7 EntityList string id (e.g. "Zombie"). */
+    public static boolean canEntitySpawnHere(World world, BlockPos at, String entityName, boolean respectConditions) {
+        Entity entity = EntityList.createEntityByName(entityName, world);
         if (entity == null) {
             return false;
         }
@@ -66,10 +71,8 @@ public class EntityUtils {
     }
 
     public static boolean doesEntityHaveSpace(World world, Entity entity) {
-        return !world.isAnyLiquid(entity.getBoundingBox())
-            && world.getCollidingBoundingBoxes(entity, entity.getBoundingBox())
-                .isEmpty()
-            && world.checkNoEntityCollision(entity.getBoundingBox(), entity);
+        return !world.isAnyLiquid(entity.boundingBox) && world.getCollidingBoundingBoxes(entity, entity.boundingBox)
+            .isEmpty() && world.checkNoEntityCollision(entity.boundingBox, entity);
     }
 
     public static void applyVortexMotion(Function<Void, Vector3> getPositionFunction,

@@ -70,6 +70,7 @@ public class ConstellationMapEffectRegistry {
 
         public final Enchantment ench;
         public final int minEnchLevel, maxEnchLevel;
+        public boolean ignoreCompatibility = false;
 
         public EnchantmentMapEffect(Enchantment ench) {
             this.ench = ench;
@@ -79,8 +80,13 @@ public class ConstellationMapEffectRegistry {
 
         public EnchantmentMapEffect(Enchantment ench, int min, int max) {
             this.ench = ench;
-            this.maxEnchLevel = min;
-            this.minEnchLevel = max;
+            this.maxEnchLevel = max;
+            this.minEnchLevel = min;
+        }
+
+        public EnchantmentMapEffect setIgnoreCompatibility() {
+            this.ignoreCompatibility = true;
+            return this;
         }
 
     }

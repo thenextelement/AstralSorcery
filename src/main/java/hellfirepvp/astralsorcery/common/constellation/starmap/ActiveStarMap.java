@@ -166,11 +166,13 @@ public class ActiveStarMap {
             .entrySet()) {
             for (ConstellationMapEffectRegistry.EnchantmentMapEffect effect : entry.getValue()) {
                 if (enchantments.containsKey(effect.ench.effectId)) continue;
-                for (Map.Entry<Integer, Integer> existingEntry : enchantments.entrySet()) {
-                    Enchantment existing = Enchantment.enchantmentsList[existingEntry.getKey()];
-                    if (existing != null
-                        && (!existing.canApplyTogether(effect.ench) || !effect.ench.canApplyTogether(existing))) {
-                        continue lblEnchantments;
+                if (!effect.ignoreCompatibility) {
+                    for (Map.Entry<Integer, Integer> existingEntry : enchantments.entrySet()) {
+                        Enchantment existing = Enchantment.enchantmentsList[existingEntry.getKey()];
+                        if (existing != null
+                            && (!existing.canApplyTogether(effect.ench) || !effect.ench.canApplyTogether(existing))) {
+                            continue lblEnchantments;
+                        }
                     }
                 }
 
