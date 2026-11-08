@@ -169,18 +169,12 @@ public class RegistryBlocks {
         blockMarbleDoubleSlab = new BlockMarbleSlab(true);
         GameRegistry.registerBlock(
             blockMarbleSlab,
-            net.minecraft.item.ItemSlab.class,
-            "BlockMarbleSlab",
-            blockMarbleSlab,
-            blockMarbleDoubleSlab,
-            false);
+            hellfirepvp.astralsorcery.common.item.block.ItemBlockMarbleSlab.class,
+            "BlockMarbleSlab");
         GameRegistry.registerBlock(
             blockMarbleDoubleSlab,
-            net.minecraft.item.ItemSlab.class,
-            "BlockMarbleDoubleSlab",
-            blockMarbleSlab,
-            blockMarbleDoubleSlab,
-            true);
+            hellfirepvp.astralsorcery.common.item.block.ItemBlockMarbleSlab.class,
+            "BlockMarbleDoubleSlab");
 
         blockBlackMarble = registerBlockCustomName(new BlockBlackMarble());
 
