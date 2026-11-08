@@ -56,7 +56,7 @@ public class StructureSmallShrine extends StructureBlockArray {
 
         addBlock(0, 1, 0, mPillar);
         addBlock(0, 2, 0, mPillar);
-        addBlock(0, 3, 0, Blocks.bookshelf);// SEA_LANTERN.getDefaultState());
+        addLightBlock(0, 3, 0); // sea lantern with EFR, glowstone otherwise
         addBlock(0, 4, 0, Blocks.water);
 
         addBlock(2, 2, 2, mPillar);

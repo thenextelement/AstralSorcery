@@ -95,7 +95,7 @@ public class StructureAncientShrine extends StructureBlockArray {
 
         addBlockCube(mBrick, -2, 10, -2, 2, 10, 2);
 
-        addBlock(0, 0, 0, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(0, 0, 0); // sea lantern with EFR, glowstone otherwise
         addBlock(1, 0, 0, mChisel);
         addBlock(-1, 0, 0, mChisel);
         addBlock(0, 0, 1, mChisel);
@@ -260,22 +260,22 @@ public class StructureAncientShrine extends StructureBlockArray {
         addBlock(5, 3, 5, mPillar);
         addBlock(5, 4, 5, mPillar);
         addBlock(5, 5, 5, mPillar);
-        addBlock(5, 6, 5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(5, 6, 5); // sea lantern with EFR, glowstone otherwise
         addBlock(-5, 2, 5, mRuned);
         addBlock(-5, 3, 5, mPillar);
         addBlock(-5, 4, 5, mPillar);
         addBlock(-5, 5, 5, mPillar);
-        addBlock(-5, 6, 5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(-5, 6, 5); // sea lantern with EFR, glowstone otherwise
         addBlock(5, 2, -5, mRuned);
         addBlock(5, 3, -5, mPillar);
         addBlock(5, 4, -5, mPillar);
         addBlock(5, 5, -5, mPillar);
-        addBlock(5, 6, -5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(5, 6, -5); // sea lantern with EFR, glowstone otherwise
         addBlock(-5, 2, -5, mRuned);
         addBlock(-5, 3, -5, mPillar);
         addBlock(-5, 4, -5, mPillar);
         addBlock(-5, 5, -5, mPillar);
-        addBlock(-5, 6, -5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(-5, 6, -5); // sea lantern with EFR, glowstone otherwise
 
         addBlock(5, 6, 4, mArch);
         addBlock(5, 6, 3, mArch);
