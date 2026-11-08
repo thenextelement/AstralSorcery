@@ -118,7 +118,7 @@ public class ClientProxy extends CommonProxy {
         registerFluidRenderers();
         registerEntityRenderers();
 
-        CraftingAccessManager.ignoreJEI = false;
+        CraftingAccessManager.ignoreNEI = false;
     }
 
     // private void registerPendingIBlockColorBlocks() {

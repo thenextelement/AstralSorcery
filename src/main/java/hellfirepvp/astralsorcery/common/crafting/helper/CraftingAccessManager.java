@@ -41,7 +41,7 @@ public class CraftingAccessManager {
     private static List<Object> lastReloadRemovedRecipes = new LinkedList<>();
 
     private static boolean completed = false;
-    public static boolean ignoreJEI = true;
+    public static boolean ignoreNEI = true;
 
     public static boolean hasCompletedSetup() {
         return completed;
@@ -59,7 +59,7 @@ public class CraftingAccessManager {
     }
 
     public static void clearModifications() {
-        // Unregister changes from JEI
+        // Unregister changes from NEI
         removeAll(InfusionRecipeRegistry.mtRecipes);
         removeAll(LightOreTransmutations.mtTransmutations);
         removeAll(WellLiquefaction.mtLiquefactions.values());
@@ -75,7 +75,7 @@ public class CraftingAccessManager {
         AltarRecipeRegistry.mtRecipes.clear();
         AltarRecipeRegistry.recipes.clear();
 
-        // Add removed recipes back to JEI
+        // Add removed recipes back to NEI
         for (Object removedPreviously : lastReloadRemovedRecipes) {
             addRecipe(removedPreviously);
         }
@@ -157,27 +157,27 @@ public class CraftingAccessManager {
     }
 
     /*
-     ****************************************** JEI interact
+     ****************************************** NEI interact
      */
     private static void addRecipe(Object o) {
-        if (!ignoreJEI && Mods.JEI.isPresent()) {
-            // ModIntegrationJEI.recipeRegistry.addRecipe(o);
+        if (!ignoreNEI && Mods.NEI.isPresent()) {
+            // ModIntegrationNEI.recipeRegistry.addRecipe(o);
         }
     }
 
     private static void removeAll(Collection objects) {
-        if (!ignoreJEI && Mods.JEI.isPresent()) {
+        if (!ignoreNEI && Mods.NEI.isPresent()) {
             for (Object o : objects) {
-                // ModIntegrationJEI.recipeRegistry.removeRecipe(o);
+                // ModIntegrationNEI.recipeRegistry.removeRecipe(o);
             }
         }
     }
 
     private static void markForRemoval(Object o) {
-        if (!ignoreJEI && o != null) {
+        if (!ignoreNEI && o != null) {
             lastReloadRemovedRecipes.add(o);
-            if (Mods.JEI.isPresent()) {
-                // ModIntegrationJEI.recipeRegistry.removeRecipe(o);
+            if (Mods.NEI.isPresent()) {
+                // ModIntegrationNEI.recipeRegistry.removeRecipe(o);
             }
         }
     }
