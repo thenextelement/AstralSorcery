@@ -12,7 +12,6 @@ import java.awt.Color;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -90,7 +89,7 @@ public class CEffectHorologium extends CEffectPositionList {
                         long startNs = System.nanoTime();
                         int times = 5 + rand.nextInt(3);
                         while (times > 0) {
-                            ((ITickable) te).tick();
+                            te.updateEntity();
                             if ((System.nanoTime() - startNs) >= 80_000) {
                                 break;
                             }

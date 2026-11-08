@@ -43,6 +43,7 @@ import hellfirepvp.astralsorcery.common.block.fluid.FluidBlockLiquidStarlight;
 import hellfirepvp.astralsorcery.common.block.fluid.FluidLiquidStarlight;
 import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.block.network.BlockAttunementAltar;
+import hellfirepvp.astralsorcery.common.block.network.BlockCelestialCollectorCrystal;
 import hellfirepvp.astralsorcery.common.block.network.BlockCollectorCrystal;
 import hellfirepvp.astralsorcery.common.block.network.BlockLens;
 import hellfirepvp.astralsorcery.common.block.network.BlockPrism;
@@ -164,7 +165,7 @@ public class RegistryBlocks {
         // Machines&Related
         // stoneMachine = registerBlock(new BlockStoneMachine());
         collectorCrystal = registerBlock(new BlockCollectorCrystal(), ItemCollectorCrystal.class);
-        // celestialCollectorCrystal = registerBlock(new BlockCelestialCollectorCrystal(), ItemCollectorCrystal.class);
+        celestialCollectorCrystal = registerBlock(new BlockCelestialCollectorCrystal(), ItemCollectorCrystal.class);
 
         blockStructural = registerBlockCustomName(new BlockStructural());
 

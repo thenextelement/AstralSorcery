@@ -11,9 +11,12 @@ public enum Mixins implements IMixins {
     Vanilla(new MixinBuilder()
         .setPhase(Phase.EARLY)
         .addCommonMixins(
-            /*"minecraft.ContainerHorseInventoryMixin"*/)
+            "minecraft.MixinChunk",
+            "minecraft.MixinEntityLivingBase",
+            "minecraft.MixinItemStack")
         .addClientMixins(
-            /*"minecraft.CreativeSlotMixin"*/)),
+            "minecraft.MixinMinecraft",
+            "minecraft.MixinNetHandlerPlayClient")),
 
     ;
     // spotless:on

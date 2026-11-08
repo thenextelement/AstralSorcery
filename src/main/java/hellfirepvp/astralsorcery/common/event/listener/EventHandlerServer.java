@@ -410,9 +410,7 @@ public class EventHandlerServer {
         }
         if (event.getOldBlock()
             .equals(BlocksAS.customOre)) {
-            Block oldState = event.getOldBlock();
-            if (oldState.equals(BlockCustomOre.OreType.ROCK_CRYSTAL)) {// oldState.getValue(BlockCustomOre.ORE_TYPE).equals(BlockCustomOre.OreType.ROCK_CRYSTAL))
-                                                                       // {
+            if (event.getOldMeta() == BlockCustomOre.OreType.ROCK_CRYSTAL.getMeta()) {
                 ((RockCrystalBuffer) WorldCacheManager
                     .getOrLoadData(event.getWorld(), WorldCacheManager.SaveKey.ROCK_CRYSTAL)).removeOre(event.getPos());
             }
