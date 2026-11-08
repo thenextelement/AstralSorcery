@@ -41,7 +41,8 @@ public class CapeEffectVicio extends CapeArmorEffect {
     /** 1.7 has no elytra: the mantle itself provides the glide, see VicioGlideHandler. */
     public static boolean isGliding(EntityPlayer pl) {
         return pl.getEntityData()
-            .getBoolean("AS_VicioGlide");
+            .getBoolean("AS_VicioGlide")
+            || hellfirepvp.astralsorcery.common.integrations.efr.ElytraIntegration.isElytraFlying(pl);
     }
 
     @Override

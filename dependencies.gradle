@@ -42,6 +42,11 @@ dependencies {
 
 
     compileOnly('curse.maven:minetweaker3-224029:2255759')
+
+    // Et Futurum Requiem: optional, the vicio mantle then flies like (and with) EFR's elytra
+    compileOnly("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.64-GTNH:dev") { transitive = false }
+    // Uncomment to test the EFR elytra integration in the dev client/server
+    // runtimeOnlyNonPublishable("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.64-GTNH:dev")
     // Uncomment to test MineTweaker scripts in the dev client/server (run/scripts/*.zs)
     // runtimeOnlyNonPublishable(rfg.deobf('curse.maven:minetweaker3-224029:2255759'))
 

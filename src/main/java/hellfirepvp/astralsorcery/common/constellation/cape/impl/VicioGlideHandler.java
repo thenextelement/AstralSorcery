@@ -47,9 +47,17 @@ public class VicioGlideHandler {
         }
     }
 
-    /** Called from the player tick on both sides. */
+    /** Called from the player tick on both sides. With Et Futurum Requiem the mantle uses EFR's elytra instead. */
     public static void tick(EntityPlayer pl) {
-        boolean gliding = CapeEffectVicio.isGliding(pl);
+        if (hellfirepvp.astralsorcery.common.integrations.efr.ElytraIntegration.isLoaded()) {
+            if (pl.getEntityData()
+                .getBoolean(TAG)) {
+                setGliding(pl, false);
+            }
+            return;
+        }
+        boolean gliding = pl.getEntityData()
+            .getBoolean(TAG);
         if (gliding && !canGlide(pl)) {
             setGliding(pl, false);
             gliding = false;
@@ -72,7 +80,8 @@ public class VicioGlideHandler {
     private static void clientTick(EntityPlayer pl) {
         if (!(pl instanceof net.minecraft.client.entity.EntityPlayerSP)) return;
         net.minecraft.client.entity.EntityPlayerSP spl = (net.minecraft.client.entity.EntityPlayerSP) pl;
-        boolean gliding = CapeEffectVicio.isGliding(pl);
+        boolean gliding = pl.getEntityData()
+            .getBoolean(TAG);
         if (!gliding) {
             if (spl.movementInput.jump && spl.motionY < -0.5 && canGlide(pl)) {
                 setGliding(pl, true);
@@ -88,7 +97,9 @@ public class VicioGlideHandler {
      * Vanilla elytra travel (1.9+ EntityLivingBase#travel, elytra branch). Returns true if the movement was handled.
      */
     public static boolean travel(EntityLivingBase e) {
-        if (!(e instanceof EntityPlayer) || !CapeEffectVicio.isGliding((EntityPlayer) e)) return false;
+        // only the fallback glide; with EFR its own elytra mixin moves the player
+        if (!(e instanceof EntityPlayer) || !e.getEntityData()
+            .getBoolean(TAG)) return false;
         Vec3 look = e.getLookVec();
         float pitch = e.rotationPitch * 0.017453292F;
         double horiz = Math.sqrt(look.xCoord * look.xCoord + look.zCoord * look.zCoord);

@@ -17,6 +17,18 @@ import hellfirepvp.astralsorcery.common.util.SwordSharpenHelper;
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 
+    @Inject(method = "damageItem", at = @At("HEAD"), cancellable = true)
+    private void astralsorcery$mantleGlideNoWear(int amount, net.minecraft.entity.EntityLivingBase entity,
+        org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+        ItemStack self = (ItemStack) (Object) this;
+        if (self.getItem() instanceof hellfirepvp.astralsorcery.common.item.wearable.ItemCape
+            && entity instanceof net.minecraft.entity.player.EntityPlayer
+            && hellfirepvp.astralsorcery.common.integrations.efr.ElytraIntegration
+                .isElytraFlying((net.minecraft.entity.player.EntityPlayer) entity)) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "getAttributeModifiers", at = @At("RETURN"), cancellable = true)
     private void astralsorcery$applySharpen(CallbackInfoReturnable<Multimap<String, AttributeModifier>> cir) {
         ItemStack self = (ItemStack) (Object) this;

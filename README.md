@@ -26,6 +26,9 @@ collector crystal).
 Backported from 1.12 (GPL, up to 1.8.5): grindstone recipe registry (crystal/tool/sword sharpening, ore -> dust,
 `mods.astralsorcery.Grindstone`, NEI). See `docs/BACKPORT.md` for the backport checklist and licensing boundary.
 
+Optional integrations: NEI, MineTweaker 3, StructureLib, Et Futurum Requiem (a vicio-attuned Mantle of Stars
+works as an EFR elytra; untested in-game).
+
 ## 1.7-specific architecture notes
 
 - ASM patches from 1.10 are mixins (`mixins/early/minecraft`): block-change event, knockback event,
