@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;

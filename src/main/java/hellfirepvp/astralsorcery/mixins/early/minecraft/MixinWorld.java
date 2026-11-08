@@ -23,7 +23,10 @@ public abstract class MixinWorld {
 
     @Redirect(
         method = "calculateSkylightSubtracted",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;getSunBrightnessFactor(F)F", remap = false))
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/WorldProvider;getSunBrightnessFactor(F)F",
+            remap = false))
     private float astralsorcery$eclipseSkylight(WorldProvider provider, float partialTicks) {
         return provider.getSunBrightnessFactor(partialTicks) * SolarEclipseBrightness.getFactor((World) (Object) this);
     }

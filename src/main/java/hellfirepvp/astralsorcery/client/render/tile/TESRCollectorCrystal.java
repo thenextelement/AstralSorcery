@@ -185,7 +185,9 @@ public class TESRCollectorCrystal extends TileEntitySpecialRenderer implements I
         RenderHelper.enableStandardItemLighting();
     }
 
-    /** Item render origins differ per type in 1.7: EQUIPPED is the block corner, ENTITY bottom-center, INVENTORY center. */
+    /**
+     * Item render origins differ per type in 1.7: EQUIPPED is the block corner, ENTITY bottom-center, INVENTORY center.
+     */
     static void translateToItemOrigin(ItemRenderType type, double yOffset) {
         switch (type) {
             case EQUIPPED:

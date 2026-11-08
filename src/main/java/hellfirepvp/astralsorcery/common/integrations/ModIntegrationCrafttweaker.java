@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.integrations;
 
-import hellfirepvp.astralsorcery.AstralSorcery;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
+import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.crafting.helper.CraftingAccessManager;
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.SerializeableRecipe;
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.tweaks.AltarRecipe;
@@ -95,7 +95,8 @@ public class ModIntegrationCrafttweaker {
             }
 
             CraftingAccessManager.compile();
-            AstralSorcery.log.info("[AstralSorcery] Applied " + recipeModifications.size() + " MineTweaker modification(s)");
+            AstralSorcery.log
+                .info("[AstralSorcery] Applied " + recipeModifications.size() + " MineTweaker modification(s)");
 
             if (FMLCommonHandler.instance()
                 .getEffectiveSide() == Side.SERVER && Loader.instance()

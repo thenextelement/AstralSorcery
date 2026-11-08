@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +42,7 @@ import hellfirepvp.astralsorcery.common.network.PacketChannel;
 import hellfirepvp.astralsorcery.common.network.packet.server.PktParticleEvent;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileCelestialCrystals;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
 
@@ -190,8 +190,7 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
                     .getY(),
                 pos.down()
                     .getZ());
-            if (down instanceof BlockCustomOre
-                && meta == BlockCustomOre.OreType.STARMETAL.getMeta()) {
+            if (down instanceof BlockCustomOre && meta == BlockCustomOre.OreType.STARMETAL.getMeta()) {
                 tile.tryGrowth(0.3);
             }
         }

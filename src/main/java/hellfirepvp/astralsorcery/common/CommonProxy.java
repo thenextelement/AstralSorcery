@@ -76,9 +76,9 @@ import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.registry.RegistryPerks;
 import hellfirepvp.astralsorcery.common.registry.RegistryPotions;
 import hellfirepvp.astralsorcery.common.registry.RegistryRecipes;
-import hellfirepvp.astralsorcery.common.registry.RegistryStructures;
 import hellfirepvp.astralsorcery.common.registry.RegistryResearch;
 import hellfirepvp.astralsorcery.common.registry.RegistrySounds;
+import hellfirepvp.astralsorcery.common.registry.RegistryStructures;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightNetworkRegistry;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightTransmissionHandler;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightUpdateHandler;
@@ -187,6 +187,11 @@ public class CommonProxy implements IGuiHandler {
         }
 
         NetworkRegistry.INSTANCE.registerGuiHandler(AstralSorcery.instance, this);
+
+        if (cpw.mods.fml.common.Loader.isModLoaded("structurelib")) {
+            // separate class so StructureLib types are only loaded when the mod is present
+            hellfirepvp.astralsorcery.common.integrations.structurelib.ModIntegrationStructureLib.register();
+        }
 
         MinecraftForge.TERRAIN_GEN_BUS.register(TreeCaptureHelper.eventInstance);
 

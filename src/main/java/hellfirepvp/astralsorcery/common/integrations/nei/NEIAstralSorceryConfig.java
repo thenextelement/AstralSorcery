@@ -33,7 +33,11 @@ public class NEIAstralSorceryConfig implements IConfigureNEI {
             hellfirepvp.astralsorcery.common.lib.BlocksAS.blockVolatileLight,
             hellfirepvp.astralsorcery.common.lib.BlocksAS.blockLiquidStarlight }) {
             if (internal != null && net.minecraft.item.Item.getItemFromBlock(internal) != null) {
-                API.hideItem(new net.minecraft.item.ItemStack(internal, 1, net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE));
+                API.hideItem(
+                    new net.minecraft.item.ItemStack(
+                        internal,
+                        1,
+                        net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE));
             }
         }
     }

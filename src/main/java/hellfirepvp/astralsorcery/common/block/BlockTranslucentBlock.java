@@ -8,15 +8,14 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,7 +47,7 @@ public class BlockTranslucentBlock extends BlockContainer {
 
     public BlockTranslucentBlock() {
         super(BlockStructural.STRUCTURAL); // Material.BARRIER -> (new
-                             // Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
+        // Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
         setBlockName("BlockTranslucentBlock");
         setBlockUnbreakable();
         setResistance(6000001.0F);

@@ -8,13 +8,12 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import java.awt.Color;
 import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

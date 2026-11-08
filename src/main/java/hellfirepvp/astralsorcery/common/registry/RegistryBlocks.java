@@ -100,8 +100,9 @@ public class RegistryBlocks {
         FluidRegistry.registerFluid(f);
         fluidLiquidStarlight = FluidRegistry.getFluid(f.getName());
         blockLiquidStarlight = new FluidBlockLiquidStarlight();
-        blockLiquidStarlight.setBlockName(blockLiquidStarlight.getClass()
-            .getSimpleName());
+        blockLiquidStarlight.setBlockName(
+            blockLiquidStarlight.getClass()
+                .getSimpleName());
         GameRegistry.registerBlock(
             blockLiquidStarlight,
             blockLiquidStarlight.getClass()
@@ -115,9 +116,12 @@ public class RegistryBlocks {
             .setContainerItem(net.minecraft.init.Items.bucket)
             .setCreativeTab(hellfirepvp.astralsorcery.common.registry.RegistryItems.creativeTabAstralSorcery);
         GameRegistry.registerItem(bucket, "ItemBucketLiquidStarlight");
-        hellfirepvp.astralsorcery.common.lib.ItemsAS.itemBucketLiquidStarlight = new net.minecraft.item.ItemStack(bucket);
+        hellfirepvp.astralsorcery.common.lib.ItemsAS.itemBucketLiquidStarlight = new net.minecraft.item.ItemStack(
+            bucket);
         net.minecraftforge.fluids.FluidContainerRegistry.registerFluidContainer(
-            new net.minecraftforge.fluids.FluidStack(fluidLiquidStarlight, net.minecraftforge.fluids.FluidContainerRegistry.BUCKET_VOLUME),
+            new net.minecraftforge.fluids.FluidStack(
+                fluidLiquidStarlight,
+                net.minecraftforge.fluids.FluidContainerRegistry.BUCKET_VOLUME),
             new net.minecraft.item.ItemStack(bucket),
             new net.minecraft.item.ItemStack(net.minecraft.init.Items.bucket));
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new BucketHandler(bucket));

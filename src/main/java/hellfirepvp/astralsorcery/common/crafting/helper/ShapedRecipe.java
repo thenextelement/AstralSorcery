@@ -115,7 +115,9 @@ public class ShapedRecipe extends AbstractCacheableRecipe {
 
     @Override
     public AccessibleRecipeAdapater make() {
-        return new AccessibleRecipeAdapater(RecipeHelper.getShapedOredictRecipe(getOutput(), getNativeObjOutArray()), this);
+        return new AccessibleRecipeAdapater(
+            RecipeHelper.getShapedOredictRecipe(getOutput(), getNativeObjOutArray()),
+            this);
     }
 
     @Override

@@ -122,7 +122,12 @@ public class TESRTranslucentBlock extends TileEntitySpecialRenderer {
         TileTranslucent te = (TileTranslucent) tile;
         if (te.getFakedState() == null || te.getFakedState() == net.minecraft.init.Blocks.air) return;
         TESRTranslucentBlock.blocks.add(
-            new TESRTranslucentBlock.TranslucentBlockState(te.getFakedState(), te.getFakedMeta(), te.xCoord, te.yCoord, te.zCoord));
+            new TESRTranslucentBlock.TranslucentBlockState(
+                te.getFakedState(),
+                te.getFakedMeta(),
+                te.xCoord,
+                te.yCoord,
+                te.zCoord));
     }
 
     public static class TranslucentBlockState {

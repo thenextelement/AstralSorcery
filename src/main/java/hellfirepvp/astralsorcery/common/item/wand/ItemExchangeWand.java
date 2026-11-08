@@ -181,7 +181,8 @@ public class ItemExchangeWand extends ItemBlockStorage
         BlockPos origin = new BlockPos(rtr.blockX, rtr.blockY, rtr.blockZ);
         Block atOrigin = Minecraft.getMinecraft().theWorld.getBlock(origin.getX(), origin.getY(), origin.getZ());
         int storedMeta = getStoredMeta(stack);
-        int atOriginMeta = Minecraft.getMinecraft().theWorld.getBlockMetadata(origin.getX(), origin.getY(), origin.getZ());
+        int atOriginMeta = Minecraft.getMinecraft().theWorld
+            .getBlockMetadata(origin.getX(), origin.getY(), origin.getZ());
         if (stored.equals(atOrigin) && storedMeta == atOriginMeta) {
             return;
         }

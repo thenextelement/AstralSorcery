@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.base;
 
-import net.minecraftforge.oredict.OreDictionary;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
@@ -194,8 +194,9 @@ public class LightOreTransmutations {
         }
 
         public boolean matches(Block block, int meta) {
-            return input.equals(block) && (inputMeta == OreDictionary.WILDCARD_VALUE
-                || meta == OreDictionary.WILDCARD_VALUE || meta == inputMeta);
+            return input.equals(block)
+                && (inputMeta == OreDictionary.WILDCARD_VALUE || meta == OreDictionary.WILDCARD_VALUE
+                    || meta == inputMeta);
         }
 
         @Nullable
@@ -203,7 +204,10 @@ public class LightOreTransmutations {
             if (inStack != null) {
                 return inStack.copy();
             }
-            return new ItemStack(input, 1, inputMeta == OreDictionary.WILDCARD_VALUE ? 0 : input.damageDropped(inputMeta));
+            return new ItemStack(
+                input,
+                1,
+                inputMeta == OreDictionary.WILDCARD_VALUE ? 0 : input.damageDropped(inputMeta));
         }
 
         @Nullable

@@ -8,10 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
-import cpw.mods.fml.relauncher.SideOnly;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -19,18 +15,22 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileAttunementRelay;
 import hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
@@ -87,9 +87,9 @@ public class BlockAttunementRelay extends BlockContainer {
         if (!worldIn.isRemote) {
             BlockPos pos = new BlockPos(x, y, z);
             TileEntity inv = MiscUtils.getTileAt(worldIn, pos, TileEntity.class, true);
-        if (!worldIn.isRemote) {
-            ItemUtils.dropTileInventory(inv, worldIn, pos);
-        }
+            if (!worldIn.isRemote) {
+                ItemUtils.dropTileInventory(inv, worldIn, pos);
+            }
 
             BlockAltar.startSearchForRelayUpdate(worldIn, pos.getX(), pos.getY(), pos.getZ());
         }

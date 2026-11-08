@@ -8,11 +8,11 @@
 
 package hellfirepvp.astralsorcery.common.util;
 
-import hellfirepvp.astralsorcery.common.data.config.Config;
-import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import net.minecraft.util.ResourceLocation;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
+import hellfirepvp.astralsorcery.common.data.config.Config;
+import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -27,7 +27,9 @@ public class LootTableUtil {
         AstralSorcery.MODID.toLowerCase(),
         "chest_shrine");
 
-    /** 1.7 has no loot tables: the shrine chest uses a ChestGenHooks category mirroring loot_tables/chest_shrine.json. */
+    /**
+     * 1.7 has no loot tables: the shrine chest uses a ChestGenHooks category mirroring loot_tables/chest_shrine.json.
+     */
     public static final String CHEST_SHRINE = AstralSorcery.MODID + ":chest_shrine";
 
     public static void initLootTable() {
@@ -52,7 +54,11 @@ public class LootTableUtil {
         for (String chest : paperChests) {
             net.minecraftforge.common.ChestGenHooks.addItem(
                 chest,
-                content(new net.minecraft.item.ItemStack(ItemsAS.constellationPaper, 1, 0), 1, 1, Config.constellationPaperRarity));
+                content(
+                    new net.minecraft.item.ItemStack(ItemsAS.constellationPaper, 1, 0),
+                    1,
+                    1,
+                    Config.constellationPaperRarity));
         }
     }
 

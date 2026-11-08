@@ -46,6 +46,7 @@ import hellfirepvp.astralsorcery.common.event.ClientInitializedEvent;
     name = AstralSorcery.NAME,
     version = Tags.VERSION,
     acceptedMinecraftVersions = "[1.7.10]",
+    dependencies = "after:structurelib;after:NotEnoughItems;after:MineTweaker3",
     guiFactory = "hellfirepvp.astralsorcery.client.gui.GuiFactory")
 public class AstralSorcery {
 
@@ -120,7 +121,8 @@ public class AstralSorcery {
         ResearchManager.saveAndClearServerCache();
 
         hellfirepvp.astralsorcery.common.data.server.ServerData.writeData();
-        hellfirepvp.astralsorcery.common.event.listener.EventHandlerServer.isDataInitialized = false; // Fix for SP stuffs
+        hellfirepvp.astralsorcery.common.event.listener.EventHandlerServer.isDataInitialized = false; // Fix for SP
+                                                                                                      // stuffs
     }
 
     @Mod.EventHandler

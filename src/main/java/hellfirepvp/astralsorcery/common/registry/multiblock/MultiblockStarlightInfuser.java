@@ -8,11 +8,11 @@
 
 package hellfirepvp.astralsorcery.common.registry.multiblock;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.PatternBlockArray;
 
 /**
@@ -29,11 +29,21 @@ public class MultiblockStarlightInfuser extends PatternBlockArray {
     }
 
     private void load() {
-        BlockMeta mar = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
-        BlockMeta mrw = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
-        BlockMeta mpl = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
-        BlockMeta mch = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
-        BlockMeta mru = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
+        BlockMeta mar = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mrw = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mch = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mru = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
 
         Block liquidStarlight = BlocksAS.blockLiquidStarlight;// .getDefaultState();
 

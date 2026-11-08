@@ -8,12 +8,6 @@
 
 package hellfirepvp.astralsorcery.client;
 
-import hellfirepvp.astralsorcery.common.tile.TileIlluminator;
-import hellfirepvp.astralsorcery.common.tile.TileTreeBeacon;
-import hellfirepvp.astralsorcery.common.tile.TileRitualLink;
-import hellfirepvp.astralsorcery.common.tile.TileCelestialGateway;
-import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
-import hellfirepvp.astralsorcery.client.util.model.ItemRendererJsonModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +27,6 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.client.effect.EffectHandler;
 import hellfirepvp.astralsorcery.client.effect.light.ClientLightbeamHandler;
@@ -67,6 +60,8 @@ import hellfirepvp.astralsorcery.client.util.camera.ClientCameraManager;
 import hellfirepvp.astralsorcery.client.util.item.ItemRendererFilteredTESR;
 import hellfirepvp.astralsorcery.client.util.mappings.ClientJournalMapping;
 import hellfirepvp.astralsorcery.client.util.mappings.ClientPerkTextureMapping;
+import hellfirepvp.astralsorcery.client.util.model.ItemRendererJsonModel;
+import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
 import hellfirepvp.astralsorcery.client.util.resource.AssetLibrary;
 import hellfirepvp.astralsorcery.common.CommonProxy;
 import hellfirepvp.astralsorcery.common.auxiliary.tick.TickManager;
@@ -244,18 +239,30 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlocksAS.celestialCrystals), new TESRCelestialCrystals());
 
-        registerModelItem(BlocksAS.blockAltar, new ItemRendererJsonModel().add(0, "BlockAltar1", null)
-            .add(1, "BlockAltar2", null)
-            .add(2, "BlockAltar3", null));
-        registerModelItem(BlocksAS.attunementRelay, new ItemRendererJsonModel().add(0, "BlockAttunementRelay", "BlockAttunementRelayGlass"));
-        registerModelItem(BlocksAS.ritualPedestal, new ItemRendererJsonModel().add(0, "BlockRitualPedestal", "BlockRitualPedestalGlass"));
+        registerModelItem(
+            BlocksAS.blockAltar,
+            new ItemRendererJsonModel().add(0, "BlockAltar1", null)
+                .add(1, "BlockAltar2", null)
+                .add(2, "BlockAltar3", null));
+        registerModelItem(
+            BlocksAS.attunementRelay,
+            new ItemRendererJsonModel().add(0, "BlockAttunementRelay", "BlockAttunementRelayGlass"));
+        registerModelItem(
+            BlocksAS.ritualPedestal,
+            new ItemRendererJsonModel().add(0, "BlockRitualPedestal", "BlockRitualPedestalGlass"));
         registerModelItem(BlocksAS.blockWell, new ItemRendererJsonModel().add(0, "BlockWell", null));
-        registerModelItem(BlocksAS.blockIlluminator, new ItemRendererJsonModel().add(0, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
+        registerModelItem(
+            BlocksAS.blockIlluminator,
+            new ItemRendererJsonModel().add(0, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
         registerModelItem(BlocksAS.starlightInfuser, new ItemRendererJsonModel().add(0, "BlockStarlightInfuser", null));
-        registerModelItem(BlocksAS.ritualLink, new ItemRendererJsonModel().add(0, "BlockRitualLink", "BlockRitualLinkGlass"));
+        registerModelItem(
+            BlocksAS.ritualLink,
+            new ItemRendererJsonModel().add(0, "BlockRitualLink", "BlockRitualLinkGlass"));
         registerModelItem(BlocksAS.treeBeacon, new ItemRendererJsonModel().add(0, "BlockTreeBeacon", null));
         registerModelItem(BlocksAS.drawingTable, new ItemRendererJsonModel().add(0, "BlockMapDrawingTable", null));
-        registerModelItem(BlocksAS.celestialGateway, new ItemRendererJsonModel().add(0, "BlockCelestialGateway", "BlockCelestialGatewayOrb"));
+        registerModelItem(
+            BlocksAS.celestialGateway,
+            new ItemRendererJsonModel().add(0, "BlockCelestialGateway", "BlockCelestialGatewayOrb"));
         registerModelItem(BlocksAS.lens, new ItemRendererJsonModel().add(0, "BlockLens_full", null));
         registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, null, "BlockPrism"));
     }
@@ -270,14 +277,18 @@ public class ClientProxy extends CommonProxy {
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.starlightInfuser, "BlockStarlightInfuser", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lens, "BlockLens_tesr", null);
-        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, null, "BlockPrism"); // translucent layer in 1.10
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, null, "BlockPrism"); // translucent
+                                                                                                                      // layer
+                                                                                                                      // in
+                                                                                                                      // 1.10
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.drawingTable, "BlockMapDrawingTable", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.celestialGateway, "BlockCelestialGateway", "BlockCelestialGatewayOrb");
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.ritualLink, "BlockRitualLink", "BlockRitualLinkGlass");
-        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.treeBeacon, "BlockTreeBeacon", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.treeBeacon, "BlockTreeBeacon", null);
         hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
             .register(BlocksAS.blockIlluminator, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator");
     }

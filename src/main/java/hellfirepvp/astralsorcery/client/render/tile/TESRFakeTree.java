@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.client.render.tile;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -28,7 +27,12 @@ public class TESRFakeTree extends TileEntitySpecialRenderer {
         TileFakeTree te = (TileFakeTree) tile;
         if (te.getFakedState() == null) return;
         TESRTranslucentBlock.blocks.add(
-            new TESRTranslucentBlock.TranslucentBlockState(te.getFakedState(), te.getFakedMeta(), te.xCoord, te.yCoord, te.zCoord));
+            new TESRTranslucentBlock.TranslucentBlockState(
+                te.getFakedState(),
+                te.getFakedMeta(),
+                te.xCoord,
+                te.yCoord,
+                te.zCoord));
     }
 
 }

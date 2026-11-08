@@ -17,7 +17,6 @@ public abstract class MixinEntityLivingBase {
 
     @Inject(method = "knockBack", at = @At("HEAD"))
     private void astralsorcery$onKnockback(Entity attacker, float strength, double x, double z, CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS
-            .post(new EntityKnockbackEvent((EntityLivingBase) (Object) this, attacker, strength));
+        MinecraftForge.EVENT_BUS.post(new EntityKnockbackEvent((EntityLivingBase) (Object) this, attacker, strength));
     }
 }

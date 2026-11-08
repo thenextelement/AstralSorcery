@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -20,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 
 /**
  * This class is part of the Astral Sorcery Mod

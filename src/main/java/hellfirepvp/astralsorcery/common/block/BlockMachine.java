@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.block;
 
-import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import java.util.List;
 import java.util.Random;
 
@@ -39,6 +38,7 @@ import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.IVariantTileProvider;
 import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 import hellfirepvp.astralsorcery.common.tile.TileTelescope;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
@@ -412,6 +412,7 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     public net.minecraft.util.IIcon getIcon(int side, int meta) {
         return machineIcons[meta >= 0 && meta < machineIcons.length ? meta : 0];
     }
+
     @Override
     public int getRenderType() {
         return -1;

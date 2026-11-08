@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.registry.structures;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
-import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -18,6 +16,8 @@ import net.minecraft.world.IBlockAccess;
 
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.StructureBlockArray;
 
 /**
@@ -35,10 +35,18 @@ public class StructureSmallShrine extends StructureBlockArray {
 
     private void load() {
         Block m = BlocksAS.blockMarble;
-        BlockMeta mRaw = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
-        BlockMeta mBrick = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
-        BlockMeta mChisel = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
-        BlockMeta mPillar = new BlockMeta(m, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mRaw = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mBrick = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mChisel = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mPillar = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
         Block air = Blocks.air;
 
         addBlockCube(mRaw, -4, 0, -4, 4, 0, 4);

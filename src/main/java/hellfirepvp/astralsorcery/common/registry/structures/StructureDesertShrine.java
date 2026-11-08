@@ -8,8 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.registry.structures;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
-import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,7 +24,9 @@ import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.StructureBlockArray;
 
 /**
@@ -62,8 +62,12 @@ public class StructureDesertShrine extends StructureBlockArray {
 
     private void placeSand(World world, BlockPos center) {
         Block marble = BlocksAS.blockMarble;
-        BlockMeta mch = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
-        BlockMeta mpl = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
 
         placeBlockCube(world, center, -4, 1, -4, 4, 1, 4);
 
@@ -222,11 +226,21 @@ public class StructureDesertShrine extends StructureBlockArray {
     private void load() {
         Block marble = BlocksAS.blockMarble;
 
-        BlockMeta mch = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
-        BlockMeta mbr = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
-        BlockMeta mrw = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
-        BlockMeta mar = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
-        BlockMeta mpl = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mbr = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mrw = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mar = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
         Block air = Blocks.air;
         Block sand = Blocks.sand;
 

@@ -82,14 +82,17 @@ public class SimpleRecipeHandlers {
         @Override
         protected List<ASCachedRecipe> buildAll() {
             List<ASCachedRecipe> out = new ArrayList<>();
-            List<WellLiquefaction.LiquefactionEntry> all = new ArrayList<>(WellLiquefaction.getRegisteredLiquefactions());
+            List<WellLiquefaction.LiquefactionEntry> all = new ArrayList<>(
+                WellLiquefaction.getRegisteredLiquefactions());
             all.addAll(WellLiquefaction.mtLiquefactions.values());
             for (WellLiquefaction.LiquefactionEntry e : all) {
                 ItemStack bucket = FluidContainerRegistry.fillFluidContainer(
                     new FluidStack(e.producing, FluidContainerRegistry.BUCKET_VOLUME),
                     FluidContainerRegistry.EMPTY_BUCKET);
                 if (bucket == null || e.catalyst == null) continue;
-                out.add(new ASCachedRecipe(bucket, OUT_X, Y).addInput(Collections.singletonList(e.catalyst.copy()), IN_X, Y));
+                out.add(
+                    new ASCachedRecipe(bucket, OUT_X, Y)
+                        .addInput(Collections.singletonList(e.catalyst.copy()), IN_X, Y));
             }
             return out;
         }
@@ -115,7 +118,8 @@ public class SimpleRecipeHandlers {
         @Override
         protected List<ASCachedRecipe> buildAll() {
             List<ASCachedRecipe> out = new ArrayList<>();
-            List<LightOreTransmutations.Transmutation> all = new ArrayList<>(LightOreTransmutations.getRegisteredTransmutations());
+            List<LightOreTransmutations.Transmutation> all = new ArrayList<>(
+                LightOreTransmutations.getRegisteredTransmutations());
             all.addAll(LightOreTransmutations.mtTransmutations);
             for (LightOreTransmutations.Transmutation t : all) {
                 ItemStack in = t.getInputDisplayStack();

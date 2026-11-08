@@ -8,7 +8,6 @@
 
 package hellfirepvp.astralsorcery.common.registry.multiblock;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -17,6 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.PatternBlockArray;
 
 /**
@@ -33,11 +33,16 @@ public class MultiblockAttunementFrame extends PatternBlockArray {
     }
 
     private void load() {
-        BlockMeta mar = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
-        BlockMeta mbl = new BlockMeta(BlocksAS.blockBlackMarble, hellfirepvp.astralsorcery.common.block.BlockBlackMarble.BlackMarbleBlockType.RAW.getMeta());
+        BlockMeta mar = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mbl = new BlockMeta(
+            BlocksAS.blockBlackMarble,
+            hellfirepvp.astralsorcery.common.block.BlockBlackMarble.BlackMarbleBlockType.RAW.getMeta());
 
         addBlock(0, 0, 0, BlocksAS.attunementAltar);// .getDefaultState());
-        // addBlock(0, 1, 0, BlocksAS.blockStructural.getDefaultState().withProperty(BlockStructural.BLOCK_TYPE, BlockStructural.BlockType.ATTUNEMENT_ALTAR_STRUCT));
+        // addBlock(0, 1, 0, BlocksAS.blockStructural.getDefaultState().withProperty(BlockStructural.BLOCK_TYPE,
+        // BlockStructural.BlockType.ATTUNEMENT_ALTAR_STRUCT));
 
         addBlockCube(mar, -7, -1, -8, 7, -1, -8);
         addBlockCube(mar, -7, -1, 8, 7, -1, 8);
@@ -77,9 +82,15 @@ public class MultiblockAttunementFrame extends PatternBlockArray {
     }
 
     private void pillarAt(int x, int y, int z) {
-        BlockMeta mru = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
-        BlockMeta mpl = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
-        BlockMeta mch = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mru = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mch = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
 
         addBlock(x, y, z, mru);
         addBlock(x, y + 1, z, mpl);

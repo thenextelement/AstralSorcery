@@ -333,7 +333,6 @@ public class TileWell extends TileReceiverBaseInventory implements net.minecraft
 
     }
 
-
     // ---- 1.7 IFluidHandler (1.10 exposed the tank as FLUID_HANDLER capability, output from below only)
 
     private boolean canAccessFluid(ForgeDirection from) {
@@ -346,8 +345,8 @@ public class TileWell extends TileReceiverBaseInventory implements net.minecraft
     }
 
     @Override
-    public net.minecraftforge.fluids.FluidStack drain(ForgeDirection from, net.minecraftforge.fluids.FluidStack resource,
-        boolean doDrain) {
+    public net.minecraftforge.fluids.FluidStack drain(ForgeDirection from,
+        net.minecraftforge.fluids.FluidStack resource, boolean doDrain) {
         if (resource == null || resource.getFluid() != tank.getTankFluid()) return null;
         return drain(from, resource.amount, doDrain);
     }

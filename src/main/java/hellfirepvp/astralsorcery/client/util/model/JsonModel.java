@@ -220,7 +220,8 @@ public class JsonModel {
             domain = modelName.substring(0, idx);
             path = modelName.substring(idx + 1);
         }
-        if (!domain.equals(AstralSorcery.MODID)) return; // vanilla parents (block/block, block/cube...) carry no elements
+        if (!domain.equals(AstralSorcery.MODID)) return; // vanilla parents (block/block, block/cube...) carry no
+                                                         // elements
         ResourceLocation loc = new ResourceLocation(domain, "models/block/" + path + ".json");
         JsonObject root;
         IResource res = Minecraft.getMinecraft()
@@ -510,7 +511,8 @@ public class JsonModel {
         }
 
         private float currentFrameOffset() {
-            long ticks = Minecraft.getMinecraft().theWorld != null ? Minecraft.getMinecraft().theWorld.getTotalWorldTime()
+            long ticks = Minecraft.getMinecraft().theWorld != null
+                ? Minecraft.getMinecraft().theWorld.getTotalWorldTime()
                 : Minecraft.getSystemTime() / 50L;
             int idx = (int) ((ticks / frameTime) % order.length);
             return order[idx] / (float) frameCount;

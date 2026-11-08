@@ -185,11 +185,18 @@ public class ItemUtils {
     }
 
     /** Drops the contents of an Astral Sorcery tile inventory (replaces the 1.10 ITEM_HANDLER capability lookup). */
-    public static void dropTileInventory(@Nullable net.minecraft.tileentity.TileEntity te, World worldIn, BlockPos pos) {
+    public static void dropTileInventory(@Nullable net.minecraft.tileentity.TileEntity te, World worldIn,
+        BlockPos pos) {
         if (te instanceof hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase) {
-            dropInventory(((hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase) te).getInventoryHandler(), worldIn, pos);
+            dropInventory(
+                ((hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase) te).getInventoryHandler(),
+                worldIn,
+                pos);
         } else if (te instanceof hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory) {
-            dropInventory(((hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory) te).getInventoryHandler(), worldIn, pos);
+            dropInventory(
+                ((hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory) te).getInventoryHandler(),
+                worldIn,
+                pos);
         }
     }
 

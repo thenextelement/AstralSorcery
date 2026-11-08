@@ -8,10 +8,10 @@
 
 package hellfirepvp.astralsorcery.common.registry.multiblock;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import net.minecraft.block.Block;
 
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.PatternBlockArray;
 
 /**
@@ -29,9 +29,15 @@ public class MultiblockStarlightRelay extends PatternBlockArray {
 
     private void load() {
         Block marble = BlocksAS.blockMarble;
-        BlockMeta chiseled = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
-        BlockMeta arch = new BlockMeta(marble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
-        BlockMeta sooty = new BlockMeta(BlocksAS.blockBlackMarble, hellfirepvp.astralsorcery.common.block.BlockBlackMarble.BlackMarbleBlockType.RAW.getMeta());
+        BlockMeta chiseled = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta arch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta sooty = new BlockMeta(
+            BlocksAS.blockBlackMarble,
+            hellfirepvp.astralsorcery.common.block.BlockBlackMarble.BlackMarbleBlockType.RAW.getMeta());
 
         addBlock(0, 0, 0, BlocksAS.attunementRelay);// .getDefaultState());
 

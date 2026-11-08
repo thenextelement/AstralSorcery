@@ -16,6 +16,8 @@ Verified in-game (dedicated server + client):
   multiblock pasting with the correct marble variants
 - NEI recipe handlers (altar tiers, starlight infuser, lightwell, transmutation)
 - MineTweaker 3 scripts (`mods.astralsorcery.*`, see `AS-Example.zs`)
+- StructureLib (optional): the Multiblock Hologram Projector shows/builds AS multiblocks when used on the core
+  block (altar, ritual pedestal, attunement altar, infuser, relay, celestial gateway, celestial collector crystal)
 
 Ported but not yet exercised in-game: rituals, attunement, starlight network linking, perks, celestial gateway.
 

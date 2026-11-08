@@ -25,16 +25,16 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass("mods.astralsorcery.RitualMineralis")
 public class RitualMineralis extends BaseTweaker {
 
-protected static final String name = "AstralSorcery Ritual Mineralis";
+    protected static final String name = "AstralSorcery Ritual Mineralis";
 
-@ZenMethod
-public static void addOre(String oreDictOreName, double weight) {
-ModIntegrationCrafttweaker.recipeModifications.add(new OreTypeAdd(oreDictOreName, weight));
-}
+    @ZenMethod
+    public static void addOre(String oreDictOreName, double weight) {
+        ModIntegrationCrafttweaker.recipeModifications.add(new OreTypeAdd(oreDictOreName, weight));
+    }
 
-@ZenMethod
-public static void removeOre(String oreDictOreName) {
-ModIntegrationCrafttweaker.recipeModifications.add(new OreTypeRemove(oreDictOreName));
-}
+    @ZenMethod
+    public static void removeOre(String oreDictOreName) {
+        ModIntegrationCrafttweaker.recipeModifications.add(new OreTypeRemove(oreDictOreName));
+    }
 
 }

@@ -10,7 +10,6 @@ package hellfirepvp.astralsorcery.common.tile.base;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;

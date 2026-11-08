@@ -8,11 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.registry.multiblock;
 
-import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
-import net.minecraft.block.Block;
-
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.lib.MultiBlockArrays;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.PatternBlockArray;
 
 /**
@@ -33,7 +31,9 @@ public class MultiblockAltarTrait extends PatternBlockArray {
     }
 
     private void load() {
-        BlockMeta mBrick = new BlockMeta(BlocksAS.blockMarble, hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mBrick = new BlockMeta(
+            BlocksAS.blockMarble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
 
         addBlock(4, 3, 3, mBrick);
         addBlock(4, 3, -3, mBrick);
@@ -66,7 +66,13 @@ public class MultiblockAltarTrait extends PatternBlockArray {
         addBlock(1, 4, 3, mBrick);
         addBlock(2, 4, 3, mBrick);
 
-        addBlock(0, 0, 0, new BlockMeta(BlocksAS.blockAltar, hellfirepvp.astralsorcery.common.block.network.BlockAltar.AltarType.ALTAR_4.ordinal()));
+        addBlock(
+            0,
+            0,
+            0,
+            new BlockMeta(
+                BlocksAS.blockAltar,
+                hellfirepvp.astralsorcery.common.block.network.BlockAltar.AltarType.ALTAR_4.ordinal()));
     }
 
 }
