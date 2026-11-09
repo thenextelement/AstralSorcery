@@ -27,6 +27,7 @@ import hellfirepvp.astralsorcery.client.gui.journal.GuiScreenJournal;
 import hellfirepvp.astralsorcery.client.gui.journal.page.IGuiRenderablePage;
 import hellfirepvp.astralsorcery.client.util.RenderingUtils;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
+import hellfirepvp.astralsorcery.common.data.research.ResearchProgression;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -181,10 +182,12 @@ public class GuiJournalProgression extends GuiScreenJournal {
 
     // Double-clicking a research cluster zooms into it (same steps as the scroll wheel, animated).
     private static final long DOUBLE_CLICK_MS = 350;
-    private static final double CLUSTER_VIEW_SCALE = 6.4D;
+    private static final double CLUSTER_VIEW_SCALE = 6.0D; // double-click only from the overview
+    private static final double CLUSTER_ZOOMED_SCALE = 10.0D; // fully zoomed into the cluster (journal max scale)
     private long lastClickTime = 0;
     private Point lastClickPos = null;
     private int autoZoomTicks = 0;
+    private ResearchProgression autoZoomTarget = null;
 
     private void checkDoubleClick(Point p) {
         long now = Minecraft.getSystemTime();
@@ -195,20 +198,26 @@ public class GuiJournalProgression extends GuiScreenJournal {
         lastClickPos = p;
         if (dbl && progressionRenderer.getScalingFactor() < CLUSTER_VIEW_SCALE
             && progressionRenderer.getHoveredCluster() != null) {
-            autoZoomTicks = 40;
+            autoZoomTicks = 80;
+            autoZoomTarget = progressionRenderer.getHoveredCluster();
             lastClickPos = null;
         }
     }
 
     private void tickAutoZoom() {
-        if (autoZoomTicks <= 0) return;
+        if (autoZoomTicks <= 0 || autoZoomTarget == null) return;
         autoZoomTicks--;
         for (int i = 0; i < 2; i++) {
-            if (progressionRenderer.getScalingFactor() >= CLUSTER_VIEW_SCALE) {
+            double before = progressionRenderer.getScalingFactor();
+            if (before >= CLUSTER_ZOOMED_SCALE) {
                 autoZoomTicks = 0;
                 return;
             }
-            progressionRenderer.handleZoomIn();
+            progressionRenderer.zoomInTowards(autoZoomTarget);
+            if (progressionRenderer.getScalingFactor() <= before) { // nothing to zoom into / max reached
+                autoZoomTicks = 0;
+                return;
+            }
         }
     }
 

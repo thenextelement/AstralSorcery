@@ -62,6 +62,9 @@ public interface IGuiRenderablePage {
         float zIR = ri.zLevel;
         ri.zLevel = zLevel;
         RenderHelper.enableGUIStandardItemLighting();
+        // journal pages draw items inside scaled matrices: keep lighting normals unit length
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         Minecraft mc = Minecraft.getMinecraft();
         ri.renderItemAndEffectIntoGUI(fontRenderer, mc.renderEngine, stack, offsetX, offsetY);
         ri.renderItemOverlayIntoGUI(fontRenderer, mc.renderEngine, stack, offsetX, offsetY, null);

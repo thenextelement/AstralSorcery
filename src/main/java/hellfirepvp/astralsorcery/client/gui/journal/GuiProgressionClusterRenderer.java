@@ -257,6 +257,8 @@ public class GuiProgressionClusterRenderer {
             case ITEMSTACK:
                 GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
                 RenderHelper.enableGUIStandardItemLighting();
+                // the node is drawn scaled: keep lighting normals unit length or 3D block icons go dark
+                GL11.glEnable(GL11.GL_NORMALIZE);
                 GL11.glPushMatrix();
                 GL11.glScaled(
                     partSizeHandler.getScalingFactor(),
