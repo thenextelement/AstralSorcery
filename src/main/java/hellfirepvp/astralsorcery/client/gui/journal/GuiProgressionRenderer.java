@@ -139,6 +139,16 @@ public class GuiProgressionRenderer {
         moveMouse(0, 0);
     }
 
+    public double getScalingFactor() {
+        return sizeHandler.getScalingFactor();
+    }
+
+    /** The research cluster (Exploration, Discovery, ...) under the mouse, as of the last frame. */
+    @Nullable
+    public ResearchProgression getHoveredCluster() {
+        return focusedClusterMouse;
+    }
+
     public void unfocus() {
         focusedClusterZoom = null;
     }

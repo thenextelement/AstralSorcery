@@ -179,9 +179,44 @@ public class GuiJournalProgression extends GuiScreenJournal {
         }
     }
 
+    // Double-clicking a research cluster zooms into it (same steps as the scroll wheel, animated).
+    private static final long DOUBLE_CLICK_MS = 350;
+    private static final double CLUSTER_VIEW_SCALE = 6.4D;
+    private long lastClickTime = 0;
+    private Point lastClickPos = null;
+    private int autoZoomTicks = 0;
+
+    private void checkDoubleClick(Point p) {
+        long now = Minecraft.getSystemTime();
+        boolean dbl = lastClickPos != null && now - lastClickTime <= DOUBLE_CLICK_MS
+            && Math.abs(lastClickPos.x - p.x) <= 4
+            && Math.abs(lastClickPos.y - p.y) <= 4;
+        lastClickTime = now;
+        lastClickPos = p;
+        if (dbl && progressionRenderer.getScalingFactor() < CLUSTER_VIEW_SCALE
+            && progressionRenderer.getHoveredCluster() != null) {
+            autoZoomTicks = 40;
+            lastClickPos = null;
+        }
+    }
+
+    private void tickAutoZoom() {
+        if (autoZoomTicks <= 0) return;
+        autoZoomTicks--;
+        for (int i = 0; i < 2; i++) {
+            if (progressionRenderer.getScalingFactor() >= CLUSTER_VIEW_SCALE) {
+                autoZoomTicks = 0;
+                return;
+            }
+            progressionRenderer.handleZoomIn();
+        }
+    }
+
     @Override
     public void updateScreen() {
         super.updateScreen();
+
+        tickAutoZoom();
 
         if (Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())) {
             progressionRenderer.handleZoomIn();
@@ -208,6 +243,7 @@ public class GuiJournalProgression extends GuiScreenJournal {
                 .displayGuiScreen(new GuiJournalPerkMap());
             return;
         }
+        checkDoubleClick(p);
         progressionRenderer.propagateClick(p);
     }
 

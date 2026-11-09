@@ -267,7 +267,8 @@ public class GuiProgressionClusterRenderer {
                 GL11.glColor4f(renderLoopBrFactor, renderLoopBrFactor, renderLoopBrFactor, renderLoopBrFactor);
                 float oldZ = ri.zLevel;
                 ri.zLevel = zLevel + 10; // 1.7 GUI depth: must be in front of the node frame
-                ri.renderItemIntoGUI(
+                // AndEffect: goes through Forge IItemRenderers and renders blocks in 3D
+                ri.renderItemAndEffectIntoGUI(
                     Minecraft.getMinecraft().fontRenderer,
                     Minecraft.getMinecraft().renderEngine,
                     node.getRenderItemStack(),
