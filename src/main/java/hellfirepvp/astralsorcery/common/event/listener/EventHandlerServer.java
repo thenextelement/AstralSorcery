@@ -350,6 +350,8 @@ public class EventHandlerServer {
 
     @SubscribeEvent
     public void onCraft(PlayerEvent.ItemCraftedEvent event) {
+        // fires on both sides; in singleplayer getServer() is also non-null on the client thread
+        if (event.player == null || event.player.worldObj.isRemote || !(event.player instanceof EntityPlayerMP)) return;
         MinecraftServer server = MinecraftServer.getServer();
         if (server != null) {
             ResearchManager.informCraftingGridCompletion(event.player, event.crafting);
