@@ -145,6 +145,7 @@ public class CommonProxy implements IGuiHandler {
 
         RegistryBlocks.init();
         RegistryItems.init();
+        registerOreDictEntries(); // before anything resolves ore names (signatures, recipes)
         RegistryConstellations.initConstellationSignatures();
         RegistryEntities.init();
         RegistryStructures.init();
@@ -164,7 +165,6 @@ public class CommonProxy implements IGuiHandler {
         ConstellationEffectRegistry.init();
         hellfirepvp.astralsorcery.common.constellation.cape.CapeEffectRegistry.init();
 
-        registerOreDictEntries();
         RegistryAchievements.init();
         RegistryPerks.init();
 
@@ -180,9 +180,53 @@ public class CommonProxy implements IGuiHandler {
         // *sigh*
         OreDictionary.registerOre(OreDictAlias.BLOCK_MARBLE, new ItemStack(BlocksAS.blockMarble, 1, 0));
         OreDictionary.registerOre("blockMarble", new ItemStack(BlocksAS.blockMarble, 1, 0));
+
+        // Names the 1.10 recipes use that plain Forge 1.7.10 does not register (GTNH mods usually add them).
+        // Without these e.g. "workbench" and "enderpearl" resolve to nothing and the luminous crafting table and
+        // resonating wand recipes can never match.
+        int any = OreDictionary.WILDCARD_VALUE;
+        ensureOre("workbench", new ItemStack(net.minecraft.init.Blocks.crafting_table));
+        ensureOre("enderpearl", new ItemStack(net.minecraft.init.Items.ender_pearl));
+        ensureOre("ingotIron", new ItemStack(net.minecraft.init.Items.iron_ingot));
+        ensureOre("ingotGold", new ItemStack(net.minecraft.init.Items.gold_ingot));
+        ensureOre("plankWood", new ItemStack(net.minecraft.init.Blocks.planks, 1, any));
+        ensureOre("logWood", new ItemStack(net.minecraft.init.Blocks.log, 1, any));
+        ensureOre("logWood", new ItemStack(net.minecraft.init.Blocks.log2, 1, any));
+        ensureOre("stickWood", new ItemStack(net.minecraft.init.Items.stick));
+        ensureOre("sugarcane", new ItemStack(net.minecraft.init.Items.reeds));
+        ensureOre("gemDiamond", new ItemStack(net.minecraft.init.Items.diamond));
+        ensureOre("dustRedstone", new ItemStack(net.minecraft.init.Items.redstone));
+        ensureOre("dustGlowstone", new ItemStack(net.minecraft.init.Items.glowstone_dust));
+        ensureOre("nuggetGold", new ItemStack(net.minecraft.init.Items.gold_nugget));
+        ensureOre("cobblestone", new ItemStack(net.minecraft.init.Blocks.cobblestone));
+        ensureOre("paneGlassColorless", new ItemStack(net.minecraft.init.Blocks.glass_pane));
+        ensureOre("treeSapling", new ItemStack(net.minecraft.init.Blocks.sapling, 1, any));
+        ensureOre("treeLeaves", new ItemStack(net.minecraft.init.Blocks.leaves, 1, any));
+        ensureOre("treeLeaves", new ItemStack(net.minecraft.init.Blocks.leaves2, 1, any));
+        ensureOre("oreIron", new ItemStack(net.minecraft.init.Blocks.iron_ore));
+        String[] dyeNames = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan",
+            "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange",
+            "dyeWhite" }; // by dye item damage
+        for (int meta = 0; meta < dyeNames.length; meta++) {
+            ItemStack dye = new ItemStack(net.minecraft.init.Items.dye, 1, meta);
+            ensureOre(dyeNames[meta], dye);
+            ensureOre("dye", dye);
+        }
+    }
+
+    /** Registers the stack under the name unless an equal (or wildcard) entry is already there. */
+    private static void ensureOre(String name, ItemStack stack) {
+        for (ItemStack present : OreDictionary.getOres(name)) {
+            if (present.getItem() == stack.getItem() && (present.getItemDamage() == stack.getItemDamage()
+                || present.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
+                return;
+            }
+        }
+        OreDictionary.registerOre(name, stack);
     }
 
     public void init() {
+        hellfirepvp.astralsorcery.common.integrations.nei.NEIHandlerInfo.sendIMC();
         if (Mods.MINETWEAKER.isPresent()) {
             AstralSorcery.log.info("Minetweaker found! Adding recipe handlers...");
             ModIntegrationCrafttweaker.instance.load();
