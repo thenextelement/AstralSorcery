@@ -42,9 +42,9 @@ public class ModIntegrationStructureLib {
                         .ordinal()));
         IMultiblockInfoContainer.registerTileClass(TileAltar.class, altar);
         // NEI previews per tier (BlockRenderer6343 keys previews by tile class)
-        IMultiblockInfoContainer.registerTileClass(AltarPreviewTiles.Attunement.class, altar);
-        IMultiblockInfoContainer.registerTileClass(AltarPreviewTiles.Constellation.class, altar);
-        IMultiblockInfoContainer.registerTileClass(AltarPreviewTiles.Trait.class, altar);
+        IMultiblockInfoContainer.registerTileClass(PreviewTileAltarAttunement.class, altar);
+        IMultiblockInfoContainer.registerTileClass(PreviewTileAltarConstellation.class, altar);
+        IMultiblockInfoContainer.registerTileClass(PreviewTileAltarTrait.class, altar);
 
         IMultiblockInfoContainer.registerTileClass(
             TileRitualPedestal.class,
@@ -80,7 +80,7 @@ public class ModIntegrationStructureLib {
             "astralsorcery.structurelib.collector_enhancement")
                 .setController(te -> new BlockMeta(BlocksAS.celestialCollectorCrystal, 0));
         IMultiblockInfoContainer.registerTileClass(TileCollectorCrystal.class, collector);
-        IMultiblockInfoContainer.registerTileClass(AltarPreviewTiles.CelestialCollector.class, collector);
+        IMultiblockInfoContainer.registerTileClass(PreviewTileCelestialCollector.class, collector);
         AstralSorcery.log.info("[AstralSorcery] StructureLib found: registered multiblock hologram support.");
     }
 
