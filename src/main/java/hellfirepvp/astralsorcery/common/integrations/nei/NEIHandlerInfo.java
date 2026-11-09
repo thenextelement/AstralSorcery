@@ -16,7 +16,8 @@ import hellfirepvp.astralsorcery.AstralSorcery;
 /**
  * GTNH NEI metadata for our handlers, sent by IMC (no NEI classes needed, so this is safe without NEI):
  * tab icon + "Astral Sorcery" as mod name (registerHandlerInfo) and the blocks the recipes are made in as
- * catalysts (registerCatalystInfo). Handler ids are the handler class names.
+ * catalysts (registerCatalystInfo). Handler info is keyed by handler class name; NEI keys catalysts by the
+ * handler's overlay identifier when it has one (RecipeCatalysts#getRecipeID), so catalysts use those.
  */
 public class NEIHandlerInfo {
 
@@ -33,24 +34,36 @@ public class NEIHandlerInfo {
     public static void sendIMC() {
         String[] altarHandlers = { "AltarRecipeHandler$Discovery", "AltarRecipeHandler$Attunement",
             "AltarRecipeHandler$Constellation", "AltarRecipeHandler$Trait" };
+        String[] altarOverlays = { "astralsorcery.altar.discovery", "astralsorcery.altar.attunement",
+            "astralsorcery.altar.constellation_craft", "astralsorcery.altar.trait_craft" };
         for (int tier = 0; tier < altarHandlers.length; tier++) {
-            String handler = PKG + altarHandlers[tier];
-            handlerInfo(handler, ALTAR + tier, tier == 3 ? 122 : 96);
+            handlerInfo(PKG + altarHandlers[tier], ALTAR + tier, tier == 3 ? 122 : 96);
             // higher tier altars also craft every lower tier recipe
             for (int altar = tier; altar < altarHandlers.length; altar++) {
-                catalyst(handler, ALTAR + altar, 10 - (altar - tier)); // own tier first
+                catalyst(altarOverlays[tier], ALTAR + altar, 10 - (altar - tier)); // own tier first
             }
         }
-        simple("SimpleRecipeHandlers$Infuser", INFUSER);
-        simple("SimpleRecipeHandlers$Well", WELL);
-        simple("SimpleRecipeHandlers$Grindstone", GRINDSTONE);
-        simple("SimpleRecipeHandlers$Transmutation", LENS);
-        catalyst(PKG + "SimpleRecipeHandlers$Transmutation", COLLECTOR, 5);
+        simple("SimpleRecipeHandlers$Infuser", "astralsorcery.infuser", INFUSER);
+        simple("SimpleRecipeHandlers$Well", "astralsorcery.well", WELL);
+        simple("SimpleRecipeHandlers$Grindstone", "astralsorcery.grindstone", GRINDSTONE);
+        simple("SimpleRecipeHandlers$Transmutation", "astralsorcery.transmutation", LENS);
+        catalyst("astralsorcery.transmutation", COLLECTOR, 5);
+
+        // crafting table recipes that need starlight from a collector crystal
+        handlerInfo(PKG + "LightProximityRecipeHandler", "minecraft:crafting_table", 65);
+        catalyst(LightProximityIds.OVERLAY, "minecraft:crafting_table", 10);
+        catalyst(LightProximityIds.OVERLAY, COLLECTOR, 5);
     }
 
-    private static void simple(String handlerClass, String medium) {
+    /** Kept free of NEI classes (this file runs without NEI). */
+    public static final class LightProximityIds {
+
+        public static final String OVERLAY = "astralsorcery.lightproximity";
+    }
+
+    private static void simple(String handlerClass, String overlay, String medium) {
         handlerInfo(PKG + handlerClass, medium, 44);
-        catalyst(PKG + handlerClass, medium, 10);
+        catalyst(overlay, medium, 10);
     }
 
     private static void handlerInfo(String handler, String iconItem, int height) {
