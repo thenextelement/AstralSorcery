@@ -128,12 +128,19 @@ public final class ItemHandle {
                 }
             }
             return out;
-        }
-        // else if(fluidTypeAndAmount != null) {
-        // return Lists.newArrayList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket,
-        // fluidTypeAndAmount.getFluid()));
-        // }
-        else {
+        } else if (fluidTypeAndAmount != null) {
+            // every registered container (buckets etc.) filled with enough of the fluid
+            List<ItemStack> out = new LinkedList<>();
+            for (net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData data : net.minecraftforge.fluids.FluidContainerRegistry
+                .getRegisteredFluidContainerData()) {
+                if (data.fluid != null && data.filledContainer != null
+                    && data.fluid.isFluidEqual(fluidTypeAndAmount)
+                    && data.fluid.amount >= fluidTypeAndAmount.amount) {
+                    out.add(data.filledContainer.copy());
+                }
+            }
+            return out;
+        } else {
             return Lists.newArrayList(applicableItems);
         }
     }
@@ -142,10 +149,9 @@ public final class ItemHandle {
         if (oreDictName != null) {
             return oreDictName;
         }
-        // if(fluidTypeAndAmount != null) {
-        // return UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket,
-        // fluidTypeAndAmount.getFluid());
-        // }
+        if (fluidTypeAndAmount != null) {
+            return getApplicableItems();
+        }
         return applicableItems;
     }
 
