@@ -34,11 +34,12 @@ import hellfirepvp.astralsorcery.common.item.ItemJournal;
  */
 public class ContainerJournal extends Container {
 
-    private final ItemStack parentJournal;
+    // The held stack is replaced by a copy after right-click handling, so always resolve the journal from the slot.
+    private final InventoryPlayer playerInv;
     private final int journalIndex;
 
     public ContainerJournal(InventoryPlayer playerInv, ItemStack journal, int journalIndex) {
-        this.parentJournal = journal;
+        this.playerInv = playerInv;
         this.journalIndex = journalIndex;
         buildPlayerSlots(playerInv);
         buildSlots(ItemJournal.getJournalStorage(journal));
@@ -90,10 +91,10 @@ public class ContainerJournal extends Container {
                     if (!this.mergeItemStack(itemstack1, 36, 63, false)) {
                         return null;
                     }
+                } else if (!this.mergeItemStack(itemstack1, 0, 36, false)) {
+                    return null;
                 }
-            }
-
-            if (index >= 0 && index < 27) {
+            } else if (index >= 0 && index < 27) {
                 if (!this.mergeItemStack(itemstack1, 27, 36, false)) {
                     return null;
                 }
@@ -139,7 +140,10 @@ public class ContainerJournal extends Container {
                     saveConstellations.add(c);
                 }
             }
-            ItemJournal.setStoredConstellations(parentJournal, saveConstellations);
+            ItemStack journal = playerInv.getStackInSlot(journalIndex);
+            if (journal != null && journal.getItem() instanceof ItemJournal) {
+                ItemJournal.setStoredConstellations(journal, saveConstellations);
+            }
         }
     }
 
