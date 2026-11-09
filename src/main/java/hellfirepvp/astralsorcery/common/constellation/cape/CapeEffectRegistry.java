@@ -16,7 +16,18 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
 import hellfirepvp.astralsorcery.common.constellation.IConstellation;
-import hellfirepvp.astralsorcery.common.constellation.cape.impl.*;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectAevitas;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectArmara;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectBootes;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectDiscidia;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectEvorsio;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectFornax;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectHorologium;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectLucerna;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectMineralis;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectOctans;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectPelotrio;
+import hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectVicio;
 import hellfirepvp.astralsorcery.common.data.config.Config;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
 

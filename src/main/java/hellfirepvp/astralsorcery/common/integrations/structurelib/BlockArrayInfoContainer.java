@@ -106,10 +106,12 @@ public class BlockArrayInfoContainer<T extends TileEntity> implements IMultibloc
     public void construct(ItemStack trigger, boolean hintsOnly, T tile, ExtendedFacing facing) {
         World world = tile.getWorldObj();
         BlockPos center = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        BlockArray structure = structureProvider.apply(tile);
+        if (structure == null) return;
         if (!hintsOnly) {
             placeControllerIfMissing(world, center, tile);
         }
-        for (Map.Entry<BlockPos, BlockArray.BlockInformation> e : entries(structureProvider.apply(tile))) {
+        for (Map.Entry<BlockPos, BlockArray.BlockInformation> e : entries(structure)) {
             BlockPos at = center.add(e.getKey());
             BlockArray.BlockInformation info = e.getValue();
             if (hintsOnly) {
