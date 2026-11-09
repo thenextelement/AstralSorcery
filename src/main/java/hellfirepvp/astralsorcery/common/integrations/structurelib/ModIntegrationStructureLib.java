@@ -73,13 +73,14 @@ public class ModIntegrationStructureLib {
             new BlockArrayInfoContainer<TileCelestialGateway>(
                 te -> MultiBlockArrays.patternCelestialGateway,
                 "astralsorcery.structurelib.gateway").setController(te -> new BlockMeta(BlocksAS.celestialGateway, 0)));
-        IMultiblockInfoContainer.registerTileClass(
-            TileCollectorCrystal.class,
-            new BlockArrayInfoContainer<TileCollectorCrystal>(
-                te -> te.getType() == BlockCollectorCrystalBase.CollectorCrystalType.CELESTIAL_CRYSTAL
-                    ? MultiBlockArrays.patternCollectorEnhancement
-                    : null,
-                "astralsorcery.structurelib.collector_enhancement"));
+        BlockArrayInfoContainer<TileCollectorCrystal> collector = new BlockArrayInfoContainer<TileCollectorCrystal>(
+            te -> te.getType() == BlockCollectorCrystalBase.CollectorCrystalType.CELESTIAL_CRYSTAL
+                ? MultiBlockArrays.patternCollectorEnhancement
+                : null,
+            "astralsorcery.structurelib.collector_enhancement")
+                .setController(te -> new BlockMeta(BlocksAS.celestialCollectorCrystal, 0));
+        IMultiblockInfoContainer.registerTileClass(TileCollectorCrystal.class, collector);
+        IMultiblockInfoContainer.registerTileClass(AltarPreviewTiles.CelestialCollector.class, collector);
         AstralSorcery.log.info("[AstralSorcery] StructureLib found: registered multiblock hologram support.");
     }
 

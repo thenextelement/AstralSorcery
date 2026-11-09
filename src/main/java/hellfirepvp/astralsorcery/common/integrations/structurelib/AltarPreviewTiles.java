@@ -8,7 +8,9 @@
 
 package hellfirepvp.astralsorcery.common.integrations.structurelib;
 
+import hellfirepvp.astralsorcery.common.block.network.BlockCollectorCrystalBase;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
+import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 
 /**
  * Never placed in a world: BlockRenderer6343 builds one tile per registered StructureLib tile class (no-arg
@@ -35,6 +37,14 @@ public class AltarPreviewTiles {
 
         public Trait() {
             super(AltarLevel.TRAIT_CRAFT);
+        }
+    }
+
+    /** A fresh collector tile has no type (so no structure); the preview is the celestial one. */
+    public static class CelestialCollector extends TileCollectorCrystal {
+
+        public CelestialCollector() {
+            onPlace(null, null, false, BlockCollectorCrystalBase.CollectorCrystalType.CELESTIAL_CRYSTAL);
         }
     }
 }
