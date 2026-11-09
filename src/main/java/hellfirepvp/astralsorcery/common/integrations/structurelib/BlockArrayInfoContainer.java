@@ -33,6 +33,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.struct.BlockArray;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 
 /**
  * Exposes an Astral Sorcery multiblock (a {@link BlockArray} centred on a tile entity) to StructureLib's Multiblock
@@ -43,10 +44,33 @@ public class BlockArrayInfoContainer<T extends TileEntity> implements IMultibloc
 
     private final Function<T, BlockArray> structureProvider;
     private final String descriptionKey;
+    @Nullable
+    private Function<T, BlockMeta> controller = null;
 
     public BlockArrayInfoContainer(Function<T, BlockArray> structureProvider, String descriptionKey) {
         this.structureProvider = structureProvider;
         this.descriptionKey = descriptionKey;
+    }
+
+    /**
+     * The tile's own block. NEI multiblock previews (BlockRenderer6343) create the tile in an empty world and read
+     * the block at its position to know which item the structure belongs to, so it is placed when missing.
+     */
+    public BlockArrayInfoContainer<T> setController(Function<T, BlockMeta> controller) {
+        this.controller = controller;
+        return this;
+    }
+
+    private void placeControllerIfMissing(World world, BlockPos center, T tile) {
+        if (controller == null || world.isRemote) return;
+        if (!world.isAirBlock(center.getX(), center.getY(), center.getZ())) return;
+        BlockMeta bm = controller.apply(tile);
+        if (bm == null) return;
+        TileEntity keep = world.getTileEntity(center.getX(), center.getY(), center.getZ());
+        world.setBlock(center.getX(), center.getY(), center.getZ(), bm.block, bm.meta, 2);
+        if (keep != null) {
+            world.setTileEntity(center.getX(), center.getY(), center.getZ(), keep);
+        }
     }
 
     /** Pattern entries that need a block, bottom layer first so survival building works upwards. */
@@ -82,6 +106,9 @@ public class BlockArrayInfoContainer<T extends TileEntity> implements IMultibloc
     public void construct(ItemStack trigger, boolean hintsOnly, T tile, ExtendedFacing facing) {
         World world = tile.getWorldObj();
         BlockPos center = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        if (!hintsOnly) {
+            placeControllerIfMissing(world, center, tile);
+        }
         for (Map.Entry<BlockPos, BlockArray.BlockInformation> e : entries(structureProvider.apply(tile))) {
             BlockPos at = center.add(e.getKey());
             BlockArray.BlockInformation info = e.getValue();

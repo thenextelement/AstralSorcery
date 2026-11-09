@@ -107,23 +107,37 @@ public class BlockArrayRenderHelper {
 
         GL11.glScaled(-size * mul, -size * mul, -size * mul);
 
-        RenderBlocks brd = new RenderBlocks();
-        // VertexFormat blockFormat = DefaultVertexFormats.BLOCK;
-
+        RenderBlocks brd = new RenderBlocks(renderAccess);
         TextureHelper.setActiveTextureToAtlasSprite();
         Tessellator tess = Tessellator.instance;
-        // VertexBuffer vb = tes.getBuffer();
-
-        // vb.begin(GL11.GL_QUADS, blockFormat);
-        tess.startDrawingQuads();
-        for (Map.Entry<BlockPos, BakedBlockData> data : renderAccess.blockRenderData.entrySet()) {
-            BlockPos offset = data.getKey();
-            BakedBlockData renderData = data.getValue();
-            if (renderData.type != Blocks.air) {
-                // brd.renderBlock(renderData.metadata, offset, renderAccess, vb);
+        net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+        GL11.glDisable(GL11.GL_CULL_FACE); // the mirrored scale flips winding
+        int prevPass = getWorldRenderPass();
+        for (int pass = 0; pass < 2; pass++) {
+            setWorldRenderPass(pass);
+            if (pass == 1) {
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glDepthMask(false);
             }
+            tess.startDrawingQuads();
+            for (Map.Entry<BlockPos, BakedBlockData> data : renderAccess.blockRenderData.entrySet()) {
+                BlockPos at = data.getKey();
+                Block block = data.getValue().type;
+                if (block == null || block == Blocks.air || !block.canRenderInPass(pass)) continue;
+                try {
+                    brd.renderBlockByRenderType(block, at.getX(), at.getY(), at.getZ());
+                } catch (Exception ignored) {
+                    // a block that needs a real world; skip it in the preview
+                }
+            }
+            tess.draw();
         }
-        tess.draw();
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
+        setWorldRenderPass(prevPass);
 
         for (Map.Entry<BlockPos, BakedBlockData> data : renderAccess.blockRenderData.entrySet()) {
             BlockPos offset = data.getKey();
@@ -137,6 +151,23 @@ public class BlockArrayRenderHelper {
 
         GL11.glPopMatrix();
         GL11.glPopAttrib();
+    }
+
+    private static java.lang.reflect.Field passField;
+
+    private static int getWorldRenderPass() {
+        return net.minecraftforge.client.ForgeHooksClient.getWorldRenderPass();
+    }
+
+    /** ISBRHs (our baked JSON models) read ForgeHooksClient.worldRenderPass; it has no public setter. */
+    private static void setWorldRenderPass(int pass) {
+        try {
+            if (passField == null) {
+                passField = net.minecraftforge.client.ForgeHooksClient.class.getDeclaredField("worldRenderPass");
+                passField.setAccessible(true);
+            }
+            passField.setInt(null, pass);
+        } catch (Exception ignored) {}
     }
 
     public static class BakedBlockData extends BlockArray.BlockInformation {
@@ -181,7 +212,8 @@ public class BlockArrayRenderHelper {
 
         @Override
         public Block getBlock(int x, int y, int z) {
-            return null;
+            BlockPos pos = new BlockPos(x, y, z);
+            return isInBounds(pos) ? blockRenderData.get(pos).type : Blocks.air;
         }
 
         @Nullable
@@ -194,7 +226,7 @@ public class BlockArrayRenderHelper {
         @Override
         @SideOnly(Side.CLIENT)
         public int getLightBrightnessForSkyBlocks(int x, int y, int z, int lightValue) {
-            return 0;
+            return 0xF000F0; // full bright preview
         }
 
         @Override

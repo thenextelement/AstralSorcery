@@ -37,6 +37,8 @@ dependencies {
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.9.2-GTNH:dev")
     // Multiblock hologram projector support (optional at runtime)
     devOnlyNonPublishable("com.github.GTNewHorizons:StructureLib:1.5.0:dev")
+    // NEI multiblock previews of the StructureLib structures (optional, no API use); uncomment to see them in dev
+    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.25:dev")
     compileOnly("com.github.GTNewHorizons:Botania:1.12.5-GTNH:dev") { transitive = false }
     compileOnly("org.jetbrains:annotations:26.0.2")
 
