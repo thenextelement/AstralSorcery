@@ -38,7 +38,8 @@ dependencies {
     // Multiblock hologram projector support (optional at runtime)
     devOnlyNonPublishable("com.github.GTNewHorizons:StructureLib:1.5.0:dev")
     // NEI multiblock previews of the StructureLib structures (optional, no API use); uncomment to see them in dev
-    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.25:dev")
+    // transitive = false: its POM pulls GT5-Unofficial; it only needs NEI, StructureLib and GTNHLib (already present)
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.25:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:Botania:1.12.5-GTNH:dev") { transitive = false }
     compileOnly("org.jetbrains:annotations:26.0.2")
 
@@ -48,7 +49,8 @@ dependencies {
     // Et Futurum Requiem: optional, the vicio mantle then flies like (and with) EFR's elytra
     compileOnly("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.64-GTNH:dev") { transitive = false }
     // Uncomment to test the EFR elytra integration in the dev client/server
-    // runtimeOnlyNonPublishable("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.64-GTNH:dev")
+    // transitive = false: keeps Hodgepodge/Baubles out; it needs GTNHLib, CodeChickenLib, UniMixins (already present)
+    runtimeOnlyNonPublishable("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.64-GTNH:dev") { transitive = false }
     // Uncomment to test MineTweaker scripts in the dev client/server (run/scripts/*.zs)
     // runtimeOnlyNonPublishable(rfg.deobf('curse.maven:minetweaker3-224029:2255759'))
 
