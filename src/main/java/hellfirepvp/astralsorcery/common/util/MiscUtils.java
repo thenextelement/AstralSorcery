@@ -51,7 +51,7 @@ import hellfirepvp.astralsorcery.common.util.data.Vector3;
  */
 public class MiscUtils {
 
-    private static Map<EnumDyeColor, Color> prettierColorMapping = new HashMap<>();
+    private static final Map<EnumDyeColor, Color> prettierColorMapping = new HashMap<>();
 
     @Nullable
     public static <T> T getTileAt(IBlockAccess world, BlockPos pos, Class<T> tileClass, boolean forceChunkLoad) {

@@ -13,13 +13,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -52,7 +50,6 @@ import hellfirepvp.astralsorcery.common.util.data.Vector3;
 public class TESRAltar extends TileEntitySpecialRenderer {
 
     private static final Random rand = new Random();
-    private static final ModelChest field_147510_h = new ModelChest();
     private static final ASaltarT2 modelAltar2 = new ASaltarT2();
     private static final BindableResource texAltar2 = AssetLibrary
         .loadTexture(AssetLoader.TextureLocation.MODELS, "base/altarT2");
@@ -63,11 +60,21 @@ public class TESRAltar extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileAltar te = (TileAltar) tile;
+        long sBase = 7553015156732193565L;
+        sBase ^= (long) te.xCoord;
+        sBase ^= (long) te.yCoord;
+        sBase ^= (long) te.zCoord;
+        double jBase = ClientScheduler.getClientTick() + partialTicks;
+        jBase /= 20D;
+
         switch (te.getAltarLevel()) {
-            case DISCOVERY:
-                this.bindTexture(new ResourceLocation("textures/entity/chest/normal.png"));
-                ModelChest modelchest = field_147510_h;
+            case ATTUNEMENT:
+                renderT2Additions(te, x, y, z, jBase);
+                break;
+            case CONSTELLATION_CRAFT:
+                renderT3Additions(te, x, y, z, jBase);
                 break;
             case TRAIT_CRAFT:
                 if (te.getMultiblockState()) {
@@ -199,7 +206,12 @@ public class TESRAltar extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         texAltar3.bind();
+        // pulled towards the camera so it doesn't z-fight with the baked altar body (1.7 chunk vs TESR precision)
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(-1F, -2F);
         modelAltar3.render(null, (float) jump, 0, 0, 0, 0, 1F);
+        GL11.glPolygonOffset(0F, 0F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -220,7 +232,12 @@ public class TESRAltar extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         texAltar2.bind();
+        // pulled towards the camera so it doesn't z-fight with the baked altar body (1.7 chunk vs TESR precision)
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(-1F, -2F);
         modelAltar2.render(null, (float) jump, 0, 0, 0, 0, 1F);
+        GL11.glPolygonOffset(0F, 0F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
         GL11.glPopAttrib();

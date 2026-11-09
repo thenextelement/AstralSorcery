@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,6 +29,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.client.ClientScheduler;
 import hellfirepvp.astralsorcery.client.effect.EffectHandler;
+import hellfirepvp.astralsorcery.client.effect.EffectHelper;
+import hellfirepvp.astralsorcery.client.effect.fx.EntityFXFacingParticle;
 import hellfirepvp.astralsorcery.client.util.PositionedLoopSound;
 import hellfirepvp.astralsorcery.client.util.SpriteLibrary;
 import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
@@ -42,12 +45,14 @@ import hellfirepvp.astralsorcery.common.crafting.altar.ActiveCraftingTask;
 import hellfirepvp.astralsorcery.common.crafting.altar.AltarRecipeRegistry;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.AttunementRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.ConstellationRecipe;
+import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TraitRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapeMap;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
 import hellfirepvp.astralsorcery.common.entities.EntityFlare;
 import hellfirepvp.astralsorcery.common.item.ItemConstellationFocus;
 import hellfirepvp.astralsorcery.common.item.base.IWandInteract;
+import hellfirepvp.astralsorcery.common.item.block.ItemBlockAltar;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.lib.MultiBlockArrays;
 import hellfirepvp.astralsorcery.common.lib.Sounds;
@@ -100,7 +105,7 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
     public void receiveStarlight(@Nullable IWeakConstellation type, double amount) {
         if (amount <= 0.001) return;
 
-        starlightStored = Math.min(getMaxStarlightStorage(), (int) (starlightStored + (amount * 100D)));
+        starlightStored = Math.min(getMaxStarlightStorage(), (int) (starlightStored + (amount * 200D)));
         markForUpdate();
     }
 
@@ -130,6 +135,24 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
                 doCraftEffects();
                 doCraftSound();
             }
+            if (getAltarLevel() != null && getAltarLevel().ordinal() >= AltarLevel.TRAIT_CRAFT.ordinal()
+                && getMultiblockState()) {
+                playAltarEffects();
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void playAltarEffects() {
+        if (Minecraft.isFancyGraphicsEnabled() && rand.nextBoolean()) {
+            EntityFXFacingParticle p = EffectHelper.genericFlareParticle(xCoord + 0.5, yCoord + 4.4, zCoord + 0.5);
+            p.motion(
+                (rand.nextFloat() * 0.03F) * (rand.nextBoolean() ? 1 : -1),
+                (rand.nextFloat() * 0.03F) * (rand.nextBoolean() ? 1 : -1),
+                (rand.nextFloat() * 0.03F) * (rand.nextBoolean() ? 1 : -1));
+            p.scale(0.15F)
+                .setColor(java.awt.Color.WHITE)
+                .setMaxAge(25);
         }
     }
 
@@ -182,7 +205,11 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return super.getRenderBoundingBox().expand(0, 3, 0);
+        AxisAlignedBB box = super.getRenderBoundingBox().expand(0, 5, 0);
+        if (level != null && level.ordinal() >= AltarLevel.TRAIT_CRAFT.ordinal()) {
+            box = box.expand(3, 0, 3);
+        }
+        return box;
     }
 
     @SideOnly(Side.CLIENT)
@@ -205,12 +232,16 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
     private boolean doTryCraft(boolean needUpdate) {
         if (craftingTask == null) return needUpdate;
         AbstractAltarRecipe altarRecipe = craftingTask.getRecipeToCraft();
-        if (!altarRecipe.matches(this, getInventoryHandler(), true)) {
+        if (!doesRecipeMatch(altarRecipe, true)) {
             abortCrafting();
             return true;
         }
-        if (!altarRecipe.fulfillesStarlightRequirement(this) && craftingTask.shouldPersist()) {
-            craftingTask.setState(ActiveCraftingTask.CraftingState.PAUSED);
+        if (!altarRecipe.fulfillesStarlightRequirement(this)) {
+            if (craftingTask.shouldPersist(this)) {
+                craftingTask.setState(ActiveCraftingTask.CraftingState.PAUSED);
+                return true;
+            }
+            abortCrafting();
             return true;
         }
         if ((ticksExisted % 5) == 0) {
@@ -271,7 +302,20 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
             }
         }
 
-        if (out != null) {
+        for (TraitRecipe.TraitRecipeSlot slot : TraitRecipe.TraitRecipeSlot.values()) {
+            int slotId = slot.getSlotId();
+            if (recipe.mayDecrement(this, slot)) {
+                ItemUtils.decrStackInInventory(getInventoryHandler(), slotId);
+            } else {
+                recipe.handleItemConsumption(this, slot);
+            }
+        }
+
+        if (recipe instanceof TraitRecipe) {
+            ((TraitRecipe) recipe).consumeOuterInputs(this, craftingTask);
+        }
+
+        if (out != null && !(out.getItem() instanceof ItemBlockAltar)) {
             /*
              * for (EnumFacing dir : EnumFacing.VALUES) { FIXME Item capability system break here :|
              * if(dir == EnumFacing.UP) continue;
@@ -295,7 +339,7 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
         addExpAndTryLevel((int) (recipe.getCraftExperience() * recipe.getCraftExperienceMultiplier()));
         starlightStored = Math.max(0, starlightStored - recipe.getPassiveStarlightRequired());
 
-        if (!recipe.allowsForChaining() || !recipe.matches(this, getInventoryHandler(), false)
+        if (!recipe.allowsForChaining() || !doesRecipeMatch(recipe, false)
             || !matchDownMultiblocks(recipe.getNeededLevel())) {
             if (getAltarLevel().ordinal() >= AltarLevel.CONSTELLATION_CRAFT.ordinal()) {
                 Vector3 pos = new Vector3(xCoord, yCoord, zCoord).add(0.5, 0, 0.5);
@@ -425,6 +469,18 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
     }
 
     @Nullable
+    /** 1.12.2-1.8.5: altar upgrade recipes (altar item as output) never match an altar at or above that tier. */
+    public boolean doesRecipeMatch(AbstractAltarRecipe recipe, boolean ignoreStarlightRequirement) {
+        ItemStack match = recipe.getOutputForMatching();
+        if (match != null && match.getItem() instanceof ItemBlockAltar) {
+            int to = MathHelper.clamp_int(match.getItemDamage(), 0, AltarLevel.values().length - 1);
+            if (getAltarLevel().ordinal() >= to) {
+                return false;
+            }
+        }
+        return recipe.matches(this, getInventoryHandler(), ignoreStarlightRequirement);
+    }
+
     public ActiveCraftingTask getActiveCraftingTask() {
         return craftingTask;
     }
@@ -454,8 +510,7 @@ public class TileAltar extends TileReceiverBaseInventory implements IWandInterac
         if (!world.isRemote) {
             if (getActiveCraftingTask() != null) {
                 AbstractAltarRecipe altarRecipe = craftingTask.getRecipeToCraft();
-                if (!matchDownMultiblocks(altarRecipe.getNeededLevel())
-                    || !altarRecipe.matches(this, getInventoryHandler(), false)) {
+                if (!matchDownMultiblocks(altarRecipe.getNeededLevel()) || !doesRecipeMatch(altarRecipe, false)) {
                     abortCrafting();
                     return;
                 }

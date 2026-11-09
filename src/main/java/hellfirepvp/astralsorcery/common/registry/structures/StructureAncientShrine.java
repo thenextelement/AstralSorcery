@@ -20,7 +20,9 @@ import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.StructureBlockArray;
 
 /**
@@ -38,17 +40,27 @@ public class StructureAncientShrine extends StructureBlockArray {
 
     private void load() {
         Block m = BlocksAS.blockMarble;
-        Block mRaw = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.RAW);
-        Block mBrick = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                         // BlockMarble.MarbleBlockType.BRICKS);
-        Block mChisel = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                          // BlockMarble.MarbleBlockType.CHISELED);
-        Block mPillar = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                          // BlockMarble.MarbleBlockType.PILLAR);
-        Block mArch = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.ARCH);
-        Block mRuned = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE, BlockMarble.MarbleBlockType.RUNED);
-        Block mEngraved = m;// .getDefaultState().withProperty(BlockMarble.MARBLE_TYPE,
-                            // BlockMarble.MarbleBlockType.ENGRAVED);
+        BlockMeta mRaw = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mBrick = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mChisel = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mPillar = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mArch = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mRuned = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RUNED.getMeta());
+        BlockMeta mEngraved = new BlockMeta(
+            m,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ENGRAVED.getMeta());
         Block air = Blocks.air;
 
         addBlockCube(mRaw, -7, 0, -7, 7, 0, 7);
@@ -83,7 +95,7 @@ public class StructureAncientShrine extends StructureBlockArray {
 
         addBlockCube(mBrick, -2, 10, -2, 2, 10, 2);
 
-        addBlock(0, 0, 0, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(0, 0, 0); // sea lantern with EFR, glowstone otherwise
         addBlock(1, 0, 0, mChisel);
         addBlock(-1, 0, 0, mChisel);
         addBlock(0, 0, 1, mChisel);
@@ -248,22 +260,22 @@ public class StructureAncientShrine extends StructureBlockArray {
         addBlock(5, 3, 5, mPillar);
         addBlock(5, 4, 5, mPillar);
         addBlock(5, 5, 5, mPillar);
-        addBlock(5, 6, 5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(5, 6, 5); // sea lantern with EFR, glowstone otherwise
         addBlock(-5, 2, 5, mRuned);
         addBlock(-5, 3, 5, mPillar);
         addBlock(-5, 4, 5, mPillar);
         addBlock(-5, 5, 5, mPillar);
-        addBlock(-5, 6, 5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(-5, 6, 5); // sea lantern with EFR, glowstone otherwise
         addBlock(5, 2, -5, mRuned);
         addBlock(5, 3, -5, mPillar);
         addBlock(5, 4, -5, mPillar);
         addBlock(5, 5, -5, mPillar);
-        addBlock(5, 6, -5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(5, 6, -5); // sea lantern with EFR, glowstone otherwise
         addBlock(-5, 2, -5, mRuned);
         addBlock(-5, 3, -5, mPillar);
         addBlock(-5, 4, -5, mPillar);
         addBlock(-5, 5, -5, mPillar);
-        addBlock(-5, 6, -5, Blocks.bookshelf);// Blocks.SEA_LANTERN.getDefaultState()
+        addLightBlock(-5, 6, -5); // sea lantern with EFR, glowstone otherwise
 
         addBlock(5, 6, 4, mArch);
         addBlock(5, 6, 3, mArch);
@@ -383,7 +395,7 @@ public class StructureAncientShrine extends StructureBlockArray {
             @Override
             public void onPlace(IBlockAccess access, BlockPos at, TileEntity te) {
                 if (te instanceof TileEntityChest) {
-                    // ((TileEntityChest) te).setLootTable(LootTableUtil.LOOT_TABLE_SHRINE, STATIC_RAND.nextLong());
+                    LootTableUtil.fillShrineChest((TileEntityChest) te, STATIC_RAND);
                 }
             }
         };

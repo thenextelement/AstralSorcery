@@ -10,7 +10,6 @@ package hellfirepvp.astralsorcery.common.tile.base;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -46,22 +45,16 @@ public abstract class TileEntitySynchronized extends TileEntity {
 
     public void writeNetNBT(NBTTagCompound compound) {}
 
-    // @Override
-    // public final SPacketUpdateTileEntity getUpdatePacket() {
-    // NBTTagCompound compound = new NBTTagCompound();
-    // super.writeToNBT(compound);
-    // writeCustomNBT(compound);
-    // writeNetNBT(compound);
-    // return new SPacketUpdateTileEntity(getPos(), 255, compound);
-    // }
-    //
-    // @Override
-    // public NBTTagCompound getUpdateTag() {
-    // NBTTagCompound compound = new NBTTagCompound();
-    // super.writeToNBT(compound);
-    // writeCustomNBT(compound);
-    // return compound;
-    // }
+    /** 1.7 equivalent of 1.10's getUpdatePacket/getUpdateTag: full custom + net data to clients. */
+    @Override
+    public net.minecraft.network.Packet getDescriptionPacket() {
+        NBTTagCompound compound = new NBTTagCompound();
+        super.writeToNBT(compound);
+        writeCustomNBT(compound);
+        writeNetNBT(compound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 255, compound);
+    }
+
     @Override
     public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
         super.onDataPacket(manager, packet);
@@ -70,8 +63,8 @@ public abstract class TileEntitySynchronized extends TileEntity {
     }
 
     public void markForUpdate() {
-        Block thisState = worldObj.getBlock(xCoord, yCoord, zCoord);
-        worldObj.notifyBlockChange(xCoord, yCoord, zCoord, thisState);
+        // 1.7: markBlockForUpdate resends the description packet to watching clients
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         markDirty();
     }
 

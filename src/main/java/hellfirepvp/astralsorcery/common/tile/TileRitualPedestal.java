@@ -94,6 +94,10 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
     public void tick() {
         super.tick();
 
+        if (!worldObj.isRemote && !restoredAfterLoad) {
+            restoreAfterLoad();
+        }
+
         if (!worldObj.isRemote) {
             if ((ticksExisted & 15) == 0) {
                 updateSkyState(worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord));
@@ -297,17 +301,18 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
         }
     }
 
-    // @Override
-    // public void onLoad() {
-    // if(!worldObj.isRemote) {
-    // TransmissionReceiverRitualPedestal ped = getUpdateCache();
-    // if(ped != null) {
-    // offsetMirrorPositions.clear();
-    // offsetMirrorPositions.addAll(ped.offsetMirrors.keySet());
-    // flagDirty();
-    // }
-    // }
-    // }
+    // 1.10 used TileEntity#onLoad; 1.7 has none (and ticksExisted persists, so onFirstTick won't fire after a reload).
+    private transient boolean restoredAfterLoad = false;
+
+    private void restoreAfterLoad() {
+        restoredAfterLoad = true;
+        TransmissionReceiverRitualPedestal ped = getUpdateCache();
+        if (ped != null) {
+            offsetMirrorPositions.clear();
+            offsetMirrorPositions.addAll(ped.offsetMirrors.keySet());
+            flagDirty();
+        }
+    }
 
     @SideOnly(Side.CLIENT)
     public TextureSpritePlane getHaloEffectSprite() {
@@ -326,7 +331,7 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
     }
 
     @Override
-    protected void onInventoryChanged(int slotChanged) {
+    public void onInventoryChanged(int slotChanged) {
         if (!worldObj.isRemote) {
             ItemStack in = getInventoryHandler().getStackInSlot(0);
             if (in != null && in.getItem() != null && in.getItem() instanceof ItemTunedCrystalBase) {
@@ -894,7 +899,7 @@ public class TileRitualPedestal extends TileReceiverBaseInventory {
         public void updateLink(@Nonnull World world, @Nullable BlockPos ritualLink) {
             BlockPos prev = this.ritualLinkTo;
             this.ritualLinkTo = ritualLink;
-            if (!prev.equals(this.ritualLinkTo) && this.ce != null) {
+            if (!java.util.Objects.equals(prev, this.ritualLinkTo) && this.ce != null) {
                 this.ce.clearCache();
                 markDirty(world);
             }

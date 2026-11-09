@@ -47,6 +47,40 @@ public class BlockArray {
     private Vec3 min = Vec3.createVectorHelper(0, 0, 0), max = Vec3.createVectorHelper(0, 0, 0),
         size = Vec3.createVectorHelper(0, 0, 0);
 
+    // ---- metadata-aware variants (1.10 block states -> block + meta)
+
+    public void addBlock(int x, int y, int z, @Nonnull BlockMeta state) {
+        addBlock(new BlockPos(x, y, z), state);
+    }
+
+    public void addBlock(BlockPos offset, @Nonnull BlockMeta state) {
+        addBlock(offset, state, new BlockStateCheck.Meta(state.block, state.meta));
+    }
+
+    public void addBlock(int x, int y, int z, @Nonnull BlockMeta state, BlockStateCheck match) {
+        addBlock(new BlockPos(x, y, z), state, match);
+    }
+
+    public void addBlock(BlockPos offset, @Nonnull BlockMeta state, BlockStateCheck match) {
+        pattern.put(offset, new BlockInformation(state.block, state.meta, match));
+        updateSize(offset);
+    }
+
+    public void addBlockCube(@Nonnull BlockMeta state, int ox, int oy, int oz, int tx, int ty, int tz) {
+        addBlockCube(state, new BlockStateCheck.Meta(state.block, state.meta), ox, oy, oz, tx, ty, tz);
+    }
+
+    public void addBlockCube(@Nonnull BlockMeta state, BlockStateCheck match, int ox, int oy, int oz, int tx, int ty,
+        int tz) {
+        for (int xx = Math.min(ox, tx); xx <= Math.max(ox, tx); xx++) {
+            for (int zz = Math.min(oz, tz); zz <= Math.max(oz, tz); zz++) {
+                for (int yy = Math.min(oy, ty); yy <= Math.max(oy, ty); yy++) {
+                    addBlock(new BlockPos(xx, yy, zz), state, match);
+                }
+            }
+        }
+    }
+
     public void addBlock(int x, int y, int z, @Nonnull Block block) {
         addBlock(new BlockPos(x, y, z), block);
     }

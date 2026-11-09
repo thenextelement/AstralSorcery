@@ -139,6 +139,37 @@ public class GuiProgressionRenderer {
         moveMouse(0, 0);
     }
 
+    public double getScalingFactor() {
+        return sizeHandler.getScalingFactor();
+    }
+
+    /** The research cluster (Exploration, Discovery, ...) under the mouse, as of the last frame. */
+    @Nullable
+    public ResearchProgression getHoveredCluster() {
+        return focusedClusterMouse;
+    }
+
+    /**
+     * One step of the double-click zoom: locks onto the cluster and steers the view to its centre while zooming, so
+     * it does not drift away from the cursor (the wheel zoom needs the cluster under the cursor at scale 4).
+     */
+    public void zoomInTowards(ResearchProgression cluster) {
+        if (focusedClusterZoom != cluster) {
+            focus(cluster);
+        }
+        double scale = sizeHandler.getScalingFactor();
+        if (scale < 6.1D) {
+            Rectangle2D rect = calcBoundingRectangle(cluster);
+            ScalingPoint view = hasPrevOffset ? previousMousePointScaled : mousePointScaled;
+            double remainingSteps = Math.max(1D, (6.1D - scale) / 0.2D);
+            double nx = view.getScaledPosX() + (rect.getCenterX() - view.getScaledPosX()) / remainingSteps;
+            double ny = view.getScaledPosY() + (rect.getCenterY() - view.getScaledPosY()) / remainingSteps;
+            view.updateScaledPos(sizeHandler.clampX(nx), sizeHandler.clampY(ny), sizeHandler.getScalingFactor());
+            updateMouseState();
+        }
+        handleZoomIn();
+    }
+
     public void unfocus() {
         focusedClusterZoom = null;
     }

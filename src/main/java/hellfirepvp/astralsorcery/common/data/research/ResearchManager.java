@@ -532,6 +532,7 @@ public class ResearchManager {
     }
 
     public static void informCraftingGridCompletion(EntityPlayer player, ItemStack out) {
+        if (!(player instanceof EntityPlayerMP)) return; // research/progress is server-side only
         Item iOut = out.getItem();
         informCraft(player, out, iOut, Block.getBlockFromItem(iOut));
     }
@@ -589,6 +590,8 @@ public class ResearchManager {
                         giveResearchIgnoreFail(crafter, ResearchProgression.CONSTELLATION);
                         break;
                     case TRAIT_CRAFT:
+                        giveProgressionIgnoreFail(crafter, ProgressionTier.TRAIT_CRAFT);
+                        giveResearchIgnoreFail(crafter, ResearchProgression.RADIANCE);
                         break;
                     case ENDGAME:
                         break;

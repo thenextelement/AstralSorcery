@@ -104,25 +104,17 @@ public class EventHandlerServer {
         TickEvent.Type.SERVER);
     public static TimeoutList<EntityPlayer> invulnerabilityCooldown = new TimeoutList<>(null, TickEvent.Type.SERVER);
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void onLoad(WorldEvent.Load event) {
-    // World w = event.world;
-    // int id = w.provider.dimensionId;
-    // if(!w.isRemote && !isDataInitialized) {
-    // //This is kinda an early point in server startup, when it loads the overworld.
-    // //Since the FML Server start events are either too early or too late, we do it here.
-    //// ServerData.reloadDataFromSaveHandler(w.getSaveHandler());
-    // isDataInitialized = true;
-    // }
-    // if(DataWorldSkyHandlers.hasWorldHandler(id, w.isRemote ? Side.CLIENT : Side.SERVER) &&
-    // !Config.weakSkyRendersWhitelist.contains(w.provider.dimensionId)) {
-    // AstralSorcery.log.info("[AstralSorcery] Found worldProvider in Dimension " + id + " : " +
-    // w.provider.getClass().getName());
-    //// w.provider = new WorldProviderBrightnessInj(w, w.provider);
-    // AstralSorcery.log.info("[AstralSorcery] Injected WorldProvider into dimension " + id + " (chaining old
-    // provider.)");
-    // }
-    // }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onLoad(WorldEvent.Load event) {
+        World w = event.world;
+        if (!w.isRemote && !isDataInitialized) {
+            // This is kinda an early point in server startup, when it loads the overworld.
+            // Since the FML Server start events are either too early or too late, we do it here.
+            hellfirepvp.astralsorcery.common.data.server.ServerData.reloadDataFromSaveHandler(w.getSaveHandler());
+            isDataInitialized = true;
+        }
+        // Solar eclipse brightness (1.10: WorldProviderBrightnessInj) is handled by MixinWorld on 1.7.
+    }
 
     @SubscribeEvent
     public void onUnload(WorldEvent.Unload event) {
@@ -320,6 +312,8 @@ public class EventHandlerServer {
 
     @SubscribeEvent
     public void onRightClick(PlayerInteractEvent event) {
+        // 1.7 fires PlayerInteractEvent for left clicks and air clicks too (1.10 used RightClickBlock)
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
         ItemStack hand = event.entityPlayer.getHeldItem();
         // if(event.getHand() == EnumHand.OFF_HAND) {
         // hand = event.entityPlayer.getHeldItem(EnumHand.MAIN_HAND);
@@ -329,7 +323,13 @@ public class EventHandlerServer {
             ISpecialInteractItem i = (ISpecialInteractItem) hand.getItem();
             BlockPos pos = new BlockPos(event.x, event.y, event.z);
             if (i.needsSpecialHandling(event.world, pos, event.entityPlayer, hand)) {
-                i.onRightClick(event.world, pos, event.entityPlayer, event.face, hand);
+                if (event.world.isRemote) {
+                    // 1.7: a cancelled client-side interact never reaches the server, so forward the click
+                    // ourselves; the server-side event then performs the special interaction.
+                    AstralSorcery.proxy.forwardBlockInteractToServer(event.x, event.y, event.z, event.face);
+                } else {
+                    i.onRightClick(event.world, pos, event.entityPlayer, event.face, hand);
+                }
                 event.setCanceled(true);
             }
         }
@@ -337,6 +337,7 @@ public class EventHandlerServer {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRightClickLast(PlayerInteractEvent event) {
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
         if (!event.world.isRemote) {
             Block interacted = event.world.getBlock(event.x, event.y, event.z);
             if (interacted instanceof BlockWorkbench) {
@@ -349,6 +350,8 @@ public class EventHandlerServer {
 
     @SubscribeEvent
     public void onCraft(PlayerEvent.ItemCraftedEvent event) {
+        // fires on both sides; in singleplayer getServer() is also non-null on the client thread
+        if (event.player == null || event.player.worldObj.isRemote || !(event.player instanceof EntityPlayerMP)) return;
         MinecraftServer server = MinecraftServer.getServer();
         if (server != null) {
             ResearchManager.informCraftingGridCompletion(event.player, event.crafting);
@@ -410,9 +413,7 @@ public class EventHandlerServer {
         }
         if (event.getOldBlock()
             .equals(BlocksAS.customOre)) {
-            Block oldState = event.getOldBlock();
-            if (oldState.equals(BlockCustomOre.OreType.ROCK_CRYSTAL)) {// oldState.getValue(BlockCustomOre.ORE_TYPE).equals(BlockCustomOre.OreType.ROCK_CRYSTAL))
-                                                                       // {
+            if (event.getOldMeta() == BlockCustomOre.OreType.ROCK_CRYSTAL.getMeta()) {
                 ((RockCrystalBuffer) WorldCacheManager
                     .getOrLoadData(event.getWorld(), WorldCacheManager.SaveKey.ROCK_CRYSTAL)).removeOre(event.getPos());
             }

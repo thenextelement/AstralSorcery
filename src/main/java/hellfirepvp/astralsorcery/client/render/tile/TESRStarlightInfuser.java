@@ -28,6 +28,7 @@ public class TESRStarlightInfuser extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileStarlightInfuser te = (TileStarlightInfuser) tile;
         ItemStack in = te.getInputStack();
         if (in == null) return;

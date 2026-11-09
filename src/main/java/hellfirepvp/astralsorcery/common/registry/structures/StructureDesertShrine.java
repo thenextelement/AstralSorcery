@@ -24,7 +24,9 @@ import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
+import hellfirepvp.astralsorcery.common.util.LootTableUtil;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.StructureBlockArray;
 
 /**
@@ -60,42 +62,46 @@ public class StructureDesertShrine extends StructureBlockArray {
 
     private void placeSand(World world, BlockPos center) {
         Block marble = BlocksAS.blockMarble;
-        Block mch = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.CHISELED);
-        Block mpl = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.PILLAR);
+        BlockMeta mch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
 
         placeBlockCube(world, center, -4, 1, -4, 4, 1, 4);
 
         BlockPos at = center.add(0, 1, 0);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(0, 2, 0);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mch);
+        mch.place(world, at);
         at = center.add(3, 1, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(3, 2, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(3, 3, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mch);
+        mch.place(world, at);
 
         at = center.add(-3, 1, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(-3, 2, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(-3, 3, 3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mch);
+        mch.place(world, at);
 
         at = center.add(-3, 1, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(-3, 2, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(-3, 3, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mch);
+        mch.place(world, at);
 
         at = center.add(3, 1, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(3, 2, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mpl);
+        mpl.place(world, at);
         at = center.add(3, 3, -3);
-        world.setBlock(at.getX(), at.getY(), at.getZ(), mch);
+        mch.place(world, at);
 
         topBlockWithOffset(3, 4, 3, world, center, 1F);
         topBlockWithOffset(-3, 4, 3, world, center, 1F);
@@ -178,7 +184,7 @@ public class StructureDesertShrine extends StructureBlockArray {
         if (rand.nextFloat() <= chance) {
             // BlockPos at = center.add(x, y, z);
             // Block top = world.getBiomeGenForCoords(at.getX(), at.getZ()).topBlock;
-            // world.setBlock(at.getX(), at.getY(), at.getZ(), top);
+            // top.place(world, at);
         }
     }
 
@@ -220,11 +226,21 @@ public class StructureDesertShrine extends StructureBlockArray {
     private void load() {
         Block marble = BlocksAS.blockMarble;
 
-        Block mch = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.CHISELED);
-        Block mbr = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.BRICKS);
-        Block mrw = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.RAW);
-        Block mar = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.ARCH);
-        Block mpl = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.PILLAR);
+        BlockMeta mch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mbr = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
+        BlockMeta mrw = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.RAW.getMeta());
+        BlockMeta mar = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
         Block air = Blocks.air;
         Block sand = Blocks.sand;
 
@@ -273,7 +289,7 @@ public class StructureDesertShrine extends StructureBlockArray {
             @Override
             public void onPlace(IBlockAccess access, BlockPos at, TileEntity te) {
                 if (te instanceof TileEntityChest) {
-                    // ((TileEntityChest) te).setLootTable(LootTableUtil.LOOT_TABLE_SHRINE, STATIC_RAND.nextLong());
+                    LootTableUtil.fillShrineChest((TileEntityChest) te, STATIC_RAND);
                 }
             }
         };

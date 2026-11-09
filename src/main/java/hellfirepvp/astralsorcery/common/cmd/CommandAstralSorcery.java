@@ -126,6 +126,10 @@ public class CommandAstralSorcery extends CommandBase {
                     buildStruct(sender, args[1]);
                 } else {
                     RegistryStructures.init(); // Reload
+                    sender.addChatMessage(
+                        new ChatComponentText(
+                            "§aStructures reloaded. Usage: /astralsorcery build <name> while looking at a block. Names: "
+                                + String.join(", ", getPasteableStructureNames())));
                 }
             } else if (identifier.equalsIgnoreCase("maximize")) {
                 if (args.length == 2) {
@@ -248,7 +252,35 @@ public class CommandAstralSorcery extends CommandBase {
         sender.addChatMessage(new ChatComponentText("§aSuccess!"));
     }
 
+    /** Fields of MultiBlockArrays that /astralsorcery build may paste. */
+    private static List<String> getPasteableStructureNames() {
+        List<String> names = new java.util.ArrayList<>();
+        for (Field f : MultiBlockArrays.class.getDeclaredFields()) {
+            if (java.lang.reflect.Modifier.isStatic(f.getModifiers()) && BlockArray.class.isAssignableFrom(f.getType())
+                && !f.isAnnotationPresent(MultiBlockArrays.PasteBlacklist.class)) {
+                names.add(f.getName());
+            }
+        }
+        return names;
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("build")) {
+            List<String> names = getPasteableStructureNames();
+            return getListOfStringsMatchingLastWord(args, names.toArray(new String[0]));
+        }
+        return null;
+    }
+
     private void buildStruct(ICommandSender sender, String name) {
+        for (String known : getPasteableStructureNames()) {
+            if (known.equalsIgnoreCase(name)) {
+                name = known; // case-insensitive
+                break;
+            }
+        }
         BlockArray array;
         try {
             Field f = MultiBlockArrays.class.getDeclaredField(name);
@@ -262,7 +294,9 @@ public class CommandAstralSorcery extends CommandBase {
             }
             array = (BlockArray) f.get(null);
         } catch (NoSuchFieldException e) {
-            sender.addChatMessage(new ChatComponentText("§cFailed! " + name + " doesn't exist!"));
+            sender.addChatMessage(
+                new ChatComponentText(
+                    "§cFailed! " + name + " doesn't exist! Names: " + String.join(", ", getPasteableStructureNames())));
             return;
         } catch (IllegalAccessException e) {
             return; // doesn't happen

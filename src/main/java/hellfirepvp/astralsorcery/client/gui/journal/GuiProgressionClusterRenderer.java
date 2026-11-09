@@ -257,6 +257,8 @@ public class GuiProgressionClusterRenderer {
             case ITEMSTACK:
                 GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
                 RenderHelper.enableGUIStandardItemLighting();
+                // the node is drawn scaled: keep lighting normals unit length or 3D block icons go dark
+                GL11.glEnable(GL11.GL_NORMALIZE);
                 GL11.glPushMatrix();
                 GL11.glScaled(
                     partSizeHandler.getScalingFactor(),
@@ -266,8 +268,9 @@ public class GuiProgressionClusterRenderer {
                 GL11.glScaled(0.75, 0.75, 0.75);
                 GL11.glColor4f(renderLoopBrFactor, renderLoopBrFactor, renderLoopBrFactor, renderLoopBrFactor);
                 float oldZ = ri.zLevel;
-                ri.zLevel = zLevel - 5;
-                ri.renderItemIntoGUI(
+                ri.zLevel = zLevel + 10; // 1.7 GUI depth: must be in front of the node frame
+                // AndEffect: goes through Forge IItemRenderers and renders blocks in 3D
+                ri.renderItemAndEffectIntoGUI(
                     Minecraft.getMinecraft().fontRenderer,
                     Minecraft.getMinecraft().renderEngine,
                     node.getRenderItemStack(),

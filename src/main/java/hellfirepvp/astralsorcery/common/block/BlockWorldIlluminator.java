@@ -10,6 +10,7 @@ package hellfirepvp.astralsorcery.common.block;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileIlluminator;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
@@ -69,6 +72,17 @@ public class BlockWorldIlluminator extends BlockContainer {
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/illuminator");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -94,9 +108,20 @@ public class BlockWorldIlluminator extends BlockContainer {
     // return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
     // }
     //
+    // glass parts render in the translucent pass, the rest in the solid pass
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 0 || pass == 1;
+    }
+
     @Override
     public int getRenderType() {
-        return 1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
 }

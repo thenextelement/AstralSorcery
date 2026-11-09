@@ -22,8 +22,10 @@ import net.minecraftforge.fluids.Fluid;
 import hellfirepvp.astralsorcery.common.base.LightOreTransmutations;
 import hellfirepvp.astralsorcery.common.base.Mods;
 import hellfirepvp.astralsorcery.common.base.WellLiquefaction;
+import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.crafting.altar.AbstractAltarRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.AltarRecipeRegistry;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import hellfirepvp.astralsorcery.common.crafting.infusion.AbstractInfusionRecipe;
 import hellfirepvp.astralsorcery.common.crafting.infusion.InfusionRecipeRegistry;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
@@ -41,7 +43,7 @@ public class CraftingAccessManager {
     private static List<Object> lastReloadRemovedRecipes = new LinkedList<>();
 
     private static boolean completed = false;
-    public static boolean ignoreJEI = true;
+    public static boolean ignoreNEI = true;
 
     public static boolean hasCompletedSetup() {
         return completed;
@@ -59,10 +61,11 @@ public class CraftingAccessManager {
     }
 
     public static void clearModifications() {
-        // Unregister changes from JEI
+        // Unregister changes from NEI
         removeAll(InfusionRecipeRegistry.mtRecipes);
         removeAll(LightOreTransmutations.mtTransmutations);
         removeAll(WellLiquefaction.mtLiquefactions.values());
+        removeAll(GrindstoneRecipeRegistry.mtRecipes);
         for (TileAltar.AltarLevel al : TileAltar.AltarLevel.values()) {
             removeAll(AltarRecipeRegistry.mtRecipes.get(al));
         }
@@ -72,10 +75,11 @@ public class CraftingAccessManager {
         InfusionRecipeRegistry.recipes.clear();
         LightOreTransmutations.mtTransmutations.clear();
         WellLiquefaction.mtLiquefactions.clear();
+        GrindstoneRecipeRegistry.mtRecipes.clear();
         AltarRecipeRegistry.mtRecipes.clear();
         AltarRecipeRegistry.recipes.clear();
 
-        // Add removed recipes back to JEI
+        // Add removed recipes back to NEI
         for (Object removedPreviously : lastReloadRemovedRecipes) {
             addRecipe(removedPreviously);
         }
@@ -93,6 +97,20 @@ public class CraftingAccessManager {
         // OreTypes.loadFromFallback();
         LightOreTransmutations.loadFromFallback();
         WellLiquefaction.loadFromFallback();
+        GrindstoneRecipeRegistry.loadFromFallback();
+    }
+
+    public static void addGrindstoneRecipe(ItemHandle in, ItemStack out, int chance) {
+        hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe gr = new hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe(
+            in,
+            out,
+            chance);
+        GrindstoneRecipeRegistry.mtRecipes.add(gr);
+        addRecipe(gr);
+    }
+
+    public static void removeGrindstoneRecipe(ItemStack out) {
+        markForRemoval(GrindstoneRecipeRegistry.tryRemoveGrindstoneRecipe(out));
     }
 
     public static void registerMTInfusion(AbstractInfusionRecipe recipe) {
@@ -157,27 +175,27 @@ public class CraftingAccessManager {
     }
 
     /*
-     ****************************************** JEI interact
+     ****************************************** NEI interact
      */
     private static void addRecipe(Object o) {
-        if (!ignoreJEI && Mods.JEI.isPresent()) {
-            // ModIntegrationJEI.recipeRegistry.addRecipe(o);
+        if (!ignoreNEI && Mods.NEI.isPresent()) {
+            // ModIntegrationNEI.recipeRegistry.addRecipe(o);
         }
     }
 
     private static void removeAll(Collection objects) {
-        if (!ignoreJEI && Mods.JEI.isPresent()) {
+        if (!ignoreNEI && Mods.NEI.isPresent()) {
             for (Object o : objects) {
-                // ModIntegrationJEI.recipeRegistry.removeRecipe(o);
+                // ModIntegrationNEI.recipeRegistry.removeRecipe(o);
             }
         }
     }
 
     private static void markForRemoval(Object o) {
-        if (!ignoreJEI && o != null) {
+        if (!ignoreNEI && o != null) {
             lastReloadRemovedRecipes.add(o);
-            if (Mods.JEI.isPresent()) {
-                // ModIntegrationJEI.recipeRegistry.removeRecipe(o);
+            if (Mods.NEI.isPresent()) {
+                // ModIntegrationNEI.recipeRegistry.removeRecipe(o);
             }
         }
     }

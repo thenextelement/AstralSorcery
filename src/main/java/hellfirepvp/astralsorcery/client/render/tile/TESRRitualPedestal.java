@@ -41,6 +41,7 @@ public class TESRRitualPedestal extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileRitualPedestal te = (TileRitualPedestal) tile;
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         renderCrystalStack(te, x, y, z);

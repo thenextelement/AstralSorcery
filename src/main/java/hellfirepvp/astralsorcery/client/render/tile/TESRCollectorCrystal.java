@@ -170,7 +170,7 @@ public class TESRCollectorCrystal extends TileEntitySpecialRenderer implements I
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         GL11.glPushMatrix();
-        GL11.glTranslated(0.5, 0, 0.5);
+        translateToItemOrigin(type, 0);
         RenderHelper.disableStandardItemLighting();
         BlockCollectorCrystalBase.CollectorCrystalType myType = ItemCollectorCrystal.getType(item);
         switch (myType) {
@@ -183,5 +183,23 @@ public class TESRCollectorCrystal extends TileEntitySpecialRenderer implements I
         }
         GL11.glPopMatrix();
         RenderHelper.enableStandardItemLighting();
+    }
+
+    /**
+     * Item render origins differ per type in 1.7: EQUIPPED is the block corner, ENTITY bottom-center, INVENTORY center.
+     */
+    static void translateToItemOrigin(ItemRenderType type, double yOffset) {
+        switch (type) {
+            case EQUIPPED:
+            case EQUIPPED_FIRST_PERSON:
+                GL11.glTranslated(0.5, yOffset, 0.5);
+                break;
+            case INVENTORY:
+                GL11.glTranslated(0, yOffset - 0.5, 0);
+                break;
+            default:
+                GL11.glTranslated(0, yOffset, 0);
+                break;
+        }
     }
 }

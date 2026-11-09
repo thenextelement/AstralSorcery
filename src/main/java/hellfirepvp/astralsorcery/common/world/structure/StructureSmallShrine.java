@@ -68,14 +68,14 @@ public class StructureSmallShrine extends WorldGenAttributeStructure {
     private boolean isApplicableBiome(World world, BlockPos pos) {
         if (cfgEntry.shouldIgnoreBiomeSpecifications()) return true;
 
-        // BiomeGenBase b = world.getBiomeGenForCoords(pos.getX(), pos.getZ());
-        // BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(b);
-        // if(types == null || types.length == 0) return false;
-        boolean applicable = false;
-        // for (BiomeDictionary.Type t : types) {
-        // if (cfgEntry.getTypes().contains(t)) applicable = true;
-        // }
-        return applicable;
+        net.minecraft.world.biome.BiomeGenBase b = world.getBiomeGenForCoords(pos.getX(), pos.getZ());
+        BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(b);
+        if (types == null || types.length == 0) return false;
+        for (BiomeDictionary.Type t : types) {
+            if (cfgEntry.getTypes()
+                .contains(t)) return true;
+        }
+        return false;
     }
 
     @Override

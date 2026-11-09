@@ -145,11 +145,31 @@ public class ClientRenderEventHandler {
         visibilityTempCharge = 0F;
     }
 
+    // 1.12.2-1.8.5
+    @SideOnly(Side.CLIENT)
+    private void tickTimeFreezeEffects() {
+        net.minecraft.world.World w = Minecraft.getMinecraft().theWorld;
+        if (w == null || w.provider == null
+            || Minecraft.getMinecraft()
+                .isGamePaused())
+            return;
+        hellfirepvp.astralsorcery.common.data.DataTimeFreezeEffects data = hellfirepvp.astralsorcery.common.data.SyncDataHolder
+            .getDataClient(hellfirepvp.astralsorcery.common.data.SyncDataHolder.DATA_TIME_FREEZE_EFFECTS);
+        java.util.List<hellfirepvp.astralsorcery.common.util.effect.time.TimeStopEffectHelper> effects = data
+            .client_getTimeStopEffects(w);
+        if (effects != null) {
+            for (hellfirepvp.astralsorcery.common.util.effect.time.TimeStopEffectHelper helper : effects) {
+                helper.playClientTickEffect();
+            }
+        }
+    }
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().thePlayer != null) {
             playItemEffects(Minecraft.getMinecraft().thePlayer.getHeldItem());
+            tickTimeFreezeEffects();
             // playItemEffects(Minecraft.getMinecraft().thePlayer.getHeldItem(EnumHand.OFF_HAND));
 
             if (Minecraft.getMinecraft().currentScreen != null
@@ -195,22 +215,6 @@ public class ClientRenderEventHandler {
                 }
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void tickTimeFreezeEffects() {
-        World w = Minecraft.getMinecraft().theWorld;
-        // if(w != null && w.provider != null) {
-        // List<TimeStopEffectHelper> effects =
-        // ((DataTimeFreezeEffects) SyncDataHolder.getData(Side.CLIENT, SyncDataHolder.DATA_TIME_FREEZE_EFFECTS))
-        // .client_getTimeStopEffects(w);
-        //
-        // if(effects != null) {
-        // for (TimeStopEffectHelper helper : effects) {
-        // helper.playClientTickEffect();
-        // }
-        // }
-        // }
     }
 
     @SideOnly(Side.CLIENT)

@@ -12,6 +12,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,10 +25,13 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileRitualPedestal;
 import hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
@@ -126,7 +130,7 @@ public class BlockRitualPedestal extends BlockStarlightNetwork {
             if (other.isSideSolid(world, toCheck.getX(), toCheck.getY(), toCheck.getZ(), ForgeDirection.DOWN)) {
                 TileReceiverBaseInventory.ItemHandlerTile handle = te.getInventoryHandler();
                 ItemUtils.dropInventory(te.getInventoryHandler(), world, pos);
-                // handle.clearInventory();
+                handle.clearInventory(); // was commented out in the port: item duplication
                 te.markForUpdate();
             }
         }
@@ -149,18 +153,40 @@ public class BlockRitualPedestal extends BlockStarlightNetwork {
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/ritual_pedestal");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
+    }
+
+    // glass parts render in the translucent pass, the rest in the solid pass
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 0 || pass == 1;
     }
 
     @Override
     public int getRenderType() {
-        return 1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     // @Override

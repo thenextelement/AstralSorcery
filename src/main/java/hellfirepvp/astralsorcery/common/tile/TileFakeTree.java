@@ -68,7 +68,7 @@ public class TileFakeTree extends TileEntityTick {
 
     private void cleanUp() {
         if (fakedState != null) {
-            worldObj.setBlock(xCoord, yCoord, zCoord, fakedState);
+            worldObj.setBlock(xCoord, yCoord, zCoord, fakedState, metadata, 3);
         } else {
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         }
@@ -77,20 +77,26 @@ public class TileFakeTree extends TileEntityTick {
     @Override
     protected void onFirstTick() {}
 
-    public void setupTile(BlockPos treeBeaconRef, Block fakedState) {
+    public void setupTile(BlockPos treeBeaconRef, Block fakedState, int meta) {
         this.ta = new TreeBeaconRef(treeBeaconRef);
         this.fakedState = fakedState;
+        this.metadata = meta;
         markForUpdate();
     }
 
-    public void setupTile(EntityPlayer breakingPlayer, ItemStack usedAxe, Block fakedState) {
+    public void setupTile(EntityPlayer breakingPlayer, ItemStack usedAxe, Block fakedState, int meta) {
         this.ta = new PlayerHarvestRef(breakingPlayer, usedAxe);
         this.fakedState = fakedState;
+        this.metadata = meta;
         markForUpdate();
     }
 
     public Block getFakedState() {
         return fakedState;
+    }
+
+    public int getFakedMeta() {
+        return metadata;
     }
 
     @Nullable
@@ -114,8 +120,7 @@ public class TileFakeTree extends TileEntityTick {
             metadata = compound.getInteger("Data");
             Block b = Block.getBlockFromName(compound.getString("Block"));
             if (b != null) {
-                metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-                // fakedState = b.getStateFromMeta(data);
+                fakedState = b; // was never restored after the port: faked trees vanished on reload
             }
         }
     }
@@ -235,7 +240,7 @@ public class TileFakeTree extends TileEntityTick {
         private void harvestAndAppend(TileFakeTree tft, List<ItemStack> out) {
             BlockDropCaptureAssist.startCapturing(false);
             tft.getFakedState()
-                .harvestBlock(player.getEntityWorld(), player, tft.xCoord, tft.yCoord, tft.zCoord, tft.blockMetadata);
+                .harvestBlock(player.getEntityWorld(), player, tft.xCoord, tft.yCoord, tft.zCoord, tft.getFakedMeta());
             // tft.getFakedState().getBlock().harvestBlock(player.getEntityWorld(), player, tft.getPos(),
             // tft.getFakedState(),
             out.addAll(BlockDropCaptureAssist.getCapturedStacksAndStop());

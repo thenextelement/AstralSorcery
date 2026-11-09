@@ -223,7 +223,7 @@ public class ItemArchitectWand extends ItemBlockStorage
                             ItemUtils.copyStackWithSize(consumeStack, 1),
                             false);
                     }
-                    world.setBlock(placePos.getX(), placePos.getY(), placePos.getZ(), stored);
+                    world.setBlock(placePos.getX(), placePos.getY(), placePos.getZ(), stored, getStoredMeta(stack), 3);
                     PktParticleEvent ev = new PktParticleEvent(
                         PktParticleEvent.ParticleEventType.ARCHITECT_PLACE,
                         placePos);

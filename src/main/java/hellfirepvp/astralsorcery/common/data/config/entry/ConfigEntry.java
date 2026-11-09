@@ -46,6 +46,7 @@ public abstract class ConfigEntry {
         RITUAL_EFFECTS,
         PERK_LEVELS,
         PERKS,
+        CAPE,
         COSTS
 
     }

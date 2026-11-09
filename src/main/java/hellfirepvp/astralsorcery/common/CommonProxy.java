@@ -78,6 +78,7 @@ import hellfirepvp.astralsorcery.common.registry.RegistryPotions;
 import hellfirepvp.astralsorcery.common.registry.RegistryRecipes;
 import hellfirepvp.astralsorcery.common.registry.RegistryResearch;
 import hellfirepvp.astralsorcery.common.registry.RegistrySounds;
+import hellfirepvp.astralsorcery.common.registry.RegistryStructures;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightNetworkRegistry;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightTransmissionHandler;
 import hellfirepvp.astralsorcery.common.starlight.network.StarlightUpdateHandler;
@@ -120,7 +121,7 @@ public class CommonProxy implements IGuiHandler {
         worldGenerator.pushConfigEntries();
         ConstellationEffectRegistry.addDynamicConfigEntries();
         ConstellationPerks.addDynamicConfigEntries();
-        // CapeEffectRegistry.addDynamicConfigEntries();
+        hellfirepvp.astralsorcery.common.constellation.cape.CapeEffectRegistry.addDynamicConfigEntries();
         Config.addDynamicEntry(TileTreeBeacon.ConfigEntryTreeBeacon.instance);
         // Config.addDynamicEntry(TileOreGenerator.ConfigEntryMultiOre.instance);
         // Config.addDynamicEntry(TileChalice.ConfigEntryChalice.instance);
@@ -144,8 +145,10 @@ public class CommonProxy implements IGuiHandler {
 
         RegistryBlocks.init();
         RegistryItems.init();
+        registerOreDictEntries(); // before anything resolves ore names (signatures, recipes)
+        RegistryConstellations.initConstellationSignatures();
         RegistryEntities.init();
-        // RegistryStructures.init();
+        RegistryStructures.init();
         RegistryPotions.init();
 
         // Transmission registry
@@ -158,10 +161,10 @@ public class CommonProxy implements IGuiHandler {
         RegistryRecipes.init();
         RegistryResearch.init();
 
-        // LootTableUtil.initLootTable();
+        LootTableUtil.initLootTable();
         ConstellationEffectRegistry.init();
+        hellfirepvp.astralsorcery.common.constellation.cape.CapeEffectRegistry.init();
 
-        registerOreDictEntries();
         RegistryAchievements.init();
         RegistryPerks.init();
 
@@ -177,9 +180,53 @@ public class CommonProxy implements IGuiHandler {
         // *sigh*
         OreDictionary.registerOre(OreDictAlias.BLOCK_MARBLE, new ItemStack(BlocksAS.blockMarble, 1, 0));
         OreDictionary.registerOre("blockMarble", new ItemStack(BlocksAS.blockMarble, 1, 0));
+
+        // Names the 1.10 recipes use that plain Forge 1.7.10 does not register (GTNH mods usually add them).
+        // Without these e.g. "workbench" and "enderpearl" resolve to nothing and the luminous crafting table and
+        // resonating wand recipes can never match.
+        int any = OreDictionary.WILDCARD_VALUE;
+        ensureOre("workbench", new ItemStack(net.minecraft.init.Blocks.crafting_table));
+        ensureOre("enderpearl", new ItemStack(net.minecraft.init.Items.ender_pearl));
+        ensureOre("ingotIron", new ItemStack(net.minecraft.init.Items.iron_ingot));
+        ensureOre("ingotGold", new ItemStack(net.minecraft.init.Items.gold_ingot));
+        ensureOre("plankWood", new ItemStack(net.minecraft.init.Blocks.planks, 1, any));
+        ensureOre("logWood", new ItemStack(net.minecraft.init.Blocks.log, 1, any));
+        ensureOre("logWood", new ItemStack(net.minecraft.init.Blocks.log2, 1, any));
+        ensureOre("stickWood", new ItemStack(net.minecraft.init.Items.stick));
+        ensureOre("sugarcane", new ItemStack(net.minecraft.init.Items.reeds));
+        ensureOre("gemDiamond", new ItemStack(net.minecraft.init.Items.diamond));
+        ensureOre("dustRedstone", new ItemStack(net.minecraft.init.Items.redstone));
+        ensureOre("dustGlowstone", new ItemStack(net.minecraft.init.Items.glowstone_dust));
+        ensureOre("nuggetGold", new ItemStack(net.minecraft.init.Items.gold_nugget));
+        ensureOre("cobblestone", new ItemStack(net.minecraft.init.Blocks.cobblestone));
+        ensureOre("paneGlassColorless", new ItemStack(net.minecraft.init.Blocks.glass_pane));
+        ensureOre("treeSapling", new ItemStack(net.minecraft.init.Blocks.sapling, 1, any));
+        ensureOre("treeLeaves", new ItemStack(net.minecraft.init.Blocks.leaves, 1, any));
+        ensureOre("treeLeaves", new ItemStack(net.minecraft.init.Blocks.leaves2, 1, any));
+        ensureOre("oreIron", new ItemStack(net.minecraft.init.Blocks.iron_ore));
+        String[] dyeNames = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan",
+            "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange",
+            "dyeWhite" }; // by dye item damage
+        for (int meta = 0; meta < dyeNames.length; meta++) {
+            ItemStack dye = new ItemStack(net.minecraft.init.Items.dye, 1, meta);
+            ensureOre(dyeNames[meta], dye);
+            ensureOre("dye", dye);
+        }
+    }
+
+    /** Registers the stack under the name unless an equal (or wildcard) entry is already there. */
+    private static void ensureOre(String name, ItemStack stack) {
+        for (ItemStack present : OreDictionary.getOres(name)) {
+            if (present.getItem() == stack.getItem() && (present.getItemDamage() == stack.getItemDamage()
+                || present.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
+                return;
+            }
+        }
+        OreDictionary.registerOre(name, stack);
     }
 
     public void init() {
+        hellfirepvp.astralsorcery.common.integrations.nei.NEIHandlerInfo.sendIMC();
         if (Mods.MINETWEAKER.isPresent()) {
             AstralSorcery.log.info("Minetweaker found! Adding recipe handlers...");
             ModIntegrationCrafttweaker.instance.load();
@@ -187,27 +234,30 @@ public class CommonProxy implements IGuiHandler {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(AstralSorcery.instance, this);
 
+        if (cpw.mods.fml.common.Loader.isModLoaded("structurelib")) {
+            // separate class so StructureLib types are only loaded when the mod is present
+            hellfirepvp.astralsorcery.common.integrations.structurelib.ModIntegrationStructureLib.register();
+        }
+
         MinecraftForge.TERRAIN_GEN_BUS.register(TreeCaptureHelper.eventInstance);
 
-        MinecraftForge.EVENT_BUS.register(new EventHandlerNetwork());
-        EventHandlerServer eventHandlerServer = new EventHandlerServer();
-        MinecraftForge.EVENT_BUS.register(eventHandlerServer);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(eventHandlerServer);
-        MinecraftForge.EVENT_BUS.register(new EventHandlerAchievements());
-        MinecraftForge.EVENT_BUS.register(new EventHandlerMisc());
-        MinecraftForge.EVENT_BUS.register(TransmissionChunkTracker.getInstance());
-        MinecraftForge.EVENT_BUS.register(TickManager.getInstance());
-        MinecraftForge.EVENT_BUS.register(StarlightTransmissionHandler.getInstance());
-        MinecraftForge.EVENT_BUS.register(new LootTableUtil());
-        MinecraftForge.EVENT_BUS.register(BlockDropCaptureAssist.instance);
-        MinecraftForge.EVENT_BUS.register(ChunkVersionController.instance);
-        MinecraftForge.EVENT_BUS.register(CelestialGatewaySystem.instance);
+        registerEventHandler(new EventHandlerNetwork());
+        registerEventHandler(new EventHandlerServer());
+        registerEventHandler(new EventHandlerAchievements());
+        registerEventHandler(new EventHandlerMisc());
+        registerEventHandler(TransmissionChunkTracker.getInstance());
+        registerEventHandler(TickManager.getInstance());
+        registerEventHandler(hellfirepvp.astralsorcery.common.event.listener.EventHandlerCapeEffects.INSTANCE);
+        registerEventHandler(hellfirepvp.astralsorcery.common.util.effect.time.TimeStopController.INSTANCE);
+        registerEventHandler(StarlightTransmissionHandler.getInstance());
+        registerEventHandler(new LootTableUtil());
+        registerEventHandler(BlockDropCaptureAssist.instance);
+        registerEventHandler(ChunkVersionController.instance);
+        registerEventHandler(CelestialGatewaySystem.instance);
 
         GameRegistry.registerWorldGenerator(worldGenerator.setupAttributes(), 50);
         if (Config.enableRetroGen) {
-            MinecraftForge.EVENT_BUS.register(new RetroGenController());
+            registerEventHandler(new RetroGenController());
         }
         RegistrySounds.init();
 
@@ -223,6 +273,18 @@ public class CommonProxy implements IGuiHandler {
         TreeTypes.init();
     }
 
+    /**
+     * 1.7.10 splits events across two buses: Forge events (world, entity, player interaction...) fire on
+     * MinecraftForge.EVENT_BUS, while FML events (TickEvent, PlayerLoggedIn/Out, ItemCrafted, FMLNetworkEvent,
+     * KeyInputEvent...) fire on FMLCommonHandler.bus(). 1.10 had a single bus, so handlers are registered on both.
+     */
+    public static void registerEventHandler(Object handler) {
+        MinecraftForge.EVENT_BUS.register(handler);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(handler);
+    }
+
     protected void registerTickHandlers(TickManager manager) {
         manager.register(ConstellationSkyHandler.getInstance());
         manager.register(StarlightTransmissionHandler.getInstance());
@@ -233,6 +295,8 @@ public class CommonProxy implements IGuiHandler {
         manager.register(new PlayerPerkHandler());
         manager.register(commonScheduler);
         manager.register(PlayerChargeHandler.instance);
+        manager.register(hellfirepvp.astralsorcery.common.event.listener.EventHandlerCapeEffects.INSTANCE);
+        manager.register(hellfirepvp.astralsorcery.common.util.effect.time.TimeStopController.INSTANCE);
 
         // TickTokenizedMaps
         manager.register(EventHandlerServer.spawnDenyRegions);
@@ -242,6 +306,9 @@ public class CommonProxy implements IGuiHandler {
 
     public void postInit() {
         ModIntegrationBloodMagic.sendIMC();
+
+        // ore -> dust grindstone recipes need every mod's ore dictionary entries
+        hellfirepvp.astralsorcery.common.registry.RegistryRecipes.initGrindstoneOreRecipes();
 
         AstralSorcery.log.info("[AstralSorcery] Post compile recipes");
 
@@ -271,6 +338,9 @@ public class CommonProxy implements IGuiHandler {
     public void scheduleClientside(Runnable r) {
         scheduleClientside(r, 0);
     }
+
+    /** Client-only: send a block right-click to the server after the client-side event was cancelled. */
+    public void forwardBlockInteractToServer(int x, int y, int z, int side) {}
 
     public void scheduleDelayed(Runnable r, int tickDelay) {
         commonScheduler.addRunnable(r, tickDelay);

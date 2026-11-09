@@ -31,8 +31,11 @@ public class BlockModifyEvent extends Event {
     private final World world;
     private final BlockPos at;
     private final Block oldState, newState;
+    private final int oldMeta, newMeta;
 
-    public BlockModifyEvent(Chunk chunk, BlockPos at, Block oldState, Block newState) {
+    public BlockModifyEvent(Chunk chunk, BlockPos at, Block oldState, int oldMeta, Block newState, int newMeta) {
+        this.oldMeta = oldMeta;
+        this.newMeta = newMeta;
         this.at = at;
         this.chunk = chunk;
         this.world = chunk.worldObj;
@@ -71,6 +74,14 @@ public class BlockModifyEvent extends Event {
 
     public Block getNewBlock() {
         return newState;
+    }
+
+    public int getOldMeta() {
+        return oldMeta;
+    }
+
+    public int getNewMeta() {
+        return newMeta;
     }
 
 }

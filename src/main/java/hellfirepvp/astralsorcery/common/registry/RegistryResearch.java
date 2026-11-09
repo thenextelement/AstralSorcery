@@ -24,6 +24,7 @@ import hellfirepvp.astralsorcery.client.gui.journal.page.JournalPageStructure;
 import hellfirepvp.astralsorcery.client.gui.journal.page.JournalPageText;
 import hellfirepvp.astralsorcery.client.util.resource.AssetLoader;
 import hellfirepvp.astralsorcery.client.util.resource.SpriteQuery;
+import hellfirepvp.astralsorcery.common.block.BlockBlackMarble;
 import hellfirepvp.astralsorcery.common.block.BlockCustomOre;
 import hellfirepvp.astralsorcery.common.block.BlockCustomSandOre;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
@@ -51,15 +52,46 @@ public class RegistryResearch {
 
     public static void init() {
         initDiscovery();
-        // initCrafting();
-        // initAttunement();
-        // initConstellation();
-        // initRadiance();
+        initCrafting();
+        initAttunement();
+        initConstellation();
+        initRadiance();
     }
 
     private static void initRadiance() {
         ResearchProgression.Registry regRadiance = ResearchProgression.RADIANCE.getRegistry();
 
+        // 1.12.2-1.8.5
+        ResearchNode resHintRecipes = new ResearchNode(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            "CRAFTING_FOCUS_HINT",
+            4,
+            5);
+        resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.1"));
+        resHintRecipes.addPage(getTextPage("CRAFTING_FOCUS_HINT.2"));
+
+        ResearchNode resCape = new ResearchNode(
+            new net.minecraft.item.ItemStack(hellfirepvp.astralsorcery.common.lib.ItemsAS.armorImbuedCape),
+            "ATT_CAPE",
+            3,
+            6);
+        resCape.addPage(getTextPage("ATT_CAPE.1"));
+        resCape.addPage(
+            new hellfirepvp.astralsorcery.client.gui.journal.page.JournalPageTraitRecipe(RegistryRecipes.rCapeBase));
+        resCape.addPage(getTextPage("ATT_CAPE.3"));
+        resCape.addPage(getTextPage("ATT_CAPE.4"));
+        resCape.addSourceConnectionFrom(resHintRecipes);
+        registerItemLookup(
+            new net.minecraft.item.ItemStack(
+                hellfirepvp.astralsorcery.common.lib.ItemsAS.armorImbuedCape,
+                1,
+                OreDictionary.WILDCARD_VALUE),
+            resCape,
+            1,
+            ResearchProgression.RADIANCE);
+
+        regRadiance.register(resHintRecipes);
+        regRadiance.register(resCape);
     }
 
     private static void initConstellation() {
@@ -266,6 +298,24 @@ public class RegistryResearch {
         regConstellation.register(resSpectralLens);
         regConstellation.register(resEnhancedCollCrystal);
         regConstellation.register(resDrawing);
+
+        // 1.12.2-1.8.5
+        ResearchNode resTraitUpgrade = new ResearchNode(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            "ALTAR4",
+            6,
+            3);
+        resTraitUpgrade.addPage(getTextPage("ALTAR4.1"));
+        resTraitUpgrade.addPage(new JournalPageConstellationRecipe(RegistryRecipes.rAltarUpgradeTrait));
+        resTraitUpgrade.addPage(new JournalPageStructure(MultiBlockArrays.patternAltarTrait));
+        resTraitUpgrade.addPage(getTextPage("ALTAR4.4"));
+        resTraitUpgrade.addSourceConnectionFrom(resInfuser);
+        registerItemLookup(
+            new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_4.ordinal()),
+            resTraitUpgrade,
+            1,
+            ResearchProgression.CONSTELLATION);
+        regConstellation.register(resTraitUpgrade);
     }
 
     private static void initAttunement() {
@@ -700,10 +750,22 @@ public class RegistryResearch {
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleRuned));
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleEngraved));
         resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleStairs));
+        resMarbleTypes.addPage(new JournalPageRecipe(RegistryRecipes.rMarbleSlab));
 
-        ResearchNode resSootyMarble = new ResearchNode(new ItemStack(BlocksAS.blockBlackMarble), "SOOTYMARBLE", 5, 2);
+        BlockBlackMarble.BlackMarbleBlockType[] sValues = BlockBlackMarble.BlackMarbleBlockType.values();
+        ItemStack[] sootyStacks = new ItemStack[sValues.length];
+        for (int i = 0; i < sValues.length; i++) {
+            sootyStacks[i] = sValues[i].asStack();
+        }
+        ResearchNode resSootyMarble = new ResearchNode(sootyStacks, "SOOTYMARBLE", 5, 2);
         resSootyMarble.addPage(getTextPage("SOOTYMARBLE.1"));
         resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleRaw));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleBricks));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarblePillar));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleChiseled));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleArch));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleRuned));
+        resSootyMarble.addPage(new JournalPageRecipe(RegistryRecipes.rBlackMarbleEngraved));
 
         ResearchNode resTable = new ResearchNode(
             new ItemStack(BlocksAS.blockAltar, 1, BlockAltar.AltarType.ALTAR_1.ordinal()),
@@ -721,11 +783,13 @@ public class RegistryResearch {
             resTable,
             1,
             ResearchProgression.DISCOVERY);
-        registerItemLookup(
-            new ItemStack(BlocksAS.blockBlackMarble, 1, OreDictionary.WILDCARD_VALUE),
-            resSootyMarble,
-            0,
-            ResearchProgression.DISCOVERY);
+        BlockBlackMarble.BlackMarbleBlockType[] sootyPageOrder = { BlockBlackMarble.BlackMarbleBlockType.RAW,
+            BlockBlackMarble.BlackMarbleBlockType.BRICKS, BlockBlackMarble.BlackMarbleBlockType.PILLAR,
+            BlockBlackMarble.BlackMarbleBlockType.CHISELED, BlockBlackMarble.BlackMarbleBlockType.ARCH,
+            BlockBlackMarble.BlackMarbleBlockType.RUNED, BlockBlackMarble.BlackMarbleBlockType.ENGRAVED };
+        for (int i = 0; i < sootyPageOrder.length; i++) {
+            registerItemLookup(sootyPageOrder[i].asStack(), resSootyMarble, i + 1, ResearchProgression.DISCOVERY);
+        }
         registerItemLookup(
             BlockMarble.MarbleBlockType.BRICKS.asStack(),
             resMarbleTypes,
@@ -760,6 +824,11 @@ public class RegistryResearch {
             new ItemStack(BlocksAS.blockMarbleStairs, 1, OreDictionary.WILDCARD_VALUE),
             resMarbleTypes,
             7,
+            ResearchProgression.DISCOVERY);
+        registerItemLookup(
+            new ItemStack(BlocksAS.blockMarbleSlab, 1, OreDictionary.WILDCARD_VALUE),
+            resMarbleTypes,
+            8,
             ResearchProgression.DISCOVERY);
         registerItemLookup(
             ItemCraftingComponent.MetaType.AQUAMARINE.asStack(),

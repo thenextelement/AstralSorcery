@@ -85,10 +85,12 @@ public class ShapelessRecipe extends AbstractCacheableRecipe {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void register() {
         CraftingManager.getInstance()
-            .addRecipe(null, make());
-    } // todo check this
+            .getRecipeList()
+            .add(make());
+    }
 
     @Override
     public AccessibleRecipeAdapater make() {

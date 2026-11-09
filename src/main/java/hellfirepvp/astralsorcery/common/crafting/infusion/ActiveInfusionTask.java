@@ -40,9 +40,8 @@ public class ActiveInfusionTask {
 
     @Nullable
     public EntityPlayer tryGetCraftingPlayerServer() {
-        // return
-        // FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(playerCraftingUUID);
-        return null;
+        return playerCraftingUUID == null ? null
+            : hellfirepvp.astralsorcery.common.util.PlayerUtil.getPlayerByUUID(playerCraftingUUID);
     }
 
     public void tick(TileStarlightInfuser infuser) {

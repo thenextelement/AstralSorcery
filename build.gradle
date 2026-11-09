@@ -2,3 +2,15 @@
 plugins {
     id 'com.gtnewhorizons.gtnhconvention'
 }
+
+// Dev convenience: forward the terminal's stdin to `runServer`, so console commands can be typed/piped in.
+tasks.named('runServer').configure {
+    standardInput = System.in
+}
+
+// Dev convenience: `./gradlew runClient -PautoConnect` joins a locally running `runServer` directly.
+tasks.named('runClient').configure {
+    if (project.hasProperty('autoConnect')) {
+        args('--server', '127.0.0.1', '--port', '25565')
+    }
+}

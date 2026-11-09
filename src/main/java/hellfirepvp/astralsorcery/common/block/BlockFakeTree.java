@@ -12,8 +12,8 @@ import java.awt.Color;
 import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +42,7 @@ public class BlockFakeTree extends BlockContainer {
 
     public BlockFakeTree() {
         // Material.BARRIER -> (new Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
-        super(Material.air);
+        super(BlockStructural.STRUCTURAL);
         setBlockName("BlockFakeTree");
         setBlockUnbreakable();
         setResistance(6000001.0F);
@@ -90,7 +90,7 @@ public class BlockFakeTree extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     // @Override
@@ -112,6 +112,17 @@ public class BlockFakeTree extends BlockContainer {
     // public boolean isTranslucent() {
     // return true;
     // }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:log_oak");
+    }
 
     @Override
     public boolean isOpaqueCube() {

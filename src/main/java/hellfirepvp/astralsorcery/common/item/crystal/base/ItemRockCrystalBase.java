@@ -11,9 +11,6 @@ package hellfirepvp.astralsorcery.common.item.crystal.base;
 import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,14 +21,12 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.entities.EntityCrystal;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
 import hellfirepvp.astralsorcery.common.item.base.ItemHighlighted;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.ItemCelestialCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.ItemTunedCelestialCrystal;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -40,33 +35,13 @@ import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
  * Created by HellFirePvP
  * Date: 08.05.2016 / 21:38
  */
-public abstract class ItemRockCrystalBase extends Item implements IGrindable, ItemHighlighted {
+public abstract class ItemRockCrystalBase extends Item implements ItemHighlighted {
 
     public ItemRockCrystalBase() {
         setMaxStackSize(1);
         setMaxDamage(0);
         setHasSubtypes(true);
         setCreativeTab(RegistryItems.creativeTabAstralSorcery);
-    }
-
-    @Override
-    public boolean canGrind(TileGrindstone grindstone, ItemStack stack) {
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public GrindResult grind(TileGrindstone grindstone, ItemStack stack, Random rand) {
-        CrystalProperties prop = CrystalProperties.getCrystalProperties(stack);
-        CrystalProperties result = prop.grindCopy(rand);
-        if (result == null) {
-            return GrindResult.failBreakItem();
-        }
-        CrystalProperties.applyCrystalProperties(stack, result);
-        if (result.getSize() <= 0) {
-            return GrindResult.failBreakItem();
-        }
-        return GrindResult.success();
     }
 
     @Override

@@ -66,6 +66,7 @@ public class RegistryItems {
     public static List<ItemDynamicColor> pendingDynamicColorItems = new LinkedList<>();
 
     public static Item.ToolMaterial crystalToolMaterial;
+    public static net.minecraft.item.ItemArmor.ArmorMaterial imbuedLeatherMaterial;
     public static EnumRarity rarityCelestial;
     public static Material materialTransparentReplaceable;
 
@@ -96,6 +97,8 @@ public class RegistryItems {
         };
 
         crystalToolMaterial = EnumHelper.addToolMaterial("CRYSTAL", 3, 1000, 20.0F, 5.5F, 40);
+        // 1.12.2-1.8.5 mantle material (1.7 reduction order: helmet, chest, legs, boots)
+        imbuedLeatherMaterial = EnumHelper.addArmorMaterial("AS_IMBUEDLEATHER", 26, new int[] { 0, 7, 0, 0 }, 30);
         crystalToolMaterial.customCraftingMaterial = null;
 
         rarityCelestial = EnumHelper.addRarity("CELESTIAL", EnumChatFormatting.BLUE, "Celestial");
@@ -134,6 +137,7 @@ public class RegistryItems {
         architectWand = registerItem(new ItemArchitectWand());
         exchangeWand = registerItem(new ItemExchangeWand());
         illuminationPowder = registerItem(new ItemIlluminationPowder());
+        armorImbuedCape = registerItem(new hellfirepvp.astralsorcery.common.item.wearable.ItemCape());
 
         crystalPickaxe = registerItem(new ItemCrystalPickaxe());
         crystalShovel = registerItem(new ItemCrystalShovel());

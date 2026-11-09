@@ -70,6 +70,8 @@ public class ClientConnectionEventHandler {
         ((DataLightBlockEndpoints) SyncDataHolder.getDataClient(SyncDataHolder.DATA_LIGHT_BLOCK_ENDPOINTS))
             .clientClean();
         ((DataWorldSkyHandlers) SyncDataHolder.getDataClient(SyncDataHolder.DATA_SKY_HANDLERS)).clientClean();
+        ((hellfirepvp.astralsorcery.common.data.DataTimeFreezeEffects) SyncDataHolder
+            .getDataClient(SyncDataHolder.DATA_TIME_FREEZE_EFFECTS)).clientClean();
     }
 
     @SubscribeEvent

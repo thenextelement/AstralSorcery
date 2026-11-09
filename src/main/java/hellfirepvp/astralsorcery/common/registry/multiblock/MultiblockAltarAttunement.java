@@ -11,6 +11,7 @@ package hellfirepvp.astralsorcery.common.registry.multiblock;
 import net.minecraft.block.Block;
 
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
+import hellfirepvp.astralsorcery.common.util.struct.BlockMeta;
 import hellfirepvp.astralsorcery.common.util.struct.PatternBlockArray;
 
 /**
@@ -29,19 +30,33 @@ public class MultiblockAltarAttunement extends PatternBlockArray {
     private void load() {
         Block marble = BlocksAS.blockMarble;
         Block darkMarble = BlocksAS.blockBlackMarble;
-        Block mch = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.CHISELED);
-        Block mbr = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.BRICKS);
+        BlockMeta mch = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.CHISELED.getMeta());
+        BlockMeta mbr = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.BRICKS.getMeta());
         // Block mrw = marble.getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.RAW);
-        Block mar = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.ARCH);
-        Block mpl = marble;// .getDefaultState().withProperty(MARBLE_TYPE, BlockMarble.MarbleBlockType.PILLAR);
-        Block mbl = darkMarble;// .getDefaultState().withProperty(BlockBlackMarble.BLACK_MARBLE_TYPE,
-                               // BlockBlackMarble.BlackMarbleBlockType.RAW);
+        BlockMeta mar = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.ARCH.getMeta());
+        BlockMeta mpl = new BlockMeta(
+            marble,
+            hellfirepvp.astralsorcery.common.block.BlockMarble.MarbleBlockType.PILLAR.getMeta());
+        BlockMeta mbl = new BlockMeta(
+            darkMarble,
+            hellfirepvp.astralsorcery.common.block.BlockBlackMarble.BlackMarbleBlockType.RAW.getMeta());
 
         // addBlockCube(Blocks.AIR.getDefaultState(), -3, 0, -3, 3, 2, 3);
         addBlockCube(mbl, -3, -1, -3, 3, -1, 3);
 
-        addBlock(0, 0, 0, BlocksAS.blockAltar);// .getDefaultState().withProperty(BlockAltar.ALTAR_TYPE,
-                                               // BlockAltar.AltarType.ALTAR_2));
+        addBlock(
+            0,
+            0,
+            0,
+            new BlockMeta(
+                BlocksAS.blockAltar,
+                hellfirepvp.astralsorcery.common.block.network.BlockAltar.AltarType.ALTAR_2.ordinal()));
 
         for (int i = -3; i <= 3; i++) {
             addBlock(4, -1, i, mar);

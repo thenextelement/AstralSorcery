@@ -32,16 +32,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.client.util.RenderingUtils;
 import hellfirepvp.astralsorcery.common.CommonProxy;
-import hellfirepvp.astralsorcery.common.item.base.IGrindable;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.IVariantTileProvider;
 import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
 import hellfirepvp.astralsorcery.common.tile.TileTelescope;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
-import hellfirepvp.astralsorcery.common.util.SwordSharpenHelper;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -111,7 +112,7 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
         MachineType type = MachineType.values()[meta];
         switch (type) {
             case TELESCOPE:
-                return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1), x, y, z);
         }
         return super.getCollisionBoundingBoxFromPool(worldIn, x, y, z);
     }
@@ -123,7 +124,7 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
         MachineType type = MachineType.values()[meta];
         switch (type) {
             case TELESCOPE:
-                return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1), x, y, z);
         }
         return super.getSelectedBoundingBoxFromPool(worldIn, x, y, z);
     }
@@ -188,13 +189,14 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
                         ItemStack grind = tgr.getGrindingItem();
                         if (grind != null) {
                             if (player.isSneaking()) {
-                                ItemUtils.dropItem(worldIn, posX + 0.5F, posY + 1F, posZ + 0.5F, grind);
-
+                                if (!player.inventory.addItemStackToInventory(grind)) {
+                                    ItemUtils.dropItem(worldIn, posX + 0.5F, posY + 1F, posZ + 0.5F, grind);
+                                }
                                 tgr.setGrindingItem(null);
                             } else {
-                                Item i = grind.getItem();
-                                if (i instanceof IGrindable) {
-                                    IGrindable.GrindResult result = ((IGrindable) i).grind(tgr, grind, rand);
+                                GrindstoneRecipe recipe = GrindstoneRecipeRegistry.findMatchingRecipe(grind);
+                                if (recipe != null) {
+                                    GrindstoneRecipe.GrindResult result = recipe.grind(grind);
                                     switch (result.getType()) {
                                         case SUCCESS:
                                             tgr.setGrindingItem(grind); // Update
@@ -204,75 +206,57 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
                                             break;
                                         case FAIL_BREAK_ITEM:
                                             tgr.setGrindingItem(null);
-                                            // world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_ITEM_BREAK,
-                                            // SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.2F + 0.8F);
+                                            worldIn.playSoundEffect(
+                                                posX + 0.5,
+                                                posY + 0.5,
+                                                posZ + 0.5,
+                                                "random.break",
+                                                0.5F,
+                                                worldIn.rand.nextFloat() * 0.2F + 0.8F);
                                             break;
-                                    }
-                                    tgr.playWheelEffect();
-                                } else if (SwordSharpenHelper.isSharpenableItem(grind)) {
-                                    if (rand.nextInt(40) == 0) {
-                                        SwordSharpenHelper.setSwordSharpened(grind);
+                                        default:
+                                            break;
                                     }
                                     tgr.playWheelEffect();
                                 }
                             }
-                        } else {
-                            if (stack != null) {
-                                Item trySet = stack.getItem();
-                                if (trySet instanceof IGrindable && ((IGrindable) trySet).canGrind(tgr, stack)) {
-                                    ItemStack toSet = stack.copy();
-                                    toSet.stackSize = 1;
-                                    tgr.setGrindingItem(toSet);
-                                    // world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_ITEM_PICKUP,
-                                    // SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.2F + 0.8F);
-
-                                    if (!player.capabilities.isCreativeMode) {
-                                        stack.stackSize--;
+                        } else if (stack != null) {
+                            GrindstoneRecipe recipe = GrindstoneRecipeRegistry.findMatchingRecipe(stack);
+                            if (recipe != null) {
+                                ItemStack toSet = stack.copy();
+                                toSet.stackSize = 1;
+                                tgr.setGrindingItem(toSet);
+                                worldIn.playSoundEffect(
+                                    posX + 0.5,
+                                    posY + 0.5,
+                                    posZ + 0.5,
+                                    "random.pop",
+                                    0.5F,
+                                    worldIn.rand.nextFloat() * 0.2F + 0.8F);
+                                if (!player.capabilities.isCreativeMode) {
+                                    stack.stackSize--;
+                                    if (stack.stackSize <= 0) {
+                                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                                     }
-                                } else if (SwordSharpenHelper.isSharpenableItem(stack)
-                                    && !SwordSharpenHelper.isSwordSharpened(stack)) {
-                                        ItemStack toSet = stack.copy();
-                                        toSet.stackSize = 1;
-                                        tgr.setGrindingItem(toSet);
-                                        // world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_ITEM_PICKUP,
-                                        // SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.2F + 0.8F);
-
-                                        if (!player.capabilities.isCreativeMode) {
-                                            stack.stackSize--;
-                                        }
-                                    }
+                                }
+                            } else if (player.isSneaking()) {
+                                return false;
                             }
                         }
                     } else {
                         ItemStack grind = tgr.getGrindingItem();
-                        if (grind != null && !player.isSneaking()) {
-                            Item i = grind.getItem();
-                            if (i instanceof IGrindable) {
-                                if (((IGrindable) i).canGrind(tgr, grind)) {
-                                    for (int j = 0; j < 8; j++) {
-                                        worldIn.spawnParticle(
-                                            "crit",
-                                            posX + 0.5,
-                                            posY + 0.8,
-                                            posZ + 0.4,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3);
-                                    }
-                                }
-                            } else if (SwordSharpenHelper.canBeSharpened(grind)
-                                && !SwordSharpenHelper.isSwordSharpened(grind)) {
-                                    for (int j = 0; j < 8; j++) {
-                                        worldIn.spawnParticle(
-                                            "crit",
-                                            posX + 0.5,
-                                            posY + 0.8,
-                                            posZ + 0.4,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
-                                            (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3);
-                                    }
-                                }
+                        if (grind != null && !player.isSneaking()
+                            && GrindstoneRecipeRegistry.findMatchingRecipe(grind) != null) {
+                            for (int j = 0; j < 8; j++) {
+                                worldIn.spawnParticle(
+                                    "crit",
+                                    posX + 0.5,
+                                    posY + 0.8,
+                                    posZ + 0.4,
+                                    (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
+                                    (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3,
+                                    (rand.nextBoolean() ? 1 : -1) * rand.nextFloat() * 0.3);
+                            }
                         }
                     }
                 }
@@ -284,10 +268,6 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     @Override
     public void onBlockPlacedBy(World worldIn, int x, int y, int z, EntityLivingBase placer, ItemStack stack) {
         BlockPos pos = new BlockPos(x, y, z).up();
-        System.out.println(worldIn);
-        System.out.println(pos);
-        System.out.println(placer);
-        System.out.println(stack);
         MachineType type = MachineType.values()[stack.getItemDamage()];
         switch (type) {
             case TELESCOPE:
@@ -385,6 +365,11 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     // }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -392,6 +377,23 @@ public class BlockMachine extends BlockContainer implements BlockCustomName {
     @Override
     public boolean isNormalCube() {
         return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private net.minecraft.util.IIcon[] machineIcons;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister reg) {
+        machineIcons = new net.minecraft.util.IIcon[] { reg.registerIcon("astralsorcery:particle/telescope"),
+            reg.registerIcon("astralsorcery:particle/grindstone") };
+        this.blockIcon = machineIcons[0];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.IIcon getIcon(int side, int meta) {
+        return machineIcons[meta >= 0 && meta < machineIcons.length ? meta : 0];
     }
 
     @Override

@@ -21,9 +21,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import hellfirepvp.astralsorcery.common.constellation.distribution.ConstellationSkyHandler;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
@@ -40,13 +40,14 @@ public class GenListEntries {
 
     public static class PelotrioSpawnListEntry extends CounterListEntry {
 
-        private ResourceLocation entityName;
+        /** 1.7 entity registry name (EntityList string id). */
+        private String entityName;
 
         public PelotrioSpawnListEntry(BlockPos at) {
             super(at);
         }
 
-        public PelotrioSpawnListEntry(BlockPos at, ResourceLocation entityName) {
+        public PelotrioSpawnListEntry(BlockPos at, String entityName) {
             super(at);
             this.entityName = entityName;
         }
@@ -67,28 +68,30 @@ public class GenListEntries {
             Collections.shuffle(applicable);
             BiomeGenBase.SpawnListEntry entry = applicable.get(world.rand.nextInt(applicable.size()));
             Class<? extends EntityLivingBase> applicableClass = entry.entityClass;
-            // ResourceLocation key = EntityList.getEntityString(applicableClass);
-            // if(key != null && EntityUtils.canEntitySpawnHere(world, pos, key, true)) {
-            // return new PelotrioSpawnListEntry(pos, key);
-            // }
+            String key = (String) EntityList.classToStringMapping.get(applicableClass);
+            if (key != null && EntityUtils.canEntitySpawnHere(world, pos, key, true)) {
+                return new PelotrioSpawnListEntry(pos, key);
+            }
             return null;
         }
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
             super.readFromNBT(nbt);
-            this.entityName = new ResourceLocation(nbt.getString("entityName"));
+            this.entityName = nbt.hasKey("entityName") ? nbt.getString("entityName") : null;
         }
 
         @Override
         public void writeToNBT(NBTTagCompound nbt) {
             super.writeToNBT(nbt);
-            nbt.setString("entityName", this.entityName.toString());
+            if (this.entityName != null) {
+                nbt.setString("entityName", this.entityName);
+            }
         }
 
         public void spawn(World world) {
             if (entityName != null && EntityUtils.canEntitySpawnHere(world, getPos(), entityName, true)) {
-                Entity entity = EntityList.createEntityByName(entityName.toString(), world);
+                Entity entity = EntityList.createEntityByName(entityName, world);
                 if (entity != null) {
                     BlockPos at = getPos();
                     entity.setLocationAndAngles(
@@ -98,18 +101,18 @@ public class GenListEntries {
                         world.rand.nextFloat() * 360.0F,
                         0.0F);
                     if (entity instanceof EntityLiving) {
-                        // if (!ForgeEventFactory.doSpecialSpawn((EntityLiving) entity, world, at.getX() + 0.5F,
-                        // at.getY() + 0.5F, at.getZ() + 0.5F)) {
-                        // ((EntityLiving) entity).onInitialSpawn(world.getDifficultyForLocation(at), null);
-                        // }
-                        // if(!((EntityLiving) entity).isNotColliding()) {
-                        // entity.setDead();
-                        // return;
-                        // }
+                        EntityLiving living = (EntityLiving) entity;
+                        if (!ForgeEventFactory
+                            .doSpecialSpawn(living, world, at.getX() + 0.5F, at.getY() + 0.5F, at.getZ() + 0.5F)) {
+                            living.onSpawnWithEgg(null);
+                        }
+                        if (!EntityUtils.doesEntityHaveSpace(world, living)) {
+                            entity.setDead();
+                            return;
+                        }
                     }
                     world.spawnEntityInWorld(entity);
                     world.playAuxSFX(2004, (int) entity.posX, (int) entity.posY, (int) entity.posZ, 0);
-                    // world.playEvent(2004, entity.getPosition(), 0);
                 }
             }
         }

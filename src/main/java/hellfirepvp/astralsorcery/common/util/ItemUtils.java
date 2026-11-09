@@ -184,6 +184,22 @@ public class ItemUtils {
         return cAmt <= 0;
     }
 
+    /** Drops the contents of an Astral Sorcery tile inventory (replaces the 1.10 ITEM_HANDLER capability lookup). */
+    public static void dropTileInventory(@Nullable net.minecraft.tileentity.TileEntity te, World worldIn,
+        BlockPos pos) {
+        if (te instanceof hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase) {
+            dropInventory(
+                ((hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase) te).getInventoryHandler(),
+                worldIn,
+                pos);
+        } else if (te instanceof hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory) {
+            dropInventory(
+                ((hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory) te).getInventoryHandler(),
+                worldIn,
+                pos);
+        }
+    }
+
     public static void dropInventory(IInventory handle, World worldIn, BlockPos pos) {
         if (worldIn.isRemote) return;
         for (int i = 0; i < handle.getSizeInventory(); i++) {
@@ -197,9 +213,31 @@ public class ItemUtils {
         return drainFluidFromItem(stack, new FluidStack(fluid, mbAmount), doDrain);
     }
 
+    /**
+     * Returns the container stack left after draining the given fluid (and amount) from the stack, or null if the
+     * stack doesn't hold enough of that fluid. 1.7 replacement for FluidUtil.tryEmptyContainer; the port had stubbed
+     * this to return the input, so any item matched liquid-starlight ingredients and nothing was consumed.
+     */
+    @Nullable
     public static ItemStack drainFluidFromItem(ItemStack stack, FluidStack fluidStack, boolean doDrain) {
-        return stack; // FluidUtil.tryEmptyContainer(stack, FluidHandlerVoid.INSTANCE, fluidStack.amount, null,
-                      // doDrain);
+        if (stack == null || stack.getItem() == null || fluidStack == null) return null;
+        if (stack.getItem() instanceof net.minecraftforge.fluids.IFluidContainerItem) {
+            net.minecraftforge.fluids.IFluidContainerItem container = (net.minecraftforge.fluids.IFluidContainerItem) stack
+                .getItem();
+            ItemStack copy = copyStackWithSize(stack, 1);
+            FluidStack contained = container.getFluid(copy);
+            if (contained == null || !contained.isFluidEqual(fluidStack) || contained.amount < fluidStack.amount) {
+                return null;
+            }
+            container.drain(copy, fluidStack.amount, true);
+            return copy;
+        }
+        FluidStack contained = net.minecraftforge.fluids.FluidContainerRegistry.getFluidForFilledItem(stack);
+        if (contained == null || !contained.isFluidEqual(fluidStack) || contained.amount < fluidStack.amount) {
+            return null;
+        }
+        // registry containers (buckets) can only be emptied as a whole
+        return net.minecraftforge.fluids.FluidContainerRegistry.drainFluidContainer(copyStackWithSize(stack, 1));
     }
 
     /*

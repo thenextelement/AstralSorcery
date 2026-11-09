@@ -85,7 +85,9 @@ public class CrystalPrismTransmissionNode extends SimplePrismTransmissionNode {
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
 
-        this.properties.writeToNBT(compound);
+        if (this.properties != null) {
+            this.properties.writeToNBT(compound);
+        }
         compound.setFloat("lossMultiplier", this.additionalLoss);
     }
 

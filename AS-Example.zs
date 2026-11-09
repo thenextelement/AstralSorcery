@@ -151,3 +151,14 @@
 
 
 
+
+// Grindstone: addRecipe(input, output) - input may be an item or ore dictionary entry; removeRecipe(output)
+// mods.astralsorcery.Grindstone.addRecipe(<minecraft:cobblestone>, <minecraft:gravel>);
+// mods.astralsorcery.Grindstone.removeRecipe(<astralsorcery:ItemCraftingComponent:2>);
+
+// Iridescent altar (tier 4): 25 altar slots, then any number of items the spectral relays have to supply,
+// optionally a constellation the focus has to be attuned to
+// mods.astralsorcery.Altar.addTraitAltarRecipe(<minecraft:nether_star>, 4500, 800, [
+// <minecraft:diamond>, null, <minecraft:diamond>, null, <minecraft:emerald>, null, <minecraft:diamond>, null, <minecraft:diamond>,
+// null, null, null, null,  null, null, null, null, null, null, null, null,  null, null, null, null,
+// <minecraft:blaze_rod>, <minecraft:ghast_tear>], "astralsorcery.constellation.evorsio");

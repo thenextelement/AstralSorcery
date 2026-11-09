@@ -11,7 +11,6 @@ package hellfirepvp.astralsorcery.client.render.tile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,7 @@ public class TESRWell extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileWell te = (TileWell) tile;
         ItemStack catalyst = te.getInventoryHandler()
             .getStackInSlot(0);
@@ -57,22 +57,22 @@ public class TESRWell extends TileEntitySpecialRenderer {
             offset.addY(te.getPercFilled() * 0.6);
             IIcon still = te.getHeldFluid()
                 .getStillIcon();
-            TextureAtlasSprite tas = Minecraft.getMinecraft()
-                .getTextureMapBlocks()
-                .getTextureExtry(still.toString());
-            // if(tas == null) Minecraft.getMinecraft().getTextureMapBlocks().missingImage;
-
-            TextureHelper.setActiveTextureToAtlasSprite();
-            RenderingUtils.renderAngleRotatedTexturedRect(
-                offset,
-                Vector3.RotAxis.Y_AXIS.clone(),
-                Math.toRadians(45),
-                0.54,
-                tas.getMinU(),
-                tas.getMinV(),
-                tas.getMaxU() - tas.getMinU(),
-                tas.getMaxV() - tas.getMinV(),
-                partialTicks);
+            if (still == null) still = te.getHeldFluid()
+                .getIcon();
+            if (still != null) {
+                // 1.7: the IIcon is the atlas sprite; the port looked it up by toString() and got null
+                TextureHelper.setActiveTextureToAtlasSprite();
+                RenderingUtils.renderAngleRotatedTexturedRect(
+                    offset,
+                    Vector3.RotAxis.Y_AXIS.clone(),
+                    Math.toRadians(45),
+                    0.54,
+                    still.getMinU(),
+                    still.getMinV(),
+                    still.getMaxU() - still.getMinU(),
+                    still.getMaxV() - still.getMinV(),
+                    partialTicks);
+            }
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopAttrib();

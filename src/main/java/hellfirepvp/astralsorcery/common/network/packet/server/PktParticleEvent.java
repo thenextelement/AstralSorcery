@@ -150,6 +150,10 @@ public class PktParticleEvent implements IMessage, IMessageHandler<PktParticleEv
         CE_ACCEL_TILE,
         CE_DMG_ENTITY,
         CE_WATER_FISH,
+        CE_BREAK_BLOCK,
+        CE_SPAWN_PREPARE_EFFECTS,
+        CAPE_EVORSIO_BREAK,
+        CAPE_EVORSIO_AOE,
         // CE_TREE_VORTEX,
 
         FLARE_PROC,
@@ -192,6 +196,14 @@ public class PktParticleEvent implements IMessage, IMessageHandler<PktParticleEv
                     return CEffectDiscidia::playParticles;
                 case CE_WATER_FISH:
                     return CEffectOctans::playParticles;
+                case CE_BREAK_BLOCK:
+                    return hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectEvorsio::playBreakEffects;
+                case CAPE_EVORSIO_BREAK:
+                    return hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectEvorsio::playBlockBreakParticles;
+                case CAPE_EVORSIO_AOE:
+                    return hellfirepvp.astralsorcery.common.constellation.cape.impl.CapeEffectEvorsio::playAreaDamageParticles;
+                case CE_SPAWN_PREPARE_EFFECTS:
+                    return hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectPelotrio::playSpawnPrepareEffects;
                 case TREE_VORTEX:
                     return TileTreeBeacon::playParticles;
                 case RT_DEBUG:

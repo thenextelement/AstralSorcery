@@ -14,6 +14,7 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +26,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.CommonProxy;
 import hellfirepvp.astralsorcery.common.block.BlockAttunementRelay;
@@ -34,6 +36,7 @@ import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.IVariantTileProvider;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.BlockStateCheck;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
@@ -154,7 +157,7 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
         for (AltarType type : AltarType.values()) {
-            if (type == AltarType.ALTAR_4 || type == AltarType.ALTAR_5) continue;
+            if (type == AltarType.ALTAR_5) continue;
             ItemStack stack = new ItemStack(item, 1, type.ordinal());
             NBTTagCompound pers = NBTHelper.getPersistentData(stack);
             pers.setInteger("exp", 0);
@@ -197,11 +200,11 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
          * TileAltar.AltarLevel al = ta.getAltarLevel();
          * switch (al) {
          * case DISCOVERY:
-         * return boxDiscovery;
+         * return BlockBoxUtil.offset(boxDiscovery, x, y, z);
          * case ATTENUATION:
-         * return boxAttenuation;
+         * return BlockBoxUtil.offset(boxAttenuation, x, y, z);
          * case CONSTELLATION_CRAFT:
-         * return boxConstellation;
+         * return BlockBoxUtil.offset(boxConstellation, x, y, z);
          * case TRAIT_CRAFT:
          * break;
          * case ENDGAME:
@@ -213,10 +216,10 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
         // if(type != null) {
         // AxisAlignedBB box = type.getBox();
         // if(box != null) {
-        // return box;
+        // return BlockBoxUtil.offset(box, x, y, z);
         // }
         // }
-        return FULL_BLOCK_AABB;
+        return BlockBoxUtil.offset(FULL_BLOCK_AABB, x, y, z);
     }
 
     @Override
@@ -248,7 +251,9 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
         NBTTagCompound pers = NBTHelper.getPersistentData(stack);
         BlockPos pos = new BlockPos(x, y, z);
         int exp = pers.getInteger("exp");
-        int lvl = pers.getInteger("lvl");
+        // stacks from creative/NEI carry no "lvl": fall back to the altar type of the placed block (same ordering)
+        int lvl = pers.hasKey("lvl") ? pers.getInteger("lvl") : worldIn.getBlockMetadata(x, y, z);
+        lvl = Math.max(0, Math.min(lvl, TileAltar.AltarLevel.values().length - 1));
         TileAltar ta = MiscUtils.getTileAt(worldIn, pos, TileAltar.class, true);
         if (ta != null) {
             ta.onPlace(exp, TileAltar.AltarLevel.values()[lvl]);
@@ -316,6 +321,17 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:marble_raw");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -327,7 +343,7 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
 
     @Override
     public int getRenderType() {
-        return RenderingRegistry.getNextAvailableRenderId();
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     @Override
@@ -399,7 +415,7 @@ public class BlockAltar extends BlockStarlightNetwork implements BlockCustomName
                     return FULL_BLOCK_AABB;
                 // return boxConstellation;
                 case ALTAR_4:
-                    return null;
+                    return FULL_BLOCK_AABB;
                 case ALTAR_5:
                     return null;
             }

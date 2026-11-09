@@ -134,6 +134,14 @@ public class ShapedLightProximityRecipe implements IRecipe {
         }
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     @Override
     public ItemStack getCraftingResult(InventoryCrafting var1) {
         return output.copy();

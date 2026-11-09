@@ -10,12 +10,16 @@ package hellfirepvp.astralsorcery.common.block;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileRitualLink;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -42,7 +46,7 @@ public class BlockRitualLink extends BlockContainer {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
     }
 
     @Override
@@ -61,6 +65,17 @@ public class BlockRitualLink extends BlockContainer {
     }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/ritual_link");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -75,9 +90,20 @@ public class BlockRitualLink extends BlockContainer {
         return false;
     }
 
+    // glass parts render in the translucent pass, the rest in the solid pass
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 0 || pass == 1;
+    }
+
     @Override
     public int getRenderType() {
-        return 1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     // @Override

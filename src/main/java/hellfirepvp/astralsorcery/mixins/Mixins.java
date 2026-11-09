@@ -11,9 +11,25 @@ public enum Mixins implements IMixins {
     Vanilla(new MixinBuilder()
         .setPhase(Phase.EARLY)
         .addCommonMixins(
-            /*"minecraft.ContainerHorseInventoryMixin"*/)
+            "minecraft.AccessorNetHandlerPlayServer",
+            "minecraft.MixinChunk",
+            "minecraft.MixinEntityLivingBase",
+            "minecraft.MixinItemStack",
+            "minecraft.MixinWorld")
         .addClientMixins(
-            /*"minecraft.CreativeSlotMixin"*/)),
+            "minecraft.MixinMinecraft",
+            "minecraft.MixinNetHandlerPlayClient",
+            "minecraft.MixinWorldClientSide")),
+
+    // Et Futurum Requiem: the vicio mantle works as an elytra (optional)
+    EtFuturumElytra(new MixinBuilder()
+        .setPhase(Phase.LATE)
+        .addRequiredMod(TargetedMod.ETFUTURUM)
+        .addCommonMixins(
+            "etfuturum.MixinItemArmorElytra",
+            "etfuturum.MixinStartElytraFlyingHandler")
+        .addClientMixins(
+            "etfuturum.MixinLayerBetterElytra")),
 
     ;
     // spotless:on

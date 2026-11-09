@@ -14,8 +14,8 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -46,8 +46,8 @@ import hellfirepvp.astralsorcery.common.util.MiscUtils;
 public class BlockTranslucentBlock extends BlockContainer {
 
     public BlockTranslucentBlock() {
-        super(Material.air); // Material.BARRIER -> (new
-                             // Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
+        super(BlockStructural.STRUCTURAL); // Material.BARRIER -> (new
+        // Material(MapColor.airColor).setRequiresTool().setImmovableMobility());
         setBlockName("BlockTranslucentBlock");
         setBlockUnbreakable();
         setResistance(6000001.0F);
@@ -119,13 +119,24 @@ public class BlockTranslucentBlock extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     // @Override
     // public BlockRenderLayer getBlockLayer() {
     // return BlockRenderLayer.TRANSLUCENT;
     // }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:glass");
+    }
 
     @Override
     public boolean isOpaqueCube() {

@@ -9,13 +9,17 @@
 package hellfirepvp.astralsorcery.common.block;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.block.network.BlockStarlightNetwork;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileTreeBeacon;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 
 /**
  * This class is part of the Astral Sorcery Mod
@@ -41,7 +45,18 @@ public class BlockTreeBeacon extends BlockStarlightNetwork {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/tree_beacon");
     }
 
     @Override
@@ -66,7 +81,7 @@ public class BlockTreeBeacon extends BlockStarlightNetwork {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     @Override

@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +33,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.tile.TileStructuralConnector;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 
 /**
@@ -43,12 +45,27 @@ import hellfirepvp.astralsorcery.common.util.BlockPos;
  */
 public class BlockStructural extends BlockContainer implements BlockCustomName {
 
+    /** 1.7 stand-in for 1.10's Material.BARRIER: invisible, but not air and not replaceable. */
+    public static final Material STRUCTURAL = new Material(net.minecraft.block.material.MapColor.airColor) {
+
+        {
+            setImmovableMobility();
+        }
+
+        @Override
+        public boolean isOpaque() {
+            return false;
+        }
+    };
+
     // public static PropertyEnum<BlockType> BLOCK_TYPE = PropertyEnum.create("blocktype", BlockType.class);
     public static final AxisAlignedBB FULL_BLOCK_AABB = AxisAlignedBB
         .getBoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
     public BlockStructural() {
-        super(Material.air);
+        // 1.10 used Material.BARRIER. Material.air makes World#isAirBlock true for this block, so the telescope
+        // (which removes itself when the space above is air) deleted itself right after being placed.
+        super(STRUCTURAL);
         setBlockName("BlockStructural");
         setBlockUnbreakable();
         // setSoundType(SoundType.GLASS);
@@ -101,11 +118,11 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
         BlockType type = BlockType.values()[meta];
         switch (type) {
             case TELESCOPE_STRUCT:
-                return AxisAlignedBB.getBoundingBox(0, -1, 0, 1, 1, 1);
+                return BlockBoxUtil.offset(AxisAlignedBB.getBoundingBox(0, -1, 0, 1, 1, 1), x, y, z);
             // case ATTUNEMENT_ALTAR_STRUCT:
-            // return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+            // return BlockBoxUtil.offset(new AxisAlignedBB(0, 0, 0, 0, 0, 0), x, y, z);
         }
-        return FULL_BLOCK_AABB;
+        return BlockBoxUtil.offset(FULL_BLOCK_AABB, x, y, z);
     }
 
     @Override
@@ -295,6 +312,17 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
     // }
 
     @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/telescope");
+    }
+
+    @Override
     public boolean isOpaqueCube() {
         return false; // state.getValue(BLOCK_TYPE).getblock().isOpaqueCube();
     }
@@ -337,7 +365,7 @@ public class BlockStructural extends BlockContainer implements BlockCustomName {
 
     @Override
     public int getRenderType() {
-        return 1;
+        return -1;
     }
 
     @Override

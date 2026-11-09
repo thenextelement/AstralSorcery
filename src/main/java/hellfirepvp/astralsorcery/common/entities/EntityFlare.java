@@ -17,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -33,6 +34,7 @@ import hellfirepvp.astralsorcery.client.util.SpriteLibrary;
 import hellfirepvp.astralsorcery.common.CommonProxy;
 import hellfirepvp.astralsorcery.common.constellation.distribution.ConstellationSkyHandler;
 import hellfirepvp.astralsorcery.common.data.config.Config;
+import hellfirepvp.astralsorcery.common.lib.Constellations;
 import hellfirepvp.astralsorcery.common.network.PacketChannel;
 import hellfirepvp.astralsorcery.common.network.packet.server.PktParticleEvent;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
@@ -62,6 +64,23 @@ public class EntityFlare extends EntityFlying {
         super(worldIn);
         setSize(0.7F, 0.7F);
         this.setPositionAndRotation(x, y, z, 0, 0);
+    }
+
+    // 1.12.2-1.8.5: flares summoned by the bootes mantle follow (and defend) their player
+    private int followingEntityId = -1;
+
+    public EntityFlare setFollowingTarget(EntityPlayer player) {
+        this.followingEntityId = player.getEntityId();
+        return this;
+    }
+
+    @Nullable
+    public EntityPlayer getFollowingEntity() {
+        Entity e = worldObj.getEntityByID(this.followingEntityId);
+        if (e == null || e.isDead || !(e instanceof EntityPlayer)) {
+            return null;
+        }
+        return (EntityPlayer) e;
     }
 
     public EntityFlare setAmbient(boolean ambient) {
@@ -108,7 +127,11 @@ public class EntityFlare extends EntityFlying {
             }
             clientUpdate();
         } else {
-            if (entityAge > 300 && rand.nextInt(700) == 0) {
+            if (followingEntityId != -1) {
+                if (getFollowingEntity() == null) {
+                    damageEntity(DamageSource.magic, 20F);
+                }
+            } else if (entityAge > 300 && rand.nextInt(700) == 0) {
                 damageEntity(DamageSource.magic, 20F);
             }
 
@@ -147,6 +170,14 @@ public class EntityFlare extends EntityFlying {
                         || getDistanceSq(moveTarget.getX(), moveTarget.getY(), moveTarget.getZ()) < 5D)) {
                         moveTarget = null;
                     }
+                } else if (followingEntityId != -1 && getFollowingEntity() != null && getAttackTarget() == null) {
+                    EntityPlayer e = getFollowingEntity();
+                    if (hellfirepvp.astralsorcery.common.item.wearable.ItemCape.getCapeEffect(e, Constellations.bootes)
+                        == null) {
+                        followingEntityId = -1;
+                        return;
+                    }
+                    moveTarget = new BlockPos(e.posX, e.posY - 1 + rand.nextFloat() * 2.5, e.posZ);
                 } else if (getAttackTarget() != null) {
                     if (getAttackTarget().isDead) {
                         if (rand.nextInt(30) == 0) {

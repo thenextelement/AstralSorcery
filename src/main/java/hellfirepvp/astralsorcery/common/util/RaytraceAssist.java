@@ -102,8 +102,9 @@ public class RaytraceAssist {
 
             if (MiscUtils.isChunkLoaded(world, new ChunkCoordIntPair(at.chunkX(), at.chunkZ()))) {
                 if (!isStartEnd(at) && !world.isAirBlock(at.getX(), at.getY(), at.getZ())) {
-                    int state = world.getBlockMetadata(at.getX(), at.getY(), at.getZ());
-                    if (!isAllowed(state)) {
+                    Block block = world.getBlock(at.getX(), at.getY(), at.getZ());
+                    int meta = world.getBlockMetadata(at.getX(), at.getY(), at.getZ());
+                    if (!isAllowed(block, meta)) {
                         hit = at;
                         return false;
                     }
@@ -144,8 +145,8 @@ public class RaytraceAssist {
         return entities;
     }
 
-    private boolean isAllowed(int meta) {
-        List<Integer> accepted = passable.get(meta);
+    private boolean isAllowed(Block block, int meta) {
+        List<Integer> accepted = passable.get(block); // was looked up by meta: nothing (not even glass) passed
         if (accepted != null) {
             if (accepted.size() == 1 && accepted.get(0) == -1) return true;
             if (accepted.contains(meta)) return true;
@@ -169,7 +170,7 @@ public class RaytraceAssist {
 
     static {
         addPassable(Blocks.glass);
-        addPassable(Blocks.glass);
+        addPassable(Blocks.glass_pane);
         addPassable(Blocks.stained_glass);
         addPassable(Blocks.stained_glass_pane);
     }

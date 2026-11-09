@@ -15,6 +15,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
@@ -64,7 +65,7 @@ public class BlockFlareLight extends Block {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return FULL_BLOCK_AABB;
+        return null; // no collision (1.10 had an empty addCollisionBoxToList)
     }
 
     // @Override
@@ -99,7 +100,7 @@ public class BlockFlareLight extends Block {
 
     @Override
     public int getRenderType() {
-        return 2;
+        return -1;
     }
 
     @Override
@@ -196,6 +197,17 @@ public class BlockFlareLight extends Block {
     @Override
     public boolean canCollideCheck(int meta, boolean includeLiquid) {
         return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("minecraft:glowstone");
     }
 
     @Override

@@ -131,14 +131,15 @@ public class ItemIlluminationWand extends Item implements ItemAlignmentChargeCon
             } else {
                 if (at.isNormalCube()) {
                     TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
-                    if (te == null && !at.hasTileEntity(at.damageDropped(stack.getItemDamage()))
+                    int atMeta = worldIn.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ());
+                    if (te == null && !at.hasTileEntity(atMeta)
                         && drainTempCharge(playerIn, Config.illuminationWandUseCost, true)) {
                         worldIn.setBlock(pos.getX(), pos.getY(), pos.getZ(), BlocksAS.translucentBlock);
                         TileTranslucent tt = MiscUtils.getTileAt(worldIn, pos, TileTranslucent.class, true);
                         if (tt == null) {
-                            worldIn.setBlock(pos.getX(), pos.getY(), pos.getZ(), at);
+                            worldIn.setBlock(pos.getX(), pos.getY(), pos.getZ(), at, atMeta, 3);
                         } else {
-                            tt.setFakedState(at);
+                            tt.setFakedState(at, atMeta);
                             drainTempCharge(playerIn, Config.illuminationWandUseCost, false);
                             gainPermCharge(playerIn, Config.illuminationWandUseCost);
                         }
@@ -146,7 +147,7 @@ public class ItemIlluminationWand extends Item implements ItemAlignmentChargeCon
                 } else if (at instanceof BlockTranslucentBlock) {
                     TileTranslucent tt = MiscUtils.getTileAt(worldIn, pos, TileTranslucent.class, true);
                     if (tt != null && tt.getFakedState() != null) {
-                        worldIn.setBlock(pos.getX(), pos.getY(), pos.getZ(), tt.getFakedState());
+                        worldIn.setBlock(pos.getX(), pos.getY(), pos.getZ(), tt.getFakedState(), tt.getFakedMeta(), 3);
                     }
                 }
             }

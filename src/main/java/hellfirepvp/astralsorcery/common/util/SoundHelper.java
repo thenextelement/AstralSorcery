@@ -53,7 +53,12 @@ public class SoundHelper {
         // if(sound instanceof SoundUtils.CategorizedSoundEvent) {
         // category = ((SoundUtils.CategorizedSoundEvent) sound).getCategory();
         // }
-        world.playSound(posX, posY, posZ, sound.toString(), volume, pitch, false);
+        if (world.isRemote) {
+            world.playSound(posX, posY, posZ, sound.toString(), volume, pitch, false);
+        } else {
+            // World#playSound is client-only on 1.7; broadcast from the server instead
+            world.playSoundEffect(posX, posY, posZ, sound.toString(), volume, pitch);
+        }
     }
 
     @SideOnly(Side.CLIENT)

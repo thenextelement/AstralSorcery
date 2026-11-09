@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
  * Created by HellFirePvP
  * Date: 02.12.2016 / 19:03
  */
+@cpw.mods.fml.common.eventhandler.Cancelable
 public class EntityKnockbackEvent extends LivingEvent {
 
     private Entity attacker;

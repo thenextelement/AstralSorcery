@@ -35,8 +35,8 @@ public interface SerializeableRecipe {
 
         INFUSION_ADD((v) -> new InfusionRecipeAdd()),
         INFUSION_REMOVE((v) -> new InfusionRecipeRemove()),
-        // ORETPYE_ADD ((v) -> new OreTypeAdd()),
-        // ORETYPE_REMOVE ((v) -> new OreTypeRemove()),
+        ORETPYE_ADD((v) -> new OreTypeAdd()),
+        ORETYPE_REMOVE((v) -> new OreTypeRemove()),
         TRANSMUTE_ADD((v) -> new LightTransmutationAdd()),
         TRANSMUTE_REMOVE((v) -> new LightTransmutationRemove()),
         WELL_ADD((v) -> new WellRecipeAdd()),
@@ -44,7 +44,10 @@ public interface SerializeableRecipe {
         ALTAR_REMOVE((v) -> new AltarRecipeRemove()),
         ALTAR_T1_ADD((v) -> new AltarRecipeDiscovery()),
         ALTAR_T2_ADD((v) -> new AltarRecipeAttunement()),
-        ALTAR_T3_ADD((v) -> new AltarRecipeConstellation());
+        ALTAR_T3_ADD((v) -> new AltarRecipeConstellation()),
+        ALTAR_T4_ADD((v) -> new AltarRecipeTrait()),
+        GRINDSTONE_ADD((v) -> new GrindstoneRecipeAdd()),
+        GRINDSTONE_REMOVE((v) -> new GrindstoneRecipeRemove());
 
         private final Function<Void, ? extends SerializeableRecipe> recipeProvider;
 

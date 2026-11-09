@@ -244,7 +244,7 @@ public class RenderDefaultSkybox extends IRenderHandler {
         Tessellator tessellator = Tessellator.instance;
         // net.minecraft.client.renderer.VertexBuffer vb = tessellator.getBuffer();
         GL11.glDepthMask(false);
-        // GlStateManager.enableFog();
+        GL11.glEnable(GL11.GL_FOG);
         GL11.glColor3f(f, f1, f2);
 
         // if (OpenGlHelper.useVbo()) {
@@ -258,7 +258,7 @@ public class RenderDefaultSkybox extends IRenderHandler {
         GL11.glCallList(glSkyList);
         // }
 
-        // GlStateManager.disableFog();
+        GL11.glDisable(GL11.GL_FOG);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);

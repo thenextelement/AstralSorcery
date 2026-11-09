@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,13 +27,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.network.TileCrystalPrismLens;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
@@ -75,7 +76,18 @@ public class BlockPrism extends BlockStarlightNetwork {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return boxPrism;
+        return BlockBoxUtil.offset(boxPrism, x, y, z);
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/lens");
     }
 
     @Override
@@ -174,9 +186,15 @@ public class BlockPrism extends BlockStarlightNetwork {
         return null;
     }
 
+    // 1.10 rendered the whole prism in the translucent layer (glass cage)
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
     @Override
     public int getRenderType() {
-        return RenderingRegistry.getNextAvailableRenderId();
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
     @Override

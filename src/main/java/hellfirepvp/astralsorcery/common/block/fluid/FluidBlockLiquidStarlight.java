@@ -49,6 +49,23 @@ public class FluidBlockLiquidStarlight extends BlockFluidClassic {
         // setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
     }
 
+    @SideOnly(Side.CLIENT)
+    private net.minecraft.util.IIcon iconStill, iconFlow;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister reg) {
+        iconStill = reg.registerIcon("astralsorcery:fluid/starlight_still");
+        iconFlow = reg.registerIcon("astralsorcery:fluid/starlight_flow");
+        BlocksAS.fluidLiquidStarlight.setIcons(iconStill, iconFlow);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.IIcon getIcon(int side, int meta) {
+        return side == 0 || side == 1 ? iconStill : iconFlow;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World worldIn, int x, int y, int z, Random rand) {

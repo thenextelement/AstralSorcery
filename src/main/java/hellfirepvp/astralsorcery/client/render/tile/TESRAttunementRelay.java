@@ -29,6 +29,7 @@ public class TESRAttunementRelay extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileAttunementRelay te = (TileAttunementRelay) tile;
         TileInventoryBase.ItemHandlerTile iht = te.getInventoryHandler();
         if (iht == null) return;

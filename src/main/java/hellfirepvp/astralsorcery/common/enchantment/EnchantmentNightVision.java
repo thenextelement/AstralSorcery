@@ -18,7 +18,11 @@ import net.minecraft.potion.PotionEffect;
 public class EnchantmentNightVision extends EnchantmentPlayerWornTick {
 
     public EnchantmentNightVision() {
-        super("as.nightvision", 100, 1, EnumEnchantmentType.armor_head);
+        super(
+            "as.nightvision",
+            hellfirepvp.astralsorcery.common.registry.RegistryEnchantments.findFreeEnchantmentId(100),
+            1,
+            EnumEnchantmentType.armor_head);
     }
 
     @Override

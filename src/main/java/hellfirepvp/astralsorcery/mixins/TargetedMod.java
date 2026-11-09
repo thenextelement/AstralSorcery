@@ -7,7 +7,8 @@ import com.gtnewhorizon.gtnhmixins.builders.TargetModBuilder;
 
 public enum TargetedMod implements ITargetMod {
 
-    NEI("codechicken.nei.asm.NEICorePlugin", "NotEnoughItems"),;
+    NEI("codechicken.nei.asm.NEICorePlugin", "NotEnoughItems"),
+    ETFUTURUM("ganymedes01.etfuturum.mixinplugin.EtFuturumEarlyMixins", "etfuturum"),;
 
     private final TargetModBuilder builder;
 

@@ -30,8 +30,13 @@ public class TileTranslucent extends TileEntitySynchronized {
         return fakedState;
     }
 
-    public void setFakedState(Block fakedState) {
+    public int getFakedMeta() {
+        return metadata;
+    }
+
+    public void setFakedState(Block fakedState, int meta) {
         this.fakedState = fakedState;
+        this.metadata = meta;
         markForUpdate();
     }
 
@@ -43,7 +48,8 @@ public class TileTranslucent extends TileEntitySynchronized {
             int data = compound.getInteger("Data");
             Block b = Block.getBlockFromName(compound.getString("Block"));
             if (b != null) {
-                metadata = b.damageDropped(data);
+                fakedState = b; // was never restored after the port: blocks vanished on reload/sync
+                metadata = data;
             }
         }
     }

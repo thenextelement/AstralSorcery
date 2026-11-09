@@ -18,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
@@ -47,7 +48,16 @@ public class LightOreTransmutations {
         registerTransmutation(new Transmutation(Blocks.sandstone, Blocks.end_stone, 200.0D));
         registerTransmutation(new Transmutation(Blocks.netherrack, Blocks.nether_brick, 200.0D));
 
-        registerTransmutation(new Transmutation(Blocks.iron_ore, BlocksAS.customOre, 100));
+        // 1.10: iron ore -> starmetal ore. Needs the explicit meta on 1.7 (meta 0 would be rock crystal ore).
+        registerTransmutation(
+            new Transmutation(
+                Blocks.iron_ore,
+                OreDictionary.WILDCARD_VALUE,
+                BlocksAS.customOre,
+                hellfirepvp.astralsorcery.common.block.BlockCustomOre.OreType.STARMETAL.getMeta(),
+                null,
+                null,
+                100));
         registerTransmutation(
             new Transmutation(
                 Blocks.pumpkin,
@@ -125,11 +135,16 @@ public class LightOreTransmutations {
 
     @Nullable
     public static Transmutation searchForTransmutation(Block tryStateIn) {
+        return searchForTransmutation(tryStateIn, OreDictionary.WILDCARD_VALUE);
+    }
+
+    @Nullable
+    public static Transmutation searchForTransmutation(Block tryStateIn, int meta) {
         for (Transmutation tr : registeredTransmutations) {
-            if (tr.input.equals(tryStateIn)) return tr;
+            if (tr.matches(tryStateIn, meta)) return tr;
         }
         for (Transmutation tr : mtTransmutations) {
-            if (tr.input.equals(tryStateIn)) return tr;
+            if (tr.matches(tryStateIn, meta)) return tr;
         }
         return null;
     }
@@ -137,7 +152,9 @@ public class LightOreTransmutations {
     public static class Transmutation {
 
         public final Block input;
+        public final int inputMeta; // OreDictionary.WILDCARD_VALUE = any
         public final Block output;
+        public final int outputMeta;
         public final double cost;
 
         @Nullable
@@ -151,11 +168,35 @@ public class LightOreTransmutations {
 
         public Transmutation(Block input, Block output, @Nullable ItemStack inputDisplay,
             @Nullable ItemStack outputDisplay, double cost) {
+            this(
+                input,
+                inputDisplay != null ? inputDisplay.getItem()
+                    .getMetadata(inputDisplay.getItemDamage()) : OreDictionary.WILDCARD_VALUE,
+                output,
+                outputDisplay != null && outputDisplay.getItem() instanceof net.minecraft.item.ItemBlock
+                    ? outputDisplay.getItem()
+                        .getMetadata(outputDisplay.getItemDamage())
+                    : 0,
+                inputDisplay,
+                outputDisplay,
+                cost);
+        }
+
+        public Transmutation(Block input, int inputMeta, Block output, int outputMeta, @Nullable ItemStack inputDisplay,
+            @Nullable ItemStack outputDisplay, double cost) {
             this.input = input;
+            this.inputMeta = inputMeta;
             this.output = output;
+            this.outputMeta = outputMeta;
             this.cost = cost;
             this.outStack = outputDisplay;
             this.inStack = inputDisplay;
+        }
+
+        public boolean matches(Block block, int meta) {
+            return input.equals(block)
+                && (inputMeta == OreDictionary.WILDCARD_VALUE || meta == OreDictionary.WILDCARD_VALUE
+                    || meta == inputMeta);
         }
 
         @Nullable
@@ -163,7 +204,10 @@ public class LightOreTransmutations {
             if (inStack != null) {
                 return inStack.copy();
             }
-            return ItemUtils.createBlockStack(input);
+            return new ItemStack(
+                input,
+                1,
+                inputMeta == OreDictionary.WILDCARD_VALUE ? 0 : input.damageDropped(inputMeta));
         }
 
         @Nullable
@@ -171,7 +215,7 @@ public class LightOreTransmutations {
             if (outStack != null) {
                 return outStack.copy();
             }
-            return ItemUtils.createBlockStack(output);
+            return new ItemStack(output, 1, output.damageDropped(outputMeta));
         }
     }
 

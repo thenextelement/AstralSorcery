@@ -10,6 +10,8 @@ package hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.tweaks;
 
 import net.minecraft.item.ItemStack;
 
+import hellfirepvp.astralsorcery.common.constellation.ConstellationRegistry;
+import hellfirepvp.astralsorcery.common.constellation.IConstellation;
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.integrations.ModIntegrationCrafttweaker;
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.BaseTweaker;
@@ -17,10 +19,12 @@ import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.A
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.AltarRecipeConstellation;
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.AltarRecipeDiscovery;
 import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.AltarRecipeRemove;
+import hellfirepvp.astralsorcery.common.integrations.mods.crafttweaker.network.AltarRecipeTrait;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
+import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -39,6 +43,7 @@ public class AltarRecipe extends BaseTweaker {
     public static int SLOT_COUNT_T1 = 9;
     public static int SLOT_COUNT_T2 = 13;
     public static int SLOT_COUNT_T3 = 21;
+    public static int SLOT_COUNT_T4 = 25;
 
     @ZenMethod
     public static void removeAltarRecipe(IItemStack output, int altarLevel) {
@@ -117,6 +122,45 @@ public class AltarRecipe extends BaseTweaker {
             .add(new AltarRecipeConstellation(handles, out, starlightRequired, craftingTickTime));
     }
 
+    @ZenMethod
+    public static void addTraitAltarRecipe(IItemStack output, int starlightRequired, int craftingTickTime,
+        IIngredient[] inputs) {
+        addTraitAltarRecipe(output, starlightRequired, craftingTickTime, inputs, null);
+    }
+
+    /** inputs: 25 altar slots, any further entries are items the relays around the altar have to supply. */
+    @ZenMethod
+    public static void addTraitAltarRecipe(IItemStack output, int starlightRequired, int craftingTickTime,
+        IIngredient[] inputs, @Optional String requiredConstellationFocusName) {
+        if (!matchNeededSlots(inputs, TileAltar.AltarLevel.TRAIT_CRAFT)) return;
+
+        ItemStack out = convertToItemStack(output);
+        if (out == null) {
+            MineTweakerAPI.logError("[" + name + "] Skipping recipe-addition due to invalid output itemstack.");
+            return;
+        }
+
+        IConstellation cst = null;
+        if (requiredConstellationFocusName != null) {
+            cst = ConstellationRegistry.getConstellationByName(requiredConstellationFocusName);
+            if (cst == null) {
+                MineTweakerAPI.logError(
+                    "[" + name
+                        + "] Skipping recipe-addition due to unknown constellation: "
+                        + requiredConstellationFocusName);
+                return;
+            }
+        }
+
+        ItemHandle[] handles = new ItemHandle[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            handles[i] = convertToHandle(inputs[i]);
+        }
+
+        ModIntegrationCrafttweaker.recipeModifications
+            .add(new AltarRecipeTrait(handles, out, starlightRequired, craftingTickTime, cst));
+    }
+
     private static boolean isEmpty(IIngredient[] inputs) {
         for (IIngredient i : inputs) {
             if (i != null) return false;
@@ -134,9 +178,17 @@ public class AltarRecipe extends BaseTweaker {
                 reqSlots = SLOT_COUNT_T2;
                 break;
             case CONSTELLATION_CRAFT:
-            default:
                 reqSlots = SLOT_COUNT_T3;
                 break;
+            case TRAIT_CRAFT:
+            default:
+                reqSlots = SLOT_COUNT_T4;
+                if (inputs == null || inputs.length < reqSlots) {
+                    MineTweakerAPI
+                        .logError("[" + name + "] Not enough slots defined for altar level " + altarLevel.name());
+                    return false;
+                }
+                return true;
         }
         if (inputs == null || inputs.length != reqSlots) {
             MineTweakerAPI.logError("[" + name + "] Not enough slots defined for altar level " + altarLevel.name());

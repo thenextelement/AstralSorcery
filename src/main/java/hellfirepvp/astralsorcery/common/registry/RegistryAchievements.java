@@ -51,9 +51,13 @@ public class RegistryAchievements {
             1,
             ItemsAS.celestialCrystal,
             achvRockCrystal);
-        // achvLiqStarlight = new Achievement("achievement.as.liquidstarlight", "astralsorcery.liquidstarlight", 0, 0,
-        // UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket,
-        // BlocksAS.fluidLiquidStarlight), achvRockCrystal);
+        achvLiqStarlight = new Achievement(
+            "achievement.as.liquidstarlight",
+            "astralsorcery.liquidstarlight",
+            0,
+            0,
+            ItemsAS.itemBucketLiquidStarlight,
+            achvRockCrystal);
 
         achvBuildHandTelescope = new Achievement(
             "achievement.as.buildtelescope.1",
@@ -85,7 +89,7 @@ public class RegistryAchievements {
             achvDiscoverConstellation);
 
         achvCelestialCrystal.setSpecial();
-        // achvLiqStarlight.setSpecial();
+        achvLiqStarlight.setSpecial();
         achvDiscoverConstellation.setSpecial();
         achvPlayerAttunement.setSpecial();
 
@@ -94,7 +98,7 @@ public class RegistryAchievements {
         achvBuildHandTelescope.registerStat();
         achvDiscoverConstellation.registerStat();
         achvBuildActTelescope.registerStat();
-        // achvLiqStarlight.registerStat();
+        achvLiqStarlight.registerStat();
         achvPlayerAttunement.registerStat();
 
         achievementPageAstralSorcery = new AchievementPage(

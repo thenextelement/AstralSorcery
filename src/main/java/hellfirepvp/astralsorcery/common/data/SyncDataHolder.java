@@ -35,6 +35,7 @@ public class SyncDataHolder implements ITickHandler {
 
     public static final String DATA_CONSTELLATIONS = "AstralConstellations";
     public static final String DATA_SKY_HANDLERS = "ActiveWorldSkyHandlers";
+    public static final String DATA_TIME_FREEZE_EFFECTS = "TimeFreezeEffects";
     public static final String DATA_LIGHT_CONNECTIONS = "StarlightNetworkConnections";
     public static final String DATA_LIGHT_BLOCK_ENDPOINTS = "StarlightNetworkEndpoints";
 
@@ -112,6 +113,7 @@ public class SyncDataHolder implements ITickHandler {
         register(new DataLightConnections.Provider(DATA_LIGHT_CONNECTIONS));
         register(new DataLightBlockEndpoints.Provider(DATA_LIGHT_BLOCK_ENDPOINTS));
         register(new DataWorldSkyHandlers.Provider(DATA_SKY_HANDLERS));
+        register(new DataTimeFreezeEffects.Provider(DATA_TIME_FREEZE_EFFECTS));
     }
 
     @Override

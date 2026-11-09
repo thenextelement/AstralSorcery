@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * HellFirePvP / Astral Sorcery 2018
+ *
+ * This project is licensed under GNU GENERAL PUBLIC LICENSE Version 3.
+ * The source code is available on github: https://github.com/HellFirePvP/AstralSorcery
+ * For further details, see the License file there.
+ ******************************************************************************/
+
+package hellfirepvp.astralsorcery.common.constellation.cape;
+
+import java.lang.reflect.Constructor;
+
+import net.minecraft.nbt.NBTTagCompound;
+
+/**
+ * This class is part of the Astral Sorcery Mod
+ * The complete source code for this mod can be found on github.
+ * Class: CapeEffectFactory
+ * Created by HellFirePvP
+ * Date: 10.10.2017 / 01:22
+ * (backported from 1.12.2-1.8.5 to 1.7.10)
+ */
+public class CapeEffectFactory<V extends CapeArmorEffect> {
+
+    private final Constructor<V> ctor;
+
+    public CapeEffectFactory(Class<V> effect) {
+        Constructor<V> v = null;
+        try {
+            v = effect.getDeclaredConstructor(NBTTagCompound.class);
+            v.setAccessible(true);
+        } catch (Exception e) {}
+        this.ctor = v;
+    }
+
+    public V deserializeCapeEffect(NBTTagCompound cmp) {
+        try {
+            return ctor.newInstance(cmp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}

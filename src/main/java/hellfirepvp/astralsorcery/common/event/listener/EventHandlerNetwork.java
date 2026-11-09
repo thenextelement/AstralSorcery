@@ -73,19 +73,18 @@ public class EventHandlerNetwork {
         event.manager.scheduleOutboundPacket(new S3FPacketCustomPayload(AS_WORLDHANDLERS_PAYLOAD, buf));
     }
 
-    public static void clientCatchWorldHandlerPayload(S3FPacketCustomPayload pkt) {
-        if (pkt.func_149169_c()
-            .equals(AS_WORLDHANDLERS_PAYLOAD)) {
-            byte[] buf = pkt.func_149168_d(); // todo check this
-            int size = buf.length;
-            List<Integer> dimensions = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                dimensions.add(buf.length);
-            }
-
-            ((DataWorldSkyHandlers) SyncDataHolder.getDataClient(SyncDataHolder.DATA_SKY_HANDLERS))
-                .updateClient(dimensions);
+    /** Called from MixinNetHandlerPlayClient. Returns true if the payload was ours and was consumed. */
+    public static boolean clientCatchWorldHandlerPayload(S3FPacketCustomPayload pkt) {
+        if (!AS_WORLDHANDLERS_PAYLOAD.equals(pkt.func_149169_c())) return false;
+        io.netty.buffer.ByteBuf buf = Unpooled.wrappedBuffer(pkt.func_149168_d());
+        int size = buf.readInt();
+        List<Integer> dimensions = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            dimensions.add(buf.readInt());
         }
+        ((DataWorldSkyHandlers) SyncDataHolder.getDataClient(SyncDataHolder.DATA_SKY_HANDLERS))
+            .updateClient(dimensions);
+        return true;
     }
 
     @SubscribeEvent

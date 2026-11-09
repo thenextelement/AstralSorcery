@@ -180,8 +180,9 @@ public class ItemExchangeWand extends ItemBlockStorage
         // Minecraft.getMinecraft().theWorld.getWorldInfo().getTerrainType());
         BlockPos origin = new BlockPos(rtr.blockX, rtr.blockY, rtr.blockZ);
         Block atOrigin = Minecraft.getMinecraft().theWorld.getBlock(origin.getX(), origin.getY(), origin.getZ());
-        int storedMeta = stored.damageDropped(stack.getItemDamage());
-        int atOriginMeta = atOrigin.damageDropped(stack.getItemDamage());
+        int storedMeta = getStoredMeta(stack);
+        int atOriginMeta = Minecraft.getMinecraft().theWorld
+            .getBlockMetadata(origin.getX(), origin.getY(), origin.getZ());
         if (stored.equals(atOrigin) && storedMeta == atOriginMeta) {
             return;
         }
@@ -252,11 +253,11 @@ public class ItemExchangeWand extends ItemBlockStorage
         }
 
         Block stored = getStoredState(stack, stack.getItemDamage());
-        int storedMeta = stack.getItemDamage();
+        int storedMeta = getStoredMeta(stack);
         ItemStack consumeStack = getStoredStateAsStack(stack);
         if (stored == null || stored.equals(Blocks.air) || consumeStack == null) return false;
         Block atOrigin = world.getBlock(origin.getX(), origin.getY(), origin.getZ());
-        int atOriginMeta = atOrigin.damageDropped(stack.getItemDamage());
+        int atOriginMeta = world.getBlockMetadata(origin.getX(), origin.getY(), origin.getZ());
         if (stored.equals(atOrigin) && storedMeta == atOriginMeta) {
             return false;
         }
@@ -297,7 +298,7 @@ public class ItemExchangeWand extends ItemBlockStorage
                             ItemUtils.copyStackWithSize(consumeStack, 1),
                             false);
                     }
-                    world.setBlock(placePos.getX(), placePos.getY(), placePos.getZ(), stored);
+                    world.setBlock(placePos.getX(), placePos.getY(), placePos.getZ(), stored, getStoredMeta(stack), 3);
                     PktParticleEvent ev = new PktParticleEvent(
                         PktParticleEvent.ParticleEventType.ARCHITECT_PLACE,
                         placePos);

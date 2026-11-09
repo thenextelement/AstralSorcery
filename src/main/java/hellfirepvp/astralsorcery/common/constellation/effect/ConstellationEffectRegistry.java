@@ -21,11 +21,13 @@ import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectAevitas;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectArmara;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectBootes;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectDiscidia;
+import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectEvorsio;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectFornax;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectHorologium;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectLucerna;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectMineralis;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectOctans;
+import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectPelotrio;
 import hellfirepvp.astralsorcery.common.constellation.effect.aoe.CEffectVicio;
 import hellfirepvp.astralsorcery.common.data.config.Config;
 import hellfirepvp.astralsorcery.common.event.APIRegistryEvent;
@@ -49,7 +51,7 @@ public class ConstellationEffectRegistry {
         register(Constellations.discidia, CEffectDiscidia::new);
         register(Constellations.armara, CEffectArmara::new);
         register(Constellations.vicio, CEffectVicio::new);
-        // register(Constellations.evorsio, CEffectEvorsio::new);
+        register(Constellations.evorsio, CEffectEvorsio::new);
 
         register(Constellations.mineralis, CEffectMineralis::new);
         register(Constellations.lucerna, CEffectLucerna::new);
@@ -57,7 +59,7 @@ public class ConstellationEffectRegistry {
         register(Constellations.horologium, CEffectHorologium::new);
         register(Constellations.octans, CEffectOctans::new);
         register(Constellations.fornax, CEffectFornax::new);
-        // register(Constellations.pelotrio, CEffectPelotrio::new);
+        register(Constellations.pelotrio, CEffectPelotrio::new);
 
         MinecraftForge.EVENT_BUS.post(new APIRegistryEvent.ConstellationEffectRegister());
     }
@@ -67,7 +69,7 @@ public class ConstellationEffectRegistry {
         Config.addDynamicEntry(new CEffectDiscidia(null));
         Config.addDynamicEntry(new CEffectArmara(null));
         Config.addDynamicEntry(new CEffectVicio(null));
-        // Config.addDynamicEntry(new CEffectEvorsio(null));
+        Config.addDynamicEntry(new CEffectEvorsio(null));
 
         Config.addDynamicEntry(new CEffectHorologium(null));
         Config.addDynamicEntry(new CEffectMineralis(null));
@@ -75,7 +77,7 @@ public class ConstellationEffectRegistry {
         Config.addDynamicEntry(new CEffectBootes(null));
         Config.addDynamicEntry(new CEffectOctans(null));
         Config.addDynamicEntry(new CEffectFornax(null));
-        // Config.addDynamicEntry(new CEffectPelotrio(null));
+        Config.addDynamicEntry(new CEffectPelotrio(null));
     }
 
     private static void register(IWeakConstellation c, ConstellationEffectProvider provider) {

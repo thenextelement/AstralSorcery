@@ -24,6 +24,7 @@ import hellfirepvp.astralsorcery.common.crafting.INighttimeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.AttunementRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.ConstellationRecipe;
+import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TraitRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.AbstractCacheableRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapeMap;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
@@ -149,21 +150,30 @@ public abstract class AbstractAltarRecipe {
     // Return false and the item in the slot is not consumed.
     public boolean mayDecrement(TileAltar ta, ShapedRecipeSlot slot) {
         ItemHandle handle = recipe.getExpectedStackHandle(slot);
-        return handle == null || handle.getFluidTypeAndAmount() == null;
+        return handle == null || handle.getFluidTypeAndAmount() == null
+            || !hasContainerItem(
+                ta.getInventoryHandler()
+                    .getStackInSlot(slot.getSlotID()));
     }
 
     public boolean mayDecrement(TileAltar ta, AttunementRecipe.AttunementAltarSlot slot) {
         if (!(this instanceof AttunementRecipe)) return true;
         AttunementRecipe thisRecipe = (AttunementRecipe) this;
         ItemHandle handle = thisRecipe.getAttItemHandle(slot);
-        return handle == null || handle.getFluidTypeAndAmount() == null;
+        return handle == null || handle.getFluidTypeAndAmount() == null
+            || !hasContainerItem(
+                ta.getInventoryHandler()
+                    .getStackInSlot(slot.getSlotId()));
     }
 
     public boolean mayDecrement(TileAltar ta, ConstellationRecipe.ConstellationAtlarSlot slot) {
         if (!(this instanceof ConstellationRecipe)) return true;
         ConstellationRecipe thisRecipe = (ConstellationRecipe) this;
         ItemHandle handle = thisRecipe.getCstItemHandle(slot);
-        return handle == null || handle.getFluidTypeAndAmount() == null;
+        return handle == null || handle.getFluidTypeAndAmount() == null
+            || !hasContainerItem(
+                ta.getInventoryHandler()
+                    .getStackInSlot(slot.getSlotId()));
     }
 
     // Called if the respective method above returns 'false' to allow for proper decrement-handling.
@@ -174,10 +184,7 @@ public abstract class AbstractAltarRecipe {
         TileReceiverBaseInventory.ItemHandlerTile inventory = ta.getInventoryHandler();
         ItemStack stack = inventory.getStackInSlot(slot.getSlotID());
         if (stack != null) {
-            ItemStack result = ItemUtils.drainFluidFromItem(stack, handle.getFluidTypeAndAmount(), true);
-            if (result != null) {
-                inventory.setInventorySlotContents(slot.getSlotID(), result);
-            }
+            inventory.setInventorySlotContents(slot.getSlotID(), consumeContained(stack, handle));
         }
     }
 
@@ -190,10 +197,7 @@ public abstract class AbstractAltarRecipe {
         TileReceiverBaseInventory.ItemHandlerTile inventory = ta.getInventoryHandler();
         ItemStack stack = inventory.getStackInSlot(slot.getSlotId());
         if (stack != null) {
-            ItemStack result = ItemUtils.drainFluidFromItem(stack, handle.getFluidTypeAndAmount(), true);
-            if (result != null) {
-                inventory.setInventorySlotContents(slot.getSlotId(), result);
-            }
+            inventory.setInventorySlotContents(slot.getSlotId(), consumeContained(stack, handle));
         }
     }
 
@@ -206,11 +210,50 @@ public abstract class AbstractAltarRecipe {
         TileReceiverBaseInventory.ItemHandlerTile inventory = ta.getInventoryHandler();
         ItemStack stack = inventory.getStackInSlot(slot.getSlotId());
         if (stack != null) {
-            ItemStack result = ItemUtils.drainFluidFromItem(stack, handle.getFluidTypeAndAmount(), true);
-            if (result != null) {
-                inventory.setInventorySlotContents(slot.getSlotId(), result);
-            }
+            inventory.setInventorySlotContents(slot.getSlotId(), consumeContained(stack, handle));
         }
+    }
+
+    public boolean mayDecrement(TileAltar ta, TraitRecipe.TraitRecipeSlot slot) {
+        if (!(this instanceof TraitRecipe)) return true;
+        ItemHandle handle = ((TraitRecipe) this).getInnerTraitItemHandle(slot);
+        return handle == null || handle.getFluidTypeAndAmount() == null
+            || !hasContainerItem(
+                ta.getInventoryHandler()
+                    .getStackInSlot(slot.getSlotId()));
+    }
+
+    public void handleItemConsumption(TileAltar ta, TraitRecipe.TraitRecipeSlot slot) {
+        if (!(this instanceof TraitRecipe)) return;
+        ItemHandle handle = ((TraitRecipe) this).getInnerTraitItemHandle(slot);
+        if (handle == null) return;
+
+        TileReceiverBaseInventory.ItemHandlerTile inventory = ta.getInventoryHandler();
+        ItemStack stack = inventory.getStackInSlot(slot.getSlotId());
+        if (stack != null) {
+            inventory.setInventorySlotContents(slot.getSlotId(), consumeContained(stack, handle));
+        }
+    }
+
+    private static boolean hasContainerItem(@Nullable ItemStack stack) {
+        return stack != null && stack.getItem() != null
+            && stack.getItem()
+                .hasContainerItem(stack);
+    }
+
+    /** 1.12.2-1.8.5: drain the fluid if the item holds one, otherwise leave its container item (bucket etc.). */
+    @Nullable
+    protected static ItemStack consumeContained(ItemStack stack, ItemHandle handle) {
+        if (handle.getFluidTypeAndAmount() != null
+            && net.minecraftforge.fluids.FluidContainerRegistry.getFluidForFilledItem(stack) != null) {
+            ItemStack result = ItemUtils.drainFluidFromItem(stack, handle.getFluidTypeAndAmount(), true);
+            if (result != null) return result;
+        }
+        if (hasContainerItem(stack)) {
+            return stack.getItem()
+                .getContainerItem(stack);
+        }
+        return stack;
     }
 
     // Can be used to applyServer modifications to items on the shapeMap.

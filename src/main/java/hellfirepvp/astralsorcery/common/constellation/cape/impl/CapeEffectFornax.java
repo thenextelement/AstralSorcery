@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * HellFirePvP / Astral Sorcery 2018
+ *
+ * This project is licensed under GNU GENERAL PUBLIC LICENSE Version 3.
+ * The source code is available on github: https://github.com/HellFirePvP/AstralSorcery
+ * For further details, see the License file there.
+ ******************************************************************************/
+
+package hellfirepvp.astralsorcery.common.constellation.cape.impl;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.config.Configuration;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import hellfirepvp.astralsorcery.common.base.MeltInteraction;
+import hellfirepvp.astralsorcery.common.base.WorldMeltables;
+import hellfirepvp.astralsorcery.common.constellation.IConstellation;
+import hellfirepvp.astralsorcery.common.constellation.cape.CapeArmorEffect;
+import hellfirepvp.astralsorcery.common.lib.Constellations;
+import hellfirepvp.astralsorcery.common.network.PacketChannel;
+import hellfirepvp.astralsorcery.common.network.packet.server.PktParticleEvent;
+import hellfirepvp.astralsorcery.common.util.BlockPos;
+
+/** (backported from 1.12.2-1.8.5 to 1.7.10) */
+public class CapeEffectFornax extends CapeArmorEffect {
+
+    private static float fireMultiplier = 0F;
+    private static float healMultiplier = 1F;
+    private static boolean burningMelt = true;
+
+    public CapeEffectFornax(NBTTagCompound cmp) {
+        super(cmp, "fornax");
+    }
+
+    @Override
+    public IConstellation getAssociatedConstellation() {
+        return Constellations.fornax;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void playActiveParticleTick(EntityPlayer pl) {
+        playConstellationCapeSparkles(pl, pl.isBurning() ? 0.9F : 0.4F);
+    }
+
+    public void attemptMelt(EntityPlayer pl) {
+        if (burningMelt && pl.isBurning()) {
+            BlockPos at = new BlockPos(
+                MathHelper.floor_double(pl.posX),
+                MathHelper.floor_double(pl.boundingBox.minY) - 1,
+                MathHelper.floor_double(pl.posZ));
+            MeltInteraction mi = WorldMeltables.getMeltable(pl.worldObj, at);
+            if (mi != null) {
+                PktParticleEvent ev = new PktParticleEvent(
+                    PktParticleEvent.ParticleEventType.CE_MELT_BLOCK,
+                    at.getX(),
+                    at.getY(),
+                    at.getZ());
+                PacketChannel.CHANNEL.sendToAllAround(ev, PacketChannel.pointFromPos(pl.worldObj, at, 16));
+                if (rand.nextFloat() < 0.1) {
+                    mi.placeResultAt(pl.worldObj, at);
+                }
+            }
+        }
+    }
+
+    public float getDamageMultiplier() {
+        return fireMultiplier;
+    }
+
+    public void healFor(EntityPlayer player, float amount) {
+        player.heal(amount * healMultiplier);
+    }
+
+    @Override
+    public void loadFromConfig(Configuration cfg) {
+        burningMelt = cfg.getBoolean(
+            getKey() + "BurningMelt",
+            getConfigurationSection(),
+            burningMelt,
+            "If a player burns while wearing the cape, this toggles if blocks below him then melt (true) or not. (false)");
+        fireMultiplier = cfg.getFloat(
+            getKey() + "FireDmgMultiplier",
+            getConfigurationSection(),
+            fireMultiplier,
+            0,
+            1,
+            "Sets the multiplier for how much damage you take from fire damage while wearing a fornax cape");
+        healMultiplier = cfg.getFloat(
+            getKey() + "FireHealMultiplier",
+            getConfigurationSection(),
+            healMultiplier,
+            0,
+            5,
+            "Sets the multiplier for how much healing the player receives from the original damage when being hit by fire damage.");
+    }
+}

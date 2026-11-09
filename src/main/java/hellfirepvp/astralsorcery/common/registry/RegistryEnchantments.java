@@ -25,6 +25,16 @@ public class RegistryEnchantments {
 
     public static List<EnchantmentPlayerWornTick> wearableTickEnchantments = new LinkedList<>();
 
+    /** 1.7 enchantments share a fixed id array and throw on duplicates: prefer the old id, else the first free slot. */
+    public static int findFreeEnchantmentId(int preferred) {
+        net.minecraft.enchantment.Enchantment[] list = net.minecraft.enchantment.Enchantment.enchantmentsList;
+        if (preferred < list.length && list[preferred] == null) return preferred;
+        for (int i = list.length - 1; i > 62; i--) {
+            if (list[i] == null) return i;
+        }
+        throw new IllegalStateException("[AstralSorcery] No free enchantment id left!");
+    }
+
     public static void init() {
         enchantmentNightVision = register(new EnchantmentNightVision());
         enchantmentScorchingHeat = register(new EnchantmentScorchingHeat());

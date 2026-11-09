@@ -93,6 +93,11 @@ public class PacketChannel {
         CHANNEL.registerMessage(PktRequestTeleport.class, PktRequestTeleport.class, id++, Side.SERVER);
         CHANNEL.registerMessage(PktBurnParchment.class, PktBurnParchment.class, id++, Side.SERVER);
         CHANNEL.registerMessage(PktEngraveGlass.class, PktEngraveGlass.class, id++, Side.SERVER);
+        CHANNEL.registerMessage(
+            hellfirepvp.astralsorcery.common.network.packet.client.PktVicioGlide.class,
+            hellfirepvp.astralsorcery.common.network.packet.client.PktVicioGlide.class,
+            id++,
+            Side.SERVER);
 
         /*
          * Method registerPacket = ReflectionHelper.findMethod(

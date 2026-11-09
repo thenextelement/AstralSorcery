@@ -18,6 +18,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 
 import com.google.common.collect.Lists;
@@ -26,6 +27,7 @@ import hellfirepvp.astralsorcery.common.block.BlockBlackMarble;
 import hellfirepvp.astralsorcery.common.block.BlockCustomOre;
 import hellfirepvp.astralsorcery.common.block.BlockCustomSandOre;
 import hellfirepvp.astralsorcery.common.block.BlockMarble;
+import hellfirepvp.astralsorcery.common.block.BlockMarbleSlab;
 import hellfirepvp.astralsorcery.common.crafting.ItemHandle;
 import hellfirepvp.astralsorcery.common.crafting.RecipeChangeWandColor;
 import hellfirepvp.astralsorcery.common.crafting.ShapedLightProximityRecipe;
@@ -43,8 +45,14 @@ import hellfirepvp.astralsorcery.common.crafting.altar.recipes.LensRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.PrismLensRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.RecipeRitualPedestal;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TelescopeRecipe;
+import hellfirepvp.astralsorcery.common.crafting.altar.recipes.TraitRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.AttunementUpgradeRecipe;
 import hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.ConstellationUpgradeRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.CrystalToolSharpeningRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.DustGrindstoneRecipe;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.GrindstoneRecipeRegistry;
+import hellfirepvp.astralsorcery.common.crafting.grindstone.SwordSharpeningRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.AccessibleRecipeAdapater;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipe;
 import hellfirepvp.astralsorcery.common.crafting.helper.ShapedRecipeSlot;
@@ -55,7 +63,6 @@ import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemCraftingComponent;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
-import hellfirepvp.astralsorcery.common.util.EnumDyeColor;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.OreDictAlias;
 
@@ -71,6 +78,8 @@ public class RegistryRecipes {
     public static ShapedRecipe rMarbleRuned, rMarbleEngraved, rMarbleChiseled, rMarbleArch, rMarblePillar,
         rMarbleBricks, rMarbleStairs;
     public static ShapedRecipe rBlackMarbleRaw;
+    public static ShapedRecipe rBlackMarbleArch, rBlackMarbleBricks, rBlackMarbleChiseled, rBlackMarbleEngraved,
+        rBlackMarbleRuned, rBlackMarblePillar, rMarbleSlab;
 
     // LightProximityRecipes
     public static ShapedRecipe rLPRAltar;
@@ -105,6 +114,9 @@ public class RegistryRecipes {
 
     public static AttunementUpgradeRecipe rAltarUpgradeAttenuation;
     public static ConstellationUpgradeRecipe rAltarUpgradeConstellation;
+    public static TraitRecipe rCapeBase;
+    public static java.util.Map<hellfirepvp.astralsorcery.common.constellation.IConstellation, hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe> capeCraftingRecipes = new java.util.HashMap<>();
+    public static hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.TraitUpgradeRecipe rAltarUpgradeTrait;
 
     // CraftingComponents
     public static DiscoveryRecipe rCCGlassLens;
@@ -125,9 +137,11 @@ public class RegistryRecipes {
     public static void init() {
         initVanillaRecipes();
 
-        // initAltarRecipes();
+        initAltarRecipes();
 
         initInfusionRecipes();
+
+        initGrindstoneRecipes();
 
         InfusionRecipeRegistry.cacheLocalRecipes();
         AltarRecipeRegistry.cacheLocalRecipes();
@@ -166,6 +180,59 @@ public class RegistryRecipes {
         registerInfusionRecipe(new InfusionRecipeChargeTool(ItemsAS.chargedCrystalSword));
     }
 
+    // ---- Grindstone (backported from 1.12.2-1.8.5)
+
+    private static void initGrindstoneRecipes() {
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new CrystalToolSharpeningRecipe(1));
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new CrystalSharpeningRecipe(1));
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(new SwordSharpeningRecipe());
+
+        GrindstoneRecipeRegistry.registerGrindstoneRecipe(
+            ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack(),
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            20);
+    }
+
+    /** ore* -> dust* recipes for every ore dictionary pair; runs after all mods registered their ores. */
+    public static void initGrindstoneOreRecipes() {
+        String srcPrefix = "ore";
+        String dstPrefix = "dust";
+
+        for (String oreDict : OreDictionary.getOreNames()) {
+            if (oreDict.startsWith(srcPrefix)) {
+                String suffix = oreDict.substring(srcPrefix.length());
+                attemptRegisterGrindstoneRecipe(oreDict, dstPrefix + suffix, 0.85F);
+            }
+        }
+        // cache after the ore recipes so /mt reload restores them too
+        GrindstoneRecipeRegistry.cacheLocalFallback();
+    }
+
+    private static void attemptRegisterGrindstoneRecipe(String nameIn, String nameOut, float doubleChance) {
+        boolean multi = nameIn.endsWith("Redstone");
+
+        List<ItemStack> inputs = new java.util.ArrayList<>(OreDictionary.getOres(nameIn));
+        List<ItemStack> outputs = OreDictionary.getOres(nameOut);
+        ItemStack output = outputs.isEmpty() ? null : outputs.get(0);
+        if (inputs.isEmpty() || output == null || output.getItem() == null) return;
+        if (output.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+            List<ItemStack> st = new java.util.ArrayList<>();
+            output.getItem()
+                .getSubItems(
+                    output.getItem(),
+                    output.getItem()
+                        .getCreativeTab(),
+                    st);
+            output = st.isEmpty() ? new ItemStack(output.getItem(), output.stackSize, 0) : st.get(0);
+        }
+        output = ItemUtils.copyStackWithSize(output, output.stackSize);
+        if (multi) {
+            output.stackSize = output.stackSize * 4;
+        }
+        GrindstoneRecipeRegistry
+            .registerGrindstoneRecipe(new DustGrindstoneRecipe(new ItemHandle(inputs), output, 12, doubleChance));
+    }
+
     public static void initVanillaRecipes() {
         RecipeSorter.register(
             "LightProximityCrafting",
@@ -185,15 +252,8 @@ public class RegistryRecipes {
 
         CraftingManager manager = CraftingManager.getInstance();
 
-        manager.addRecipe(
-            new ItemStack(Blocks.fence, 2),
-            " D ",
-            " W ",
-            " D ",
-            'D',
-            new ItemStack(Items.dye, 1, EnumDyeColor.RED.getDyeDamage()),
-            'W',
-            new ItemStack(ItemsAS.illuminationWand));
+        manager.getRecipeList()
+            .add(new RecipeChangeWandColor());
 
         rLPRAltar = new ShapedRecipe(BlocksAS.blockAltar)
             .addPart(BlockBlackMarble.BlackMarbleBlockType.RAW.asStack(), ShapedRecipeSlot.UPPER_CENTER)
@@ -281,6 +341,20 @@ public class RegistryRecipes {
             ShapedRecipeSlot.LOWER_CENTER,
             ShapedRecipeSlot.LOWER_RIGHT);
 
+        ShapedRecipe[] black = buildBlackMarbleRecipes();
+        rBlackMarbleArch = black[0];
+        rBlackMarbleBricks = black[1];
+        rBlackMarbleChiseled = black[2];
+        rBlackMarbleEngraved = black[3];
+        rBlackMarbleRuned = black[4];
+        rBlackMarblePillar = black[5];
+        rMarbleSlab = new ShapedRecipe(
+            new ItemStack(BlocksAS.blockMarbleSlab, 6, BlockMarbleSlab.EnumType.BRICKS.ordinal())).addPart(
+                BlockMarble.MarbleBlockType.BRICKS.asStack(),
+                ShapedRecipeSlot.UPPER_LEFT,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.UPPER_RIGHT);
+
         rSmeltStarmetalOre = new SmeltingRecipe(ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack())
             .setInput(new ItemStack(BlocksAS.customOre, 1, BlockCustomOre.OreType.STARMETAL.ordinal()))
             .setExp(2F);
@@ -290,22 +364,130 @@ public class RegistryRecipes {
                 .setInput(new ItemStack(BlocksAS.customSandOre, 1, BlockCustomSandOre.OreType.AQUAMARINE.ordinal()))
                 .setExp(1F);
 
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2), rLPRAltar.makeLightProximityRecipe());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rLPRWand.makeLightProximityRecipe());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rRJournal.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rCCParchment.make());
-        //
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rBlackMarbleRaw.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleArch.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarblePillar.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleRuned.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleEngraved.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleChiseled.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleBricks.make());
-        // manager.addRecipe(new ItemStack(Blocks.fence, 2),rMarbleStairs.make());
+        addRecipe(manager, rLPRAltar.makeLightProximityRecipe());
+        addRecipe(manager, rLPRWand.makeLightProximityRecipe());
+        addRecipe(manager, rRJournal.make());
+        addRecipe(manager, rCCParchment.make());
+
+        addRecipe(manager, rBlackMarbleRaw.make());
+        addRecipe(manager, rMarbleArch.make());
+        addRecipe(manager, rMarblePillar.make());
+        addRecipe(manager, rMarbleRuned.make());
+        addRecipe(manager, rMarbleEngraved.make());
+        addRecipe(manager, rMarbleChiseled.make());
+        addRecipe(manager, rMarbleBricks.make());
+        addRecipe(manager, rMarbleStairs.make());
+        addRecipe(manager, rMarbleSlab.make());
+        for (ShapedRecipe r : black) {
+            addRecipe(manager, r.make());
+        }
 
         rSmeltStarmetalOre.register();
         rSmeltAquamarineOre.register();
+    }
+
+    /** 1.12.2-1.8.5 Mantle of the Stars: base mantle + one attunement recipe per non-minor constellation. */
+    private static void initMantleRecipes() {
+        rCapeBase = registerTraitRecipe(
+            new ShapedRecipe(new ItemStack(ItemsAS.armorImbuedCape))
+                .addPart(net.minecraft.init.Items.leather_chestplate, ShapedRecipeSlot.CENTER)
+                .addPart(ItemHandle.getCrystalVariant(false, false), ShapedRecipeSlot.UPPER_CENTER)
+                .addPart(
+                    ItemsAS.illuminationPowder,
+                    ShapedRecipeSlot.LEFT,
+                    ShapedRecipeSlot.LOWER_LEFT,
+                    ShapedRecipeSlot.RIGHT,
+                    ShapedRecipeSlot.LOWER_RIGHT));
+        rCapeBase.setInnerTraitItem(
+            ItemCraftingComponent.MetaType.RESO_GEM.asStack(),
+            TraitRecipe.TraitRecipeSlot.LEFT_CENTER,
+            TraitRecipe.TraitRecipeSlot.RIGHT_CENTER);
+        rCapeBase.setCstItem(
+            ItemCraftingComponent.MetaType.RESO_GEM.asStack(),
+            ConstellationRecipe.ConstellationAtlarSlot.UP_LEFT_LEFT,
+            ConstellationRecipe.ConstellationAtlarSlot.UP_RIGHT_RIGHT);
+        rCapeBase.setCstItem(
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            ConstellationRecipe.ConstellationAtlarSlot.DOWN_LEFT_LEFT,
+            ConstellationRecipe.ConstellationAtlarSlot.DOWN_RIGHT_RIGHT);
+        rCapeBase.setAttItem(
+            ItemCraftingComponent.MetaType.STARDUST.asStack(),
+            AttunementRecipe.AttunementAltarSlot.LOWER_LEFT,
+            AttunementRecipe.AttunementAltarSlot.LOWER_RIGHT);
+        rCapeBase.addOuterTraitItem(net.minecraft.init.Items.feather)
+            .addOuterTraitItem(net.minecraft.init.Items.ender_pearl)
+            .addOuterTraitItem(ItemCraftingComponent.MetaType.STARDUST.asStack())
+            .addOuterTraitItem(ItemCraftingComponent.MetaType.STARMETAL_INGOT.asStack());
+
+        for (hellfirepvp.astralsorcery.common.constellation.IConstellation c : hellfirepvp.astralsorcery.common.constellation.ConstellationRegistry
+            .getAllConstellations()) {
+            if (c instanceof hellfirepvp.astralsorcery.common.constellation.IMinorConstellation) continue;
+            List<ItemHandle> signature = c.getConstellationSignatureItems();
+            if (signature.isEmpty()) continue;
+            ItemHandle first = signature.get(0);
+            hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe recipe = new hellfirepvp.astralsorcery.common.crafting.altar.recipes.CapeAttunementRecipe(
+                c,
+                new ShapedRecipe(new ItemStack(ItemsAS.armorImbuedCape))
+                    .addPart(ItemsAS.armorImbuedCape, ShapedRecipeSlot.CENTER)
+                    .addPart(
+                        first,
+                        ShapedRecipeSlot.UPPER_CENTER,
+                        ShapedRecipeSlot.LEFT,
+                        ShapedRecipeSlot.RIGHT,
+                        ShapedRecipeSlot.LOWER_CENTER));
+            for (ItemHandle sig : signature) {
+                recipe.addOuterTraitItem(sig);
+            }
+            recipe.setInnerTraitItem(
+                ItemCraftingComponent.MetaType.STARDUST.asStack(),
+                TraitRecipe.TraitRecipeSlot.values());
+            registerAltarRecipe(recipe);
+            capeCraftingRecipes.put(c, recipe);
+        }
+    }
+
+    /** Sooty marble variants (1.12.2-1.8.5): arch, bricks, chiseled, engraved, runed, pillar. */
+    private static ShapedRecipe[] buildBlackMarbleRecipes() {
+        ItemStack raw = BlockBlackMarble.BlackMarbleBlockType.RAW.asStack();
+        ItemStack chiseled = BlockBlackMarble.BlackMarbleBlockType.CHISELED.asStack();
+        return new ShapedRecipe[] {
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ARCH, 3))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.UPPER_CENTER, ShapedRecipeSlot.UPPER_RIGHT),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.BRICKS, 4)).addPart(
+                raw,
+                ShapedRecipeSlot.UPPER_LEFT,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.LEFT,
+                ShapedRecipeSlot.CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.CHISELED, 4)).addPart(
+                raw,
+                ShapedRecipeSlot.UPPER_CENTER,
+                ShapedRecipeSlot.LEFT,
+                ShapedRecipeSlot.RIGHT,
+                ShapedRecipeSlot.LOWER_CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.ENGRAVED, 5))
+                .addPart(
+                    raw,
+                    ShapedRecipeSlot.UPPER_CENTER,
+                    ShapedRecipeSlot.LEFT,
+                    ShapedRecipeSlot.RIGHT,
+                    ShapedRecipeSlot.LOWER_CENTER)
+                .addPart(chiseled, ShapedRecipeSlot.CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.RUNED, 3))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.UPPER_RIGHT)
+                .addPart(chiseled, ShapedRecipeSlot.UPPER_CENTER),
+            new ShapedRecipe(blackMarble(BlockBlackMarble.BlackMarbleBlockType.PILLAR, 2))
+                .addPart(raw, ShapedRecipeSlot.UPPER_LEFT, ShapedRecipeSlot.LEFT) };
+    }
+
+    private static ItemStack blackMarble(BlockBlackMarble.BlackMarbleBlockType type, int amount) {
+        return new ItemStack(BlocksAS.blockBlackMarble, amount, type.getMeta());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void addRecipe(CraftingManager manager, net.minecraft.item.crafting.IRecipe recipe) {
+        manager.getRecipeList()
+            .add(recipe);
     }
 
     public static void initAltarRecipes() {
@@ -327,6 +509,10 @@ public class RegistryRecipes {
 
         rAltarUpgradeAttenuation = registerAltarRecipe(new AttunementUpgradeRecipe());
         rAltarUpgradeConstellation = registerAltarRecipe(new ConstellationUpgradeRecipe());
+        rAltarUpgradeTrait = registerAltarRecipe(
+            new hellfirepvp.astralsorcery.common.crafting.altar.recipes.upgrade.TraitUpgradeRecipe());
+
+        initMantleRecipes();
 
         DiscoveryRecipe dr = registerDiscoveryRecipe(rCCParchment);
         dr.setPassiveStarlightRequirement(50);
@@ -709,6 +895,9 @@ public class RegistryRecipes {
                         .setPassiveStarlightRequirement(20);
 
         registerAltarRecipe(new DiscoveryRecipe(rMarbleStairs)).setPassiveStarlightRequirement(20);
+        for (ShapedRecipe r : buildBlackMarbleRecipes()) {
+            registerAltarRecipe(new DiscoveryRecipe(r)).setPassiveStarlightRequirement(20);
+        }
 
         registerAltarRecipe(
             new DiscoveryRecipe(

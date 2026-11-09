@@ -736,4 +736,45 @@ public class RenderingUtils {
         tess.draw();
     }
 
+    /**
+     * 1.12.2-1.8.5 TraitRecipe#renderTranslucentItem: a bobbing, spinning, mostly transparent dropped-item render of
+     * the stack at the given TESR-relative block position.
+     */
+    public static void renderTranslucentItemGhost(ItemStack stack, double x, double y, double z, float partialTicks) {
+        if (stack == null || stack.getItem() == null) return;
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.theWorld == null) return;
+        float t = hellfirepvp.astralsorcery.client.ClientScheduler.getClientTick() + partialTicks;
+        float bob = MathHelper.sin(t / 10.0F) * 0.1F + 0.1F;
+
+        net.minecraft.entity.item.EntityItem ei = new net.minecraft.entity.item.EntityItem(
+            mc.theWorld,
+            0,
+            0,
+            0,
+            stack.copy());
+        ei.getEntityItem().stackSize = 1;
+        ei.hoverStart = 0F;
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x + 0.5, y + bob + 0.25F, z + 0.5);
+        GL11.glRotatef((t / 20.0F) * (180F / (float) Math.PI), 0F, 1F, 0F);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(0x8003, 0x8004); // GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA
+        org.lwjgl.opengl.GL14.glBlendColor(1F, 1F, 1F, 0.1F);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.001F);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glDepthMask(false);
+        boolean prev = RenderItem.renderInFrame;
+        RenderItem.renderInFrame = true;
+        RenderManager.instance.renderEntityWithPosYaw(ei, 0D, 0D, 0D, 0F, 0F);
+        RenderItem.renderInFrame = prev;
+        GL11.glDepthMask(true);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glPopMatrix();
+        GL11.glPopAttrib();
+    }
+
 }

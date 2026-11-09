@@ -15,18 +15,22 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileAttunementRelay;
 import hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.ItemUtils;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
@@ -83,15 +87,9 @@ public class BlockAttunementRelay extends BlockContainer {
         if (!worldIn.isRemote) {
             BlockPos pos = new BlockPos(x, y, z);
             TileEntity inv = MiscUtils.getTileAt(worldIn, pos, TileEntity.class, true);
-            // if(inv != null) {
-            // for (EnumFacing face : EnumFacing.VALUES) {
-            // IInventory handle = inv.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, face);
-            // if(handle != null) {
-            // ItemUtils.dropInventory(handle, worldIn, pos);
-            // break;
-            // }
-            // }
-            // }
+            if (!worldIn.isRemote) {
+                ItemUtils.dropTileInventory(inv, worldIn, pos);
+            }
 
             BlockAltar.startSearchForRelayUpdate(worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -207,7 +205,18 @@ public class BlockAttunementRelay extends BlockContainer {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return box;
+        return BlockBoxUtil.offset(box, x, y, z);
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/attunement_relay");
     }
 
     @Override
@@ -225,9 +234,20 @@ public class BlockAttunementRelay extends BlockContainer {
     // return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
     // }
 
+    // glass parts render in the translucent pass, the rest in the solid pass
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 0 || pass == 1;
+    }
+
     @Override
     public int getRenderType() {
-        return 1;
+        return hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel;
     }
 
 }

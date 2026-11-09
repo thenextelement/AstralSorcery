@@ -29,10 +29,11 @@ public enum Mods {
 
     TICONSTRUCT("tconstruct"),
     MINETWEAKER("MineTweaker3"),
-    JEI("JEI"),
+    NEI("NEI"),
     BLOODMAGIC("BloodMagic"),
     BOTANIA("Botania"),
-    GALACTICRAFT_CORE("galacticraftcore");
+    GALACTICRAFT_CORE("galacticraftcore"),
+    ETFUTURUM("etfuturum");
 
     public final String modId;
 

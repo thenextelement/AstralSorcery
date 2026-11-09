@@ -80,12 +80,14 @@ public enum WorldMeltables implements MeltInteraction {
         for (WorldMeltables melt : values()) {
             if (melt.isMeltable(world, pos, state)) return melt;
         }
-        ItemStack stack = ItemUtils.createBlockStack(state);
+        int meta = world.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ());
+        ItemStack stack = net.minecraft.item.Item.getItemFromBlock(state) == null ? null
+            : new ItemStack(state, 1, state.damageDropped(meta));
         if (stack != null && stack.getItem() != null) {
             ItemStack out = FurnaceRecipes.smelting()
                 .getSmeltingResult(stack);
             if (out != null && out.getItem() != null) {
-                return new FurnaceRecipeInteraction(state, out);
+                return new FurnaceRecipeInteraction(state, meta, out);
             }
         }
         return null;
@@ -115,8 +117,8 @@ public enum WorldMeltables implements MeltInteraction {
         private final ItemStack out;
         private final BlockStateCheck.Meta matchInState;
 
-        public FurnaceRecipeInteraction(Block inState, ItemStack outStack) {
-            this.matchInState = new BlockStateCheck.Meta(inState, inState.damageDropped(outStack.getItemDamage()));
+        public FurnaceRecipeInteraction(Block inState, int inMeta, ItemStack outStack) {
+            this.matchInState = new BlockStateCheck.Meta(inState, inMeta);
             this.out = outStack;
         }
 

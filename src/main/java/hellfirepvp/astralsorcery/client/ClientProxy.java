@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.client.effect.EffectHandler;
 import hellfirepvp.astralsorcery.client.effect.light.ClientLightbeamHandler;
@@ -61,10 +60,13 @@ import hellfirepvp.astralsorcery.client.util.camera.ClientCameraManager;
 import hellfirepvp.astralsorcery.client.util.item.ItemRendererFilteredTESR;
 import hellfirepvp.astralsorcery.client.util.mappings.ClientJournalMapping;
 import hellfirepvp.astralsorcery.client.util.mappings.ClientPerkTextureMapping;
+import hellfirepvp.astralsorcery.client.util.model.ItemRendererJsonModel;
+import hellfirepvp.astralsorcery.client.util.model.JsonModelLibrary;
 import hellfirepvp.astralsorcery.client.util.resource.AssetLibrary;
 import hellfirepvp.astralsorcery.common.CommonProxy;
 import hellfirepvp.astralsorcery.common.auxiliary.tick.TickManager;
 import hellfirepvp.astralsorcery.common.block.BlockMachine;
+import hellfirepvp.astralsorcery.common.block.network.BlockAltar;
 import hellfirepvp.astralsorcery.common.crafting.helper.CraftingAccessManager;
 import hellfirepvp.astralsorcery.common.entities.EntityFlare;
 import hellfirepvp.astralsorcery.common.entities.EntityIlluminationSpark;
@@ -115,10 +117,24 @@ public class ClientProxy extends CommonProxy {
 
         super.preInit();
 
+        // Static block bodies are baked into chunk meshes from the 1.10 JSON models
+        hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel = cpw.mods.fml.client.registry.RenderingRegistry
+            .getNextAvailableRenderId();
+        cpw.mods.fml.client.registry.RenderingRegistry.registerBlockHandler(
+            new hellfirepvp.astralsorcery.client.util.model.JsonBlockModelRenderer(
+                hellfirepvp.astralsorcery.common.lib.RenderIDs.jsonModel));
+        MinecraftForge.EVENT_BUS.register(hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.INSTANCE);
+        hellfirepvp.astralsorcery.common.lib.RenderIDs.marblePillar = cpw.mods.fml.client.registry.RenderingRegistry
+            .getNextAvailableRenderId();
+        cpw.mods.fml.client.registry.RenderingRegistry.registerBlockHandler(
+            new hellfirepvp.astralsorcery.client.render.block.RenderBlockMarblePillar(
+                hellfirepvp.astralsorcery.common.lib.RenderIDs.marblePillar));
+        registerJsonBlockModels();
+
         registerFluidRenderers();
         registerEntityRenderers();
 
-        CraftingAccessManager.ignoreJEI = false;
+        CraftingAccessManager.ignoreNEI = false;
     }
 
     // private void registerPendingIBlockColorBlocks() {
@@ -157,13 +173,11 @@ public class ClientProxy extends CommonProxy {
     public void init() {
         super.init();
 
-        MinecraftForge.EVENT_BUS.register(new ClientRenderEventHandler());
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new ClientRenderEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ClientConnectionEventHandler());
-        MinecraftForge.EVENT_BUS.register(EffectHandler.getInstance());
-        MinecraftForge.EVENT_BUS.register(new ClientGatewayHandler());
+        // Single instances on both buses (see CommonProxy#registerEventHandler)
+        registerEventHandler(new ClientRenderEventHandler());
+        registerEventHandler(new ClientConnectionEventHandler());
+        registerEventHandler(EffectHandler.getInstance());
+        registerEventHandler(new ClientGatewayHandler());
 
         registerDisplayInformationInit();
 
@@ -187,6 +201,8 @@ public class ClientProxy extends CommonProxy {
 
         ((IReloadableResourceManager) Minecraft.getMinecraft()
             .getResourceManager()).registerReloadListener(ItemColorizationHelper.instance);
+        ((IReloadableResourceManager) Minecraft.getMinecraft()
+            .getResourceManager()).registerReloadListener(JsonModelLibrary.INSTANCE);
     }
 
     @Override
@@ -229,7 +245,69 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlocksAS.celestialCrystals), new TESRCelestialCrystals());
 
-        // ItemRenderRegistry.register(ItemsAS.something, new ? implements IItemRenderer());
+        registerModelItem(
+            BlocksAS.blockAltar,
+            new ItemRendererJsonModel().add(0, "BlockAltar1", null)
+                .add(1, "BlockAltar2", null)
+                .add(2, "BlockAltar3", null)
+                .add(3, "BlockAltar4", null));
+        registerModelItem(
+            BlocksAS.attunementRelay,
+            new ItemRendererJsonModel().add(0, "BlockAttunementRelay", "BlockAttunementRelayGlass"));
+        registerModelItem(
+            BlocksAS.ritualPedestal,
+            new ItemRendererJsonModel().add(0, "BlockRitualPedestal", "BlockRitualPedestalGlass"));
+        registerModelItem(BlocksAS.blockWell, new ItemRendererJsonModel().add(0, "BlockWell", null));
+        registerModelItem(
+            BlocksAS.blockIlluminator,
+            new ItemRendererJsonModel().add(0, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator"));
+        registerModelItem(BlocksAS.starlightInfuser, new ItemRendererJsonModel().add(0, "BlockStarlightInfuser", null));
+        registerModelItem(
+            BlocksAS.ritualLink,
+            new ItemRendererJsonModel().add(0, "BlockRitualLink", "BlockRitualLinkGlass"));
+        registerModelItem(BlocksAS.treeBeacon, new ItemRendererJsonModel().add(0, "BlockTreeBeacon", null));
+        registerModelItem(BlocksAS.drawingTable, new ItemRendererJsonModel().add(0, "BlockMapDrawingTable", null));
+        registerModelItem(
+            BlocksAS.celestialGateway,
+            new ItemRendererJsonModel().add(0, "BlockCelestialGateway", "BlockCelestialGatewayOrb"));
+        registerModelItem(BlocksAS.lens, new ItemRendererJsonModel().add(0, "BlockLens_full", null));
+        registerModelItem(BlocksAS.lensPrism, new ItemRendererJsonModel().add(0, null, "BlockPrism"));
+    }
+
+    private void registerJsonBlockModels() {
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockAltar, "BlockAltar1", null);
+        // 1.12.2-1.8.5 iridescent altar body (T2/T3 keep the T1 body plus their TESR parts)
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .registerMeta(BlocksAS.blockAltar, BlockAltar.AltarType.ALTAR_4.ordinal(), "BlockAltar4", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.blockWell, "BlockWell", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.ritualPedestal, "BlockRitualPedestal", "BlockRitualPedestalGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.attunementRelay, "BlockAttunementRelay", "BlockAttunementRelayGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.starlightInfuser, "BlockStarlightInfuser", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lens, "BlockLens_tesr", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels.register(BlocksAS.lensPrism, null, "BlockPrism"); // translucent
+                                                                                                                      // layer
+                                                                                                                      // in
+                                                                                                                      // 1.10
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.drawingTable, "BlockMapDrawingTable", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.celestialGateway, "BlockCelestialGateway", "BlockCelestialGatewayOrb");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.ritualLink, "BlockRitualLink", "BlockRitualLinkGlass");
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.treeBeacon, "BlockTreeBeacon", null);
+        hellfirepvp.astralsorcery.client.util.model.JsonBlockModels
+            .register(BlocksAS.blockIlluminator, "BlockWorldIlluminatorCenter", "BlockWorldIlluminator");
+    }
+
+    private void registerModelItem(net.minecraft.block.Block block, ItemRendererJsonModel renderer) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != null) {
+            MinecraftForgeClient.registerItemRenderer(item, renderer);
+        }
     }
 
     @Override
@@ -238,6 +316,30 @@ public class ClientProxy extends CommonProxy {
         manager.register(new ClientLightbeamHandler());
         manager.register(scheduler);
         manager.register(ClientCameraManager.getInstance());
+    }
+
+    @Override
+    public void forwardBlockInteractToServer(int x, int y, int z, int side) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer == null || mc.getNetHandler() == null) return;
+        float hx = 0.5F, hy = 0.5F, hz = 0.5F;
+        if (mc.objectMouseOver != null && mc.objectMouseOver.hitVec != null) {
+            hx = (float) mc.objectMouseOver.hitVec.xCoord - x;
+            hy = (float) mc.objectMouseOver.hitVec.yCoord - y;
+            hz = (float) mc.objectMouseOver.hitVec.zCoord - z;
+        }
+        mc.getNetHandler()
+            .addToSendQueue(
+                new net.minecraft.network.play.client.C08PacketPlayerBlockPlacement(
+                    x,
+                    y,
+                    z,
+                    side,
+                    mc.thePlayer.inventory.getCurrentItem(),
+                    hx,
+                    hy,
+                    hz));
+        mc.thePlayer.swingItem();
     }
 
     @Override
@@ -273,6 +375,9 @@ public class ClientProxy extends CommonProxy {
         // RenderEntityGrindstone.Factory());
         RenderingRegistry.registerEntityRenderingHandler(EntityItemHighlighted.class, new RenderEntityItemHighlight());
         RenderingRegistry.registerEntityRenderingHandler(EntityFlare.class, new RenderEntityFlare());
+        RenderingRegistry.registerEntityRenderingHandler(
+            hellfirepvp.astralsorcery.common.entities.EntitySpectralTool.class,
+            new hellfirepvp.astralsorcery.client.render.entity.RenderSpectralTool());
         RenderingRegistry.registerEntityRenderingHandler(EntityStarburst.class, new RenderEntityStarburst());
         RenderingRegistry
             .registerEntityRenderingHandler(EntityIlluminationSpark.class, new RenderEntityIlluminationSpark());

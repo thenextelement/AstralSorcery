@@ -47,6 +47,7 @@ public class TESRLens extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+
         TileCrystalLens te = (TileCrystalLens) tile;
         List<BlockPos> linked = te.getLinkedPositions();
         float yaw = 0; // Degree

@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +42,7 @@ import hellfirepvp.astralsorcery.common.network.PacketChannel;
 import hellfirepvp.astralsorcery.common.network.packet.server.PktParticleEvent;
 import hellfirepvp.astralsorcery.common.registry.RegistryItems;
 import hellfirepvp.astralsorcery.common.tile.TileCelestialCrystals;
+import hellfirepvp.astralsorcery.common.util.BlockBoxUtil;
 import hellfirepvp.astralsorcery.common.util.BlockPos;
 import hellfirepvp.astralsorcery.common.util.MiscUtils;
 
@@ -83,17 +85,17 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        switch (STAGE) {
+        switch (MathHelper.clamp_int(worldIn.getBlockMetadata(x, y, z), 0, STAGE)) {
             case 0:
-                return bbStage0;
+                return BlockBoxUtil.offset(bbStage0, x, y, z);
             case 1:
-                return bbStage1;
+                return BlockBoxUtil.offset(bbStage1, x, y, z);
             case 2:
-                return bbStage2;
+                return BlockBoxUtil.offset(bbStage2, x, y, z);
             case 3:
-                return bbStage3;
+                return BlockBoxUtil.offset(bbStage3, x, y, z);
             case 4:
-                return bbStage4;
+                return BlockBoxUtil.offset(bbStage4, x, y, z);
         }
         return super.getCollisionBoundingBoxFromPool(worldIn, x, y, z);
     }
@@ -153,7 +155,7 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
                         pos.down()
                             .getZ());
                     if (down instanceof BlockCustomOre
-                        && down.damageDropped(metadata) == (BlockCustomOre.OreType.STARMETAL.getMeta())
+                        && world.getBlockMetadata(x, y - 1, z) == BlockCustomOre.OreType.STARMETAL.getMeta()
                         && rand.nextInt(3) == 0) {
                         drops.add(ItemRockCrystalBase.createRandomCelestialCrystal()); // Lucky~~
                     }
@@ -188,8 +190,7 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
                     .getY(),
                 pos.down()
                     .getZ());
-            if (down instanceof BlockCustomOre
-                && down.damageDropped(meta) == BlockCustomOre.OreType.STARMETAL.getMeta()) {
+            if (down instanceof BlockCustomOre && meta == BlockCustomOre.OreType.STARMETAL.getMeta()) {
                 tile.tryGrowth(0.3);
             }
         }
@@ -250,6 +251,22 @@ public class BlockCelestialCrystals extends BlockContainer implements IBlockStar
     @Override
     public boolean isNormalCube() {
         return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("astralsorcery:particle/celestial_crystals");
     }
 
     @Override

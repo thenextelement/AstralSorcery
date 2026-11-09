@@ -57,7 +57,7 @@ import hellfirepvp.astralsorcery.common.util.data.Vector3;
  * Created by HellFirePvP
  * Date: 18.10.2016 / 12:28
  */
-public class TileWell extends TileReceiverBaseInventory {
+public class TileWell extends TileReceiverBaseInventory implements net.minecraftforge.fluids.IFluidHandler {
 
     private static final Random rand = new Random();
     private static final int MAX_CAPACITY = 2000;
@@ -333,4 +333,45 @@ public class TileWell extends TileReceiverBaseInventory {
 
     }
 
+    // ---- 1.7 IFluidHandler (1.10 exposed the tank as FLUID_HANDLER capability, output from below only)
+
+    private boolean canAccessFluid(ForgeDirection from) {
+        return from == ForgeDirection.DOWN || from == ForgeDirection.UNKNOWN;
+    }
+
+    @Override
+    public int fill(ForgeDirection from, net.minecraftforge.fluids.FluidStack resource, boolean doFill) {
+        return 0;
+    }
+
+    @Override
+    public net.minecraftforge.fluids.FluidStack drain(ForgeDirection from,
+        net.minecraftforge.fluids.FluidStack resource, boolean doDrain) {
+        if (resource == null || resource.getFluid() != tank.getTankFluid()) return null;
+        return drain(from, resource.amount, doDrain);
+    }
+
+    @Override
+    public net.minecraftforge.fluids.FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        if (!canAccessFluid(from) || tank.getTankFluid() == null || tank.getFluidAmount() <= 0) return null;
+        net.minecraftforge.fluids.FluidStack out = tank.drain(maxDrain, doDrain);
+        if (out == null || out.amount <= 0) return null;
+        if (doDrain) markForUpdate();
+        return out;
+    }
+
+    @Override
+    public boolean canFill(ForgeDirection from, net.minecraftforge.fluids.Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public boolean canDrain(ForgeDirection from, net.minecraftforge.fluids.Fluid fluid) {
+        return canAccessFluid(from) && fluid != null && fluid == tank.getTankFluid() && tank.getFluidAmount() > 0;
+    }
+
+    @Override
+    public net.minecraftforge.fluids.FluidTankInfo[] getTankInfo(ForgeDirection from) {
+        return new net.minecraftforge.fluids.FluidTankInfo[] { tank.getInfo() };
+    }
 }
